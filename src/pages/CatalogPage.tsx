@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import CartDrawer from "@/components/CartDrawer";
+import ProductDetailsModal from "@/components/ProductDetailsModal";
 import { 
   Search, 
   Filter, 
@@ -15,7 +18,8 @@ import {
   X,
   Phone,
   Mail,
-  MapPin
+  MapPin,
+  Plus
 } from "lucide-react";
 
 const CatalogPage = () => {
@@ -23,6 +27,11 @@ const CatalogPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productModalOpen, setProductModalOpen] = useState(false);
+
+  const { addToCart, getTotalItems } = useCart();
 
   const categories = [
     { id: "all", name: "Todos os Produtos", count: 127 },
@@ -149,6 +158,11 @@ const CatalogPage = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const openProductDetails = (product: any) => {
+    setSelectedProduct(product);
+    setProductModalOpen(true);
+  };
+
   const ProductCard = ({ product }: { product: typeof products[0] }) => (
     <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
       <div className="aspect-square relative overflow-hidden bg-gray-100">
@@ -170,7 +184,15 @@ const CatalogPage = () => {
           </Badge>
         )}
         
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button 
+            size="sm" 
+            variant="secondary" 
+            className="h-8 w-8 p-0"
+            onClick={() => addToCart(product)}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
           <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
             <Heart className="h-4 w-4" />
           </Button>
@@ -225,10 +247,22 @@ const CatalogPage = () => {
           ))}
         </div>
 
-        <Button className="w-full mt-4 group-hover:bg-primary-700 transition-colors">
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Ver Detalhes
-        </Button>
+        <div className="flex space-x-2 mt-4">
+          <Button 
+            onClick={() => openProductDetails(product)}
+            variant="outline"
+            className="flex-1"
+          >
+            Ver Detalhes
+          </Button>
+          <Button 
+            onClick={() => addToCart(product)}
+            className="flex-1 group-hover:bg-primary-700 transition-colors"
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Carrinho
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -261,6 +295,21 @@ const CatalogPage = () => {
             </div>
 
             <div className="flex items-center space-x-4">
+              {/* Cart Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCartOpen(true)}
+                className="relative"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {getTotalItems() > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {getTotalItems()}
+                  </Badge>
+                )}
+              </Button>
+
               <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
                 <div className="flex items-center space-x-1">
                   <Phone className="h-4 w-4" />
@@ -497,6 +546,19 @@ const CatalogPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Product Details Modal */}
+      <ProductDetailsModal
+        product={selectedProduct}
+        isOpen={productModalOpen}
+        onClose={() => {
+          setProductModalOpen(false);
+          setSelectedProduct(null);
+        }}
+      />
     </div>
   );
 };
