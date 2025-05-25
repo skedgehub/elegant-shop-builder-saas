@@ -21,24 +21,51 @@ import {
   MapPin,
   Plus
 } from "lucide-react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer";
 
 const CatalogPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
   const [viewMode, setViewMode] = useState("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
 
   const { addToCart, getTotalItems } = useCart();
 
   const categories = [
-    { id: "all", name: "Todos os Produtos", count: 127 },
-    { id: "electronics", name: "Eletrônicos", count: 45 },
-    { id: "clothing", name: "Roupas", count: 32 },
-    { id: "shoes", name: "Calçados", count: 28 },
-    { id: "home", name: "Casa & Decoração", count: 22 }
+    { 
+      id: "all", 
+      name: "Todos os Produtos", 
+      count: 127,
+      subcategories: []
+    },
+    { 
+      id: "electronics", 
+      name: "Eletrônicos", 
+      count: 45,
+      subcategories: ["Smartphones", "Notebooks", "Fones", "Tablets"]
+    },
+    { 
+      id: "clothing", 
+      name: "Roupas", 
+      count: 32,
+      subcategories: ["Camisetas", "Calças", "Vestidos", "Jaquetas"]
+    },
+    { 
+      id: "shoes", 
+      name: "Calçados", 
+      count: 28,
+      subcategories: ["Tênis", "Sapatos", "Sandálias", "Botas"]
+    },
+    { 
+      id: "home", 
+      name: "Casa & Decoração", 
+      count: 22,
+      subcategories: ["Móveis", "Decoração", "Utensílios", "Iluminação"]
+    }
   ];
 
   const products = [
@@ -46,6 +73,7 @@ const CatalogPage = () => {
       id: 1,
       name: "Smartphone Galaxy S24 Ultra",
       category: "electronics",
+      subcategory: "Smartphones",
       price: 1299.00,
       promotionalPrice: 1099.00,
       image: "/placeholder.svg",
@@ -64,6 +92,7 @@ const CatalogPage = () => {
       id: 2,
       name: "Tênis Nike Air Max 270",
       category: "shoes",
+      subcategory: "Tênis",
       price: 599.00,
       promotionalPrice: null,
       image: "/placeholder.svg",
@@ -82,6 +111,7 @@ const CatalogPage = () => {
       id: 3,
       name: "Notebook Gamer Dell G15",
       category: "electronics",
+      subcategory: "Notebooks",
       price: 2199.00,
       promotionalPrice: 1999.00,
       image: "/placeholder.svg",
@@ -100,6 +130,7 @@ const CatalogPage = () => {
       id: 4,
       name: "Camisa Polo Ralph Lauren",
       category: "clothing",
+      subcategory: "Camisetas",
       price: 189.00,
       promotionalPrice: 149.00,
       image: "/placeholder.svg",
@@ -118,6 +149,7 @@ const CatalogPage = () => {
       id: 5,
       name: "Fone Bluetooth Sony WH-1000XM5",
       category: "electronics",
+      subcategory: "Fones",
       price: 399.00,
       promotionalPrice: null,
       image: "/placeholder.svg",
@@ -136,6 +168,7 @@ const CatalogPage = () => {
       id: 6,
       name: "Vestido Floral Zara",
       category: "clothing",
+      subcategory: "Vestidos",
       price: 129.00,
       promotionalPrice: 99.00,
       image: "/placeholder.svg",
@@ -152,10 +185,13 @@ const CatalogPage = () => {
     }
   ];
 
+  const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
+
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesSubcategory = selectedSubcategory === "all" || product.subcategory === selectedSubcategory;
+    return matchesSearch && matchesCategory && matchesSubcategory;
   });
 
   const openProductDetails = (product: any) => {
@@ -340,35 +376,9 @@ const CatalogPage = () => {
 
       <div className="container mx-auto px-4 py-6">
         <div className="flex gap-6">
-          {/* Sidebar Mobile Overlay */}
-          {sidebarOpen && (
-            <div 
-              className="fixed inset-0 z-50 lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
-            </div>
-          )}
-
-          {/* Sidebar */}
-          <aside className={`
-            fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:w-64 lg:shadow-none
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          `}>
-            <div className="p-4 border-b lg:hidden">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold">Filtros</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="p-4 space-y-6">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-64">
+            <div className="bg-white rounded-lg shadow-sm p-4 space-y-6">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
                 <div className="space-y-2">
@@ -377,7 +387,7 @@ const CatalogPage = () => {
                       key={category.id}
                       onClick={() => {
                         setSelectedCategory(category.id);
-                        setSidebarOpen(false);
+                        setSelectedSubcategory("all");
                       }}
                       className={`
                         w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between
@@ -395,6 +405,42 @@ const CatalogPage = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Subcategorias */}
+              {selectedCategoryData && selectedCategoryData.subcategories.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3">Subcategorias</h3>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => setSelectedSubcategory("all")}
+                      className={`
+                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                        ${selectedSubcategory === "all" 
+                          ? 'bg-primary-100 text-primary-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-100'
+                        }
+                      `}
+                    >
+                      Todas
+                    </button>
+                    {selectedCategoryData.subcategories.map((sub) => (
+                      <button
+                        key={sub}
+                        onClick={() => setSelectedSubcategory(sub)}
+                        className={`
+                          w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                          ${selectedSubcategory === sub 
+                            ? 'bg-primary-100 text-primary-700 font-medium' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                          }
+                        `}
+                      >
+                        {sub}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Faixa de Preço</h3>
@@ -417,7 +463,12 @@ const CatalogPage = () => {
                 <p className="text-gray-600">
                   {filteredProducts.length} produtos encontrados
                 </p>
-                <Button variant="outline" size="sm" className="lg:hidden">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="lg:hidden"
+                  onClick={() => setSidebarOpen(true)}
+                >
                   <Filter className="h-4 w-4 mr-2" />
                   Filtros
                 </Button>
@@ -479,6 +530,7 @@ const CatalogPage = () => {
                   onClick={() => {
                     setSearchTerm("");
                     setSelectedCategory("all");
+                    setSelectedSubcategory("all");
                   }}
                 >
                   Limpar Filtros
@@ -546,6 +598,98 @@ const CatalogPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Filters Drawer */}
+      <Drawer open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <DrawerContent className="h-[80vh]">
+          <DrawerHeader className="border-b">
+            <div className="flex items-center justify-between">
+              <DrawerTitle>Filtros</DrawerTitle>
+              <DrawerClose asChild>
+                <Button variant="ghost" size="sm">
+                  <X className="h-4 w-4" />
+                </Button>
+              </DrawerClose>
+            </div>
+          </DrawerHeader>
+
+          <div className="p-4 space-y-6 overflow-y-auto">
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategory(category.id);
+                      setSelectedSubcategory("all");
+                    }}
+                    className={`
+                      w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between
+                      ${selectedCategory === category.id 
+                        ? 'bg-primary-100 text-primary-700 font-medium' 
+                        : 'text-gray-700 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    <span>{category.name}</span>
+                    <Badge variant="secondary" className="text-xs">
+                      {category.count}
+                    </Badge>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Subcategorias */}
+            {selectedCategoryData && selectedCategoryData.subcategories.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-3">Subcategorias</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setSelectedSubcategory("all")}
+                    className={`
+                      w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                      ${selectedSubcategory === "all" 
+                        ? 'bg-primary-100 text-primary-700 font-medium' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Todas
+                  </button>
+                  {selectedCategoryData.subcategories.map((sub) => (
+                    <button
+                      key={sub}
+                      onClick={() => setSelectedSubcategory(sub)}
+                      className={`
+                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                        ${selectedSubcategory === sub 
+                          ? 'bg-primary-100 text-primary-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-100'
+                        }
+                      `}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Faixa de Preço</h3>
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <Input placeholder="Min" className="text-sm" />
+                  <Input placeholder="Max" className="text-sm" />
+                </div>
+                <Button variant="outline" size="sm" className="w-full">Aplicar</Button>
+              </div>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       {/* Cart Drawer */}
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -11,8 +12,16 @@ import {
   Menu,
   X,
   Globe,
-  LogOut
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
+  Bell,
+  User
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -20,7 +29,9 @@ interface AdminLayoutProps {
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -31,29 +42,33 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-background flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         >
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75"></div>
         </div>
       )}
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        fixed inset-y-0 left-0 z-50 bg-card shadow-lg transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        ${sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'}
+        w-64
       `}>
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">C</span>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-border">
+          <div className={`flex items-center space-x-2 transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+            <div className="h-8 w-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">C</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">CatalogoPro</span>
+            <span className="text-xl font-bold text-foreground">CatalogoPro</span>
           </div>
+          
+          {/* Mobile close button */}
           <Button
             variant="ghost"
             size="sm"
@@ -61,6 +76,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
+          </Button>
+
+          {/* Desktop collapse button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hidden lg:flex"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
           </Button>
         </div>
 
@@ -73,16 +102,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   <Link
                     to={item.href}
                     className={`
-                      flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
+                      flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors group
                       ${isActive 
-                        ? 'bg-primary-100 text-primary-700 border-r-2 border-primary-600' 
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-primary/10 text-primary border-r-2 border-primary' 
+                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                       }
+                      ${sidebarCollapsed ? 'lg:justify-center lg:px-2' : ''}
                     `}
                     onClick={() => setSidebarOpen(false)}
+                    title={sidebarCollapsed ? item.name : undefined}
                   >
-                    <item.icon className="mr-3 h-5 w-5" />
-                    {item.name}
+                    <item.icon className="h-5 w-5 flex-shrink-0" />
+                    <span className={`ml-3 transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+                      {item.name}
+                    </span>
                   </Link>
                 </li>
               );
@@ -92,14 +125,18 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
         <div className="absolute bottom-4 left-4 right-4 space-y-2">
           <Link to="/">
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <Globe className="mr-2 h-4 w-4" />
-              Ver Site
+            <Button variant="outline" size="sm" className={`w-full ${sidebarCollapsed ? 'lg:px-2' : 'justify-start'}`}>
+              <Globe className={`h-4 w-4 ${sidebarCollapsed ? '' : 'mr-2'}`} />
+              <span className={`transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+                Ver Site
+              </span>
             </Button>
           </Link>
-          <Button variant="ghost" size="sm" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
+          <Button variant="ghost" size="sm" className={`w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 ${sidebarCollapsed ? 'lg:px-2' : 'justify-start'}`}>
+            <LogOut className={`h-4 w-4 ${sidebarCollapsed ? '' : 'mr-2'}`} />
+            <span className={`transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+              Sair
+            </span>
           </Button>
         </div>
       </div>
@@ -107,27 +144,98 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-card shadow-sm border-b border-border">
           <div className="flex items-center justify-between h-16 px-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-            
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-600">
-                Loja: <span className="font-medium text-gray-900">minhaloja.catalogo.com.br</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              
+              <div className="text-sm text-muted-foreground">
+                Loja: <span className="font-medium text-foreground">minhaloja.catalogo.com.br</span>
               </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
+              </Button>
+
+              {/* Notifications */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="relative">
+                    <Bell className="h-4 w-4" />
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                      3
+                    </Badge>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                  <div className="p-2">
+                    <h4 className="font-medium mb-2">Notificações</h4>
+                    <div className="space-y-2">
+                      <div className="p-2 border rounded text-sm">
+                        <p className="font-medium">Novo pedido recebido</p>
+                        <p className="text-muted-foreground">Pedido #1234 - R$ 299,00</p>
+                      </div>
+                      <div className="p-2 border rounded text-sm">
+                        <p className="font-medium">Produto em baixo estoque</p>
+                        <p className="text-muted-foreground">Smartphone Galaxy S24 - 2 unidades</p>
+                      </div>
+                      <div className="p-2 border rounded text-sm">
+                        <p className="font-medium">Nova avaliação</p>
+                        <p className="text-muted-foreground">5 estrelas para Tênis Nike</p>
+                      </div>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* User Menu */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Admin
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    <User className="h-4 w-4 mr-2" />
+                    Meu Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configurações
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-red-600">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-4 bg-background">
           {children}
         </main>
       </div>

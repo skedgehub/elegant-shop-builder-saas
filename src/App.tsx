@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,8 @@ import CatalogConfig from "./pages/CatalogConfig";
 import SystemConfig from "./pages/SystemConfig";
 import CatalogPage from "./pages/CatalogPage";
 import NotFound from "./pages/NotFound";
+import ProductForm from "./components/ProductForm";
+import CategoryForm from "./components/CategoryForm";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,9 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/products" element={<Products />} />
+              <Route path="/admin/products/new" element={<ProductForm />} />
               <Route path="/admin/categories" element={<Categories />} />
+              <Route path="/admin/categories/new" element={<CategoryForm />} />
               <Route path="/admin/catalog-config" element={<CatalogConfig />} />
               <Route path="/admin/system-config" element={<SystemConfig />} />
               <Route path="/catalog/:subdomain" element={<CatalogPage />} />

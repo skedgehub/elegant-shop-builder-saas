@@ -11,6 +11,7 @@ import {
   X,
   MessageCircle
 } from "lucide-react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -40,36 +41,39 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 lg:hidden">
-      <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={onClose}></div>
-      
-      <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
-        <div className="p-4 border-b">
+    <Drawer open={isOpen} onOpenChange={onClose}>
+      <DrawerContent className="h-[80vh]">
+        <DrawerHeader className="border-b">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Carrinho</h2>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-5 w-5" />
-            </Button>
+            <DrawerTitle>Carrinho de Compras</DrawerTitle>
+            <DrawerClose asChild>
+              <Button variant="ghost" size="sm">
+                <X className="h-4 w-4" />
+              </Button>
+            </DrawerClose>
           </div>
-        </div>
+        </DrawerHeader>
 
         <div className="flex-1 overflow-y-auto p-4">
           {items.length === 0 ? (
-            <div className="text-center py-8">
-              <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Seu carrinho está vazio</p>
+            <div className="text-center py-12">
+              <ShoppingCart className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Seu carrinho está vazio</h3>
+              <p className="text-gray-600 dark:text-gray-400">Adicione produtos para começar</p>
             </div>
           ) : (
             <div className="space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center space-x-3 p-3 border rounded-lg">
-                  <div className="h-16 w-16 bg-gray-100 rounded-lg flex-shrink-0">
-                    <div className="h-full w-full bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center">
-                      <span className="text-xs text-gray-500">IMG</span>
-                    </div>
+                  <div className="h-16 w-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex-shrink-0">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="h-full w-full object-cover rounded-lg" />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-lg flex items-center justify-center">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">IMG</span>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex-1 min-w-0">
@@ -82,12 +86,12 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
                         className="h-6 w-6 p-0"
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="text-sm font-medium">{item.quantity}</span>
+                      <span className="text-sm font-medium min-w-[20px] text-center">{item.quantity}</span>
                       <Button
                         size="sm"
                         variant="outline"
@@ -100,7 +104,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                         size="sm"
                         variant="ghost"
                         onClick={() => removeFromCart(item.id)}
-                        className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                        className="h-6 w-6 p-0 text-red-500 hover:text-red-700 ml-2"
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -121,25 +125,27 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
               </div>
             </div>
             
-            <Button
-              onClick={sendToWhatsApp}
-              className="w-full bg-green-600 hover:bg-green-700"
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Finalizar no WhatsApp
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={clearCart}
-              className="w-full mt-2"
-            >
-              Limpar Carrinho
-            </Button>
+            <div className="space-y-2">
+              <Button
+                onClick={sendToWhatsApp}
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Finalizar no WhatsApp
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={clearCart}
+                className="w-full"
+              >
+                Limpar Carrinho
+              </Button>
+            </div>
           </div>
         )}
-      </div>
-    </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
