@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -80,7 +81,7 @@ const CatalogPage = () => {
       rating: 4.8,
       reviews: 234,
       badge: "Oferta",
-      description: "Smartphone premium com câmera profissional",
+      description: "Smartphone premium com câmera profissional de alta qualidade, tela Dynamic AMOLED 6.8 polegadas e processador Snapdragon 8 Gen 3.",
       customFields: {
         marca: "Samsung",
         cor: "Preto Titânio",
@@ -99,7 +100,7 @@ const CatalogPage = () => {
       rating: 4.6,
       reviews: 189,
       badge: null,
-      description: "Tênis esportivo com máximo conforto",
+      description: "Tênis esportivo com máximo conforto e design moderno",
       customFields: {
         marca: "Nike",
         cor: "Branco/Preto",
@@ -200,7 +201,10 @@ const CatalogPage = () => {
   };
 
   const ProductCard = ({ product }: { product: typeof products[0] }) => (
-    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+    <Card 
+      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer"
+      onClick={() => openProductDetails(product)}
+    >
       <div className="aspect-square relative overflow-hidden bg-gray-100">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
           <span className="text-gray-500 text-sm">Imagem do Produto</span>
@@ -208,7 +212,7 @@ const CatalogPage = () => {
         
         {product.badge && (
           <Badge 
-            className={`absolute top-2 left-2 ${
+            className={`absolute top-2 left-2 z-10 ${
               product.badge === "Oferta" || product.badge === "Promoção" || product.badge === "Liquidação" 
                 ? "bg-red-500" 
                 : product.badge === "Novo" 
@@ -220,16 +224,24 @@ const CatalogPage = () => {
           </Badge>
         )}
         
-        <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button 
             size="sm" 
             variant="secondary" 
-            className="h-8 w-8 p-0"
-            onClick={() => addToCart(product)}
+            className="h-8 w-8 p-0 shadow-md"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart(product);
+            }}
           >
             <Plus className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+          <Button 
+            size="sm" 
+            variant="secondary" 
+            className="h-8 w-8 p-0 shadow-md"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Heart className="h-4 w-4" />
           </Button>
         </div>
@@ -283,21 +295,105 @@ const CatalogPage = () => {
           ))}
         </div>
 
-        <div className="flex space-x-2 mt-4">
-          <Button 
-            onClick={() => openProductDetails(product)}
-            variant="outline"
-            className="flex-1"
-          >
-            Ver Detalhes
-          </Button>
-          <Button 
-            onClick={() => addToCart(product)}
-            className="flex-1 group-hover:bg-primary-700 transition-colors"
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Carrinho
-          </Button>
+        <Button 
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart(product);
+          }}
+          className="w-full mt-4"
+        >
+          <ShoppingCart className="h-4 w-4 mr-2" />
+          Adicionar ao Carrinho
+        </Button>
+      </CardContent>
+    </Card>
+  );
+
+  const ProductListItem = ({ product }: { product: typeof products[0] }) => (
+    <Card 
+      className="hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => openProductDetails(product)}
+    >
+      <CardContent className="p-4">
+        <div className="flex space-x-4">
+          <div className="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <span className="text-xs text-gray-500">IMG</span>
+            </div>
+          </div>
+          
+          <div className="flex-1 space-y-2">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 line-clamp-1">{product.name}</h3>
+                <p className="text-sm text-gray-600 line-clamp-2 mt-1">{product.description}</p>
+              </div>
+              {product.badge && (
+                <Badge 
+                  className={`ml-2 ${
+                    product.badge === "Oferta" || product.badge === "Promoção" || product.badge === "Liquidação" 
+                      ? "bg-red-500" 
+                      : product.badge === "Novo" 
+                      ? "bg-green-500" 
+                      : "bg-blue-500"
+                  }`}
+                >
+                  {product.badge}
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-1">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-gray-600">({product.reviews})</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                {product.promotionalPrice ? (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-green-600">
+                      R$ {product.promotionalPrice.toFixed(2)}
+                    </span>
+                    <span className="text-sm text-gray-500 line-through">
+                      R$ {product.price.toFixed(2)}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-lg font-bold text-gray-900">
+                    R$ {product.price.toFixed(2)}
+                  </span>
+                )}
+              </div>
+
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart(product);
+                }}
+                size="sm"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Carrinho
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {Object.entries(product.customFields).slice(0, 4).map(([key, value]) => (
+                <div key={key} className="truncate">
+                  <span className="text-gray-500 capitalize">{key}:</span>
+                  <span className="ml-1 font-medium">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -378,7 +474,7 @@ const CatalogPage = () => {
         <div className="flex gap-6">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64">
-            <div className="bg-white rounded-lg shadow-sm p-4 space-y-6">
+            <div className="bg-white rounded-lg shadow-sm p-4 space-y-6 sticky top-24">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
                 <div className="space-y-2">
@@ -475,7 +571,7 @@ const CatalogPage = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <select className="text-sm border rounded-md px-3 py-1">
+                <select className="text-sm border rounded-md px-3 py-1 bg-white">
                   <option>Mais Relevantes</option>
                   <option>Menor Preço</option>
                   <option>Maior Preço</option>
@@ -503,17 +599,20 @@ const CatalogPage = () => {
               </div>
             </div>
 
-            {/* Products Grid */}
-            <div className={`
-              ${viewMode === "grid" 
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
-                : "space-y-4"
-              }
-            `}>
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {/* Products */}
+            {viewMode === "grid" ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredProducts.map((product) => (
+                  <ProductListItem key={product.id} product={product} />
+                ))}
+              </div>
+            )}
 
             {/* Empty State */}
             {filteredProducts.length === 0 && (
@@ -601,7 +700,7 @@ const CatalogPage = () => {
 
       {/* Mobile Filters Drawer */}
       <Drawer open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <DrawerContent className="h-[80vh]">
+        <DrawerContent className="h-[85vh]">
           <DrawerHeader className="border-b">
             <div className="flex items-center justify-between">
               <DrawerTitle>Filtros</DrawerTitle>
@@ -625,7 +724,7 @@ const CatalogPage = () => {
                       setSelectedSubcategory("all");
                     }}
                     className={`
-                      w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between
+                      w-full text-left px-3 py-3 rounded-lg transition-colors flex items-center justify-between
                       ${selectedCategory === category.id 
                         ? 'bg-primary-100 text-primary-700 font-medium' 
                         : 'text-gray-700 hover:bg-gray-100'
@@ -686,6 +785,15 @@ const CatalogPage = () => {
                 </div>
                 <Button variant="outline" size="sm" className="w-full">Aplicar</Button>
               </div>
+            </div>
+
+            <div className="pt-4">
+              <Button 
+                onClick={() => setSidebarOpen(false)}
+                className="w-full"
+              >
+                Aplicar Filtros
+              </Button>
             </div>
           </div>
         </DrawerContent>
