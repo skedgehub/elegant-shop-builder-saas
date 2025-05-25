@@ -10,7 +10,8 @@ import {
   Filter, 
   Edit, 
   Eye,
-  MoreHorizontal
+  MoreHorizontal,
+  ShoppingBag
 } from "lucide-react";
 import { useState } from "react";
 

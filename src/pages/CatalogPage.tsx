@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -150,7 +149,7 @@ const CatalogPage = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const ProductCard = ({ product }: { product: any }) => (
+  const ProductCard = ({ product }: { product: typeof products[0] }) => (
     <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
       <div className="aspect-square relative overflow-hidden bg-gray-100">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
