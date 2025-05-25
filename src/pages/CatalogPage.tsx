@@ -1,0 +1,505 @@
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Search, 
+  Filter, 
+  Grid3X3, 
+  List,
+  ShoppingCart,
+  Heart,
+  Star,
+  Menu,
+  X,
+  Phone,
+  Mail,
+  MapPin
+} from "lucide-react";
+
+const CatalogPage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [viewMode, setViewMode] = useState("grid");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const categories = [
+    { id: "all", name: "Todos os Produtos", count: 127 },
+    { id: "electronics", name: "Eletrônicos", count: 45 },
+    { id: "clothing", name: "Roupas", count: 32 },
+    { id: "shoes", name: "Calçados", count: 28 },
+    { id: "home", name: "Casa & Decoração", count: 22 }
+  ];
+
+  const products = [
+    {
+      id: 1,
+      name: "Smartphone Galaxy S24 Ultra",
+      category: "electronics",
+      price: 1299.00,
+      promotionalPrice: 1099.00,
+      image: "/placeholder.svg",
+      rating: 4.8,
+      reviews: 234,
+      badge: "Oferta",
+      description: "Smartphone premium com câmera profissional",
+      customFields: {
+        marca: "Samsung",
+        cor: "Preto Titânio",
+        memoria: "256GB",
+        tela: "6.8 polegadas"
+      }
+    },
+    {
+      id: 2,
+      name: "Tênis Nike Air Max 270",
+      category: "shoes",
+      price: 599.00,
+      promotionalPrice: null,
+      image: "/placeholder.svg",
+      rating: 4.6,
+      reviews: 189,
+      badge: null,
+      description: "Tênis esportivo com máximo conforto",
+      customFields: {
+        marca: "Nike",
+        cor: "Branco/Preto",
+        tamanho: "39-44",
+        tipo: "Corrida"
+      }
+    },
+    {
+      id: 3,
+      name: "Notebook Gamer Dell G15",
+      category: "electronics",
+      price: 2199.00,
+      promotionalPrice: 1999.00,
+      image: "/placeholder.svg",
+      rating: 4.7,
+      reviews: 156,
+      badge: "Novo",
+      description: "Notebook gamer com placa de vídeo dedicada",
+      customFields: {
+        marca: "Dell",
+        processador: "Intel i7",
+        memoria: "16GB RAM",
+        armazenamento: "512GB SSD"
+      }
+    },
+    {
+      id: 4,
+      name: "Camisa Polo Ralph Lauren",
+      category: "clothing",
+      price: 189.00,
+      promotionalPrice: 149.00,
+      image: "/placeholder.svg",
+      rating: 4.5,
+      reviews: 143,
+      badge: "Promoção",
+      description: "Polo clássica 100% algodão",
+      customFields: {
+        marca: "Ralph Lauren",
+        material: "100% Algodão",
+        tamanho: "P, M, G, GG",
+        cor: "Azul Marinho"
+      }
+    },
+    {
+      id: 5,
+      name: "Fone Bluetooth Sony WH-1000XM5",
+      category: "electronics",
+      price: 399.00,
+      promotionalPrice: null,
+      image: "/placeholder.svg",
+      rating: 4.9,
+      reviews: 298,
+      badge: "Bestseller",
+      description: "Fone com cancelamento de ruído ativo",
+      customFields: {
+        marca: "Sony",
+        conexao: "Bluetooth 5.2",
+        bateria: "30h",
+        cancelamento: "Ruído Ativo"
+      }
+    },
+    {
+      id: 6,
+      name: "Vestido Floral Zara",
+      category: "clothing",
+      price: 129.00,
+      promotionalPrice: 99.00,
+      image: "/placeholder.svg",
+      rating: 4.4,
+      reviews: 87,
+      badge: "Liquidação",
+      description: "Vestido estampado ideal para o verão",
+      customFields: {
+        marca: "Zara",
+        material: "Viscose",
+        tamanho: "P, M, G",
+        estampa: "Floral"
+      }
+    }
+  ];
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const ProductCard = ({ product }: { product: any }) => (
+    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+      <div className="aspect-square relative overflow-hidden bg-gray-100">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+          <span className="text-gray-500 text-sm">Imagem do Produto</span>
+        </div>
+        
+        {product.badge && (
+          <Badge 
+            className={`absolute top-2 left-2 ${
+              product.badge === "Oferta" || product.badge === "Promoção" || product.badge === "Liquidação" 
+                ? "bg-red-500" 
+                : product.badge === "Novo" 
+                ? "bg-green-500" 
+                : "bg-blue-500"
+            }`}
+          >
+            {product.badge}
+          </Badge>
+        )}
+        
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+            <Heart className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      
+      <CardContent className="p-4 space-y-3">
+        <div>
+          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            {product.name}
+          </h3>
+          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+            {product.description}
+          </p>
+        </div>
+
+        <div className="flex items-center space-x-1">
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <Star 
+                key={i} 
+                className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+              />
+            ))}
+          </div>
+          <span className="text-xs text-gray-600">({product.reviews})</span>
+        </div>
+
+        <div className="space-y-2">
+          {product.promotionalPrice ? (
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-bold text-green-600">
+                R$ {product.promotionalPrice.toFixed(2)}
+              </span>
+              <span className="text-sm text-gray-500 line-through">
+                R$ {product.price.toFixed(2)}
+              </span>
+            </div>
+          ) : (
+            <span className="text-xl font-bold text-gray-900">
+              R$ {product.price.toFixed(2)}
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-1 text-xs">
+          {Object.entries(product.customFields).slice(0, 2).map(([key, value]) => (
+            <div key={key} className="truncate">
+              <span className="text-gray-500 capitalize">{key}:</span>
+              <span className="ml-1 font-medium">{value}</span>
+            </div>
+          ))}
+        </div>
+
+        <Button className="w-full mt-4 group-hover:bg-primary-700 transition-colors">
+          <ShoppingCart className="h-4 w-4 mr-2" />
+          Ver Detalhes
+        </Button>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              
+              <div className="flex items-center space-x-2">
+                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">M</span>
+                </div>
+                <div>
+                  <h1 className="font-bold text-gray-900">Minha Loja</h1>
+                  <p className="text-xs text-gray-600 hidden sm:block">Produtos selecionados com qualidade</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
+                <div className="flex items-center space-x-1">
+                  <Phone className="h-4 w-4" />
+                  <span>(11) 99999-9999</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Mail className="h-4 w-4" />
+                  <span>contato@minhaloja.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="pb-4">
+            <div className="relative max-w-2xl mx-auto">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input 
+                placeholder="Buscar produtos..."
+                className="pl-10 pr-4 h-12 text-lg"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex gap-6">
+          {/* Sidebar Mobile Overlay */}
+          {sidebarOpen && (
+            <div 
+              className="fixed inset-0 z-50 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <div className="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+            </div>
+          )}
+
+          {/* Sidebar */}
+          <aside className={`
+            fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:w-64 lg:shadow-none
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          `}>
+            <div className="p-4 border-b lg:hidden">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold">Filtros</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-4 space-y-6">
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
+                <div className="space-y-2">
+                  {categories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => {
+                        setSelectedCategory(category.id);
+                        setSidebarOpen(false);
+                      }}
+                      className={`
+                        w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between
+                        ${selectedCategory === category.id 
+                          ? 'bg-primary-100 text-primary-700 font-medium' 
+                          : 'text-gray-700 hover:bg-gray-100'
+                        }
+                      `}
+                    >
+                      <span>{category.name}</span>
+                      <Badge variant="secondary" className="text-xs">
+                        {category.count}
+                      </Badge>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-3">Faixa de Preço</h3>
+                <div className="space-y-2">
+                  <div className="flex space-x-2">
+                    <Input placeholder="Min" className="text-sm" />
+                    <Input placeholder="Max" className="text-sm" />
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full">Aplicar</Button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 space-y-6">
+            {/* Filters and View Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <p className="text-gray-600">
+                  {filteredProducts.length} produtos encontrados
+                </p>
+                <Button variant="outline" size="sm" className="lg:hidden">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filtros
+                </Button>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <select className="text-sm border rounded-md px-3 py-1">
+                  <option>Mais Relevantes</option>
+                  <option>Menor Preço</option>
+                  <option>Maior Preço</option>
+                  <option>Mais Avaliados</option>
+                </select>
+                
+                <div className="flex border rounded-md">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("grid")}
+                    className="rounded-r-none"
+                  >
+                    <Grid3X3 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("list")}
+                    className="rounded-l-none"
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            <div className={`
+              ${viewMode === "grid" 
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+                : "space-y-4"
+              }
+            `}>
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-12">
+                <div className="h-32 w-32 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <Search className="h-12 w-12 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum produto encontrado</h3>
+                <p className="text-gray-600 mb-4">
+                  Tente alterar os filtros ou termos de busca
+                </p>
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedCategory("all");
+                  }}
+                >
+                  Limpar Filtros
+                </Button>
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-white border-t mt-12">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">M</span>
+                </div>
+                <span className="text-xl font-bold">Minha Loja</span>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Produtos selecionados com qualidade e preços justos. 
+                Sua satisfação é nossa prioridade.
+              </p>
+              <div className="space-y-2 text-sm text-gray-600">
+                <div className="flex items-center space-x-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>Rua das Flores, 123 - Centro - São Paulo/SP</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-4 w-4" />
+                  <span>(11) 99999-9999</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Mail className="h-4 w-4" />
+                  <span>contato@minhaloja.com</span>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Categorias</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Eletrônicos</a></li>
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Roupas</a></li>
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Calçados</a></li>
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Casa & Decoração</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Atendimento</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Central de Ajuda</a></li>
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Trocas e Devoluções</a></li>
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Entrega</a></li>
+                <li><a href="#" className="hover:text-primary-600 transition-colors">Contato</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
+            <p>&copy; 2024 Minha Loja. Todos os direitos reservados. Powered by CatalogoPro.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default CatalogPage;
