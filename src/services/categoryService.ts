@@ -71,15 +71,16 @@ export const categoryService = {
   async createCategory(data: CreateCategoryData): Promise<Category> {
     await delay(800);
     
+    const categoryId = Date.now().toString();
     const category: Category = {
-      id: Date.now().toString(),
+      id: categoryId,
       name: data.name,
       description: data.description,
       image: data.image,
       subcategories: data.subcategories?.map((name, index) => ({
         id: (Date.now() + index).toString(),
         name,
-        categoryId: Date.now().toString()
+        categoryId: categoryId
       })) || [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -95,13 +96,21 @@ export const categoryService = {
     const index = mockCategories.findIndex(c => c.id === id);
     if (index === -1) throw new Error('Categoria não encontrada');
     
-    mockCategories[index] = {
+    const updatedCategory: Category = {
       ...mockCategories[index],
       ...data,
+      subcategories: data.subcategories 
+        ? data.subcategories.map((name, subIndex) => ({
+            id: (Date.now() + subIndex).toString(),
+            name,
+            categoryId: id
+          }))
+        : mockCategories[index].subcategories,
       updatedAt: new Date().toISOString()
     };
     
-    return mockCategories[index];
+    mockCategories[index] = updatedCategory;
+    return updatedCategory;
   },
 
   async deleteCategory(id: string): Promise<void> {

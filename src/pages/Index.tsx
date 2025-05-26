@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Check, Star, Zap, Shield, Globe, BarChart3, Palette, Smartphone, Menu, ChevronDown } from "lucide-react";
+import { Check, Star, Zap, Shield, Globe, BarChart3, Palette, Smartphone, Menu, ChevronDown, ArrowRight, Play, TrendingUp, Users, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -155,39 +154,51 @@ const Index = () => {
                       Funcionalidades
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div className="grid gap-3 p-6 w-[400px] bg-white shadow-xl rounded-lg border">
-                        <div className="row-span-3">
-                          <a
-                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-purple-500/20 to-blue-600/20 p-6 no-underline outline-none focus:shadow-md"
-                            href="#features"
-                          >
-                            <Zap className="h-6 w-6 text-purple-600" />
-                            <div className="mb-2 mt-4 text-lg font-medium text-gray-900">
-                              Recursos Completos
-                            </div>
-                            <p className="text-sm leading-tight text-gray-600">
-                              Descubra todas as funcionalidades do CatalogoPro
-                            </p>
-                          </a>
+                      <div className="grid gap-3 p-6 w-[500px] bg-white shadow-xl rounded-lg border">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">Recursos Principais</h4>
+                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <BarChart3 className="h-4 w-4 mr-2 text-green-500" />
+                                Dashboard Analytics
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Acompanhe suas vendas em tempo real
+                              </p>
+                            </a>
+                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Palette className="h-4 w-4 mr-2 text-purple-500" />
+                                Customização
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Personalize sua loja do seu jeito
+                              </p>
+                            </a>
+                          </div>
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">Integração</h4>
+                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Globe className="h-4 w-4 mr-2 text-blue-500" />
+                                Subdomínio Próprio
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Configure seu endereço personalizado
+                              </p>
+                            </a>
+                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Smartphone className="h-4 w-4 mr-2 text-orange-500" />
+                                Mobile Ready
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Otimizado para dispositivos móveis
+                              </p>
+                            </a>
+                          </div>
                         </div>
-                        <a
-                          href="#features"
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium leading-none">Dashboard Analytics</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Acompanhe suas vendas em tempo real
-                          </p>
-                        </a>
-                        <a
-                          href="#features"
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium leading-none">Customização</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Personalize sua loja do seu jeito
-                          </p>
-                        </a>
                       </div>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
@@ -197,19 +208,27 @@ const Index = () => {
                       Soluções
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div className="grid gap-3 p-6 w-[300px] bg-white shadow-xl rounded-lg border">
-                        <a href="#pricing" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent">
-                          <div className="text-sm font-medium leading-none">Para Pequenas Empresas</div>
-                          <p className="text-sm leading-snug text-muted-foreground">
-                            Soluções acessíveis para começar
-                          </p>
-                        </a>
-                        <a href="#pricing" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent">
-                          <div className="text-sm font-medium leading-none">Para Empresas</div>
-                          <p className="text-sm leading-snug text-muted-foreground">
-                            Recursos avançados para crescer
-                          </p>
-                        </a>
+                      <div className="grid gap-3 p-6 w-[400px] bg-white shadow-xl rounded-lg border">
+                        <div className="space-y-3">
+                          <a href="#pricing" className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100">
+                            <div className="text-sm font-medium leading-none flex items-center">
+                              <Users className="h-4 w-4 mr-2 text-blue-500" />
+                              Para Pequenas Empresas
+                            </div>
+                            <p className="text-xs leading-snug text-muted-foreground mt-1">
+                              Soluções acessíveis para começar seu negócio online
+                            </p>
+                          </a>
+                          <a href="#pricing" className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100">
+                            <div className="text-sm font-medium leading-none flex items-center">
+                              <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
+                              Para Empresas
+                            </div>
+                            <p className="text-xs leading-snug text-muted-foreground mt-1">
+                              Recursos avançados para escalar suas vendas
+                            </p>
+                          </a>
+                        </div>
                       </div>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
@@ -265,32 +284,77 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section - Melhorada */}
       <section className="py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-pink-600/5"></div>
-        <div className="container mx-auto text-center relative">
-          <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200 shadow-lg">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
+          <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+        </div>
+        
+        <div className="container mx-auto text-center relative z-10">
+          <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200 shadow-lg animate-pulse">
             🚀 Novo: Campos personalizáveis para produtos
           </Badge>
+          
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 animate-fade-in leading-tight">
             O Catálogo Online que
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600"> Vende Mais</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto animate-fade-in leading-relaxed">
+          
+          <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto animate-fade-in leading-relaxed">
             Crie sua loja virtual profissional em minutos. Sistema completo com subdomínio personalizado, 
-            dashboard avançado e total customização.
+            dashboard avançado e total customização. <strong>Aumente suas vendas em até 300%!</strong>
           </p>
+          
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">300%</div>
+                <div className="text-sm text-gray-600">Aumento em vendas</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">10k+</div>
+                <div className="text-sm text-gray-600">Lojas criadas</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
+                <div className="text-sm text-gray-600">Uptime garantido</div>
+              </CardContent>
+            </Card>
+          </div>
+          
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in">
             <Link to="/register">
-              <Button size="lg" className="text-lg px-10 py-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all">
+              <Button size="lg" className="text-lg px-10 py-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all group">
                 Começar Teste Grátis
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Link to="/admin">
-              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-2 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50">
+              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-2 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 group">
+                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 Ver Demo
               </Button>
             </Link>
+          </div>
+          
+          {/* Social Proof */}
+          <div className="mt-16 flex flex-col items-center">
+            <p className="text-sm text-gray-500 mb-4">Confiado por empresas de todos os tamanhos</p>
+            <div className="flex items-center space-x-8 opacity-60">
+              <div className="text-2xl font-bold text-gray-400">TechCorp</div>
+              <div className="text-2xl font-bold text-gray-400">ModaStyle</div>
+              <div className="text-2xl font-bold text-gray-400">FoodDelivery</div>
+              <div className="text-2xl font-bold text-gray-400">SportsPro</div>
+            </div>
           </div>
         </div>
       </section>
