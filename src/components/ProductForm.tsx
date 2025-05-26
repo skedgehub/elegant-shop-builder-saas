@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -92,9 +91,13 @@ const ProductForm = () => {
 
   const onSubmit = (data: ProductFormData) => {
     createProduct({
-      ...data,
+      name: data.name,
+      description: data.description || "",
       price: parseFloat(data.price),
-      promotionalPrice: data.promotionalPrice ? parseFloat(data.promotionalPrice) : undefined,
+      category: data.category,
+      subcategory: data.subcategory || "",
+      image: data.image || "",
+      badge: data.badge || "",
       stock: parseInt(data.stock),
       customFields: customFields.reduce((acc, field) => {
         if (field.value.trim()) {
@@ -113,8 +116,8 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -122,28 +125,30 @@ const ProductForm = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate("/admin/products")}
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar
             </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <Package className="h-7 w-7 text-blue-600" />
-                Novo Produto
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">Adicione um novo produto ao seu catálogo</p>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Package className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Novo Produto</h1>
+                <p className="text-gray-600 dark:text-gray-400">Adicione um novo produto ao seu catálogo</p>
+              </div>
             </div>
           </div>
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid lg:grid-cols-3 gap-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid lg:grid-cols-3 gap-8">
               {/* Coluna Principal */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-8">
                 {/* Informações Básicas */}
-                <Card className="shadow-sm">
+                <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
@@ -191,7 +196,7 @@ const ProductForm = () => {
                 </Card>
 
                 {/* Preço e Estoque */}
-                <Card className="shadow-sm">
+                <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-green-600" />
@@ -263,7 +268,7 @@ const ProductForm = () => {
                 </Card>
 
                 {/* Campos Personalizados */}
-                <Card className="shadow-sm">
+                <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Tag className="w-4 h-4 text-purple-600" />
@@ -328,9 +333,9 @@ const ProductForm = () => {
               </div>
 
               {/* Sidebar */}
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {/* Imagem */}
-                <Card className="shadow-sm">
+                <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <ImageIcon className="w-4 h-4 text-blue-600" />
@@ -382,7 +387,7 @@ const ProductForm = () => {
                 </Card>
 
                 {/* Categorização */}
-                <Card className="shadow-sm">
+                <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-green-600 rounded-full"></div>
@@ -473,7 +478,7 @@ const ProductForm = () => {
             </div>
 
             {/* Actions */}
-            <Card className="shadow-sm">
+            <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardContent className="pt-6">
                 <div className="flex justify-end space-x-4">
                   <Button

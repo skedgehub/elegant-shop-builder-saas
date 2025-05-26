@@ -6,7 +6,11 @@ import { AdminSidebar } from './AdminSidebar';
 import { Button } from '@/components/ui/button';
 import { Bell, User } from 'lucide-react';
 
-const AdminLayout = () => {
+interface AdminLayoutProps {
+  children?: React.ReactNode;
+}
+
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gray-50 dark:bg-gray-900">
@@ -37,7 +41,7 @@ const AdminLayout = () => {
 
           {/* Main Content */}
           <main className="flex-1">
-            <Outlet />
+            {children || <Outlet />}
           </main>
         </SidebarInset>
       </div>
