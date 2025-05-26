@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ import Categories from "./pages/Categories";
 import CatalogConfig from "./pages/CatalogConfig";
 import SystemConfig from "./pages/SystemConfig";
 import CatalogPage from "./pages/CatalogPage";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
@@ -39,6 +41,7 @@ const App = () => (
               <Route path="/admin/categories/new" element={<CategoryForm />} />
               <Route path="/admin/catalog-config" element={<CatalogConfig />} />
               <Route path="/admin/system-config" element={<SystemConfig />} />
+              <Route path="/admin/profile" element={<Profile />} />
               <Route path="/catalog/:subdomain" element={<CatalogPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

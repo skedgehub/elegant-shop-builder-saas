@@ -1,3 +1,4 @@
+
 import AdminLayout from "@/components/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +14,11 @@ import {
   Globe,
   Tag
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
   const stats = [
     {
       title: "Total de Produtos",
@@ -67,15 +71,15 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Visão geral da sua loja</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            <p className="text-gray-600 dark:text-gray-400">Visão geral da sua loja</p>
           </div>
           <div className="flex space-x-3 mt-4 sm:mt-0">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => navigate("/catalog/minhaloja")}>
               <Globe className="h-4 w-4 mr-2" />
               Ver Catálogo
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={() => navigate("/admin/products/new")}>
               <Plus className="h-4 w-4 mr-2" />
               Novo Produto
             </Button>
@@ -89,14 +93,14 @@ const AdminDashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                     <p className={`text-sm ${stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
                       {stat.change} desde o mês passado
                     </p>
                   </div>
-                  <div className="h-12 w-12 bg-primary-100 rounded-lg flex items-center justify-center">
-                    <stat.icon className="h-6 w-6 text-primary-600" />
+                  <div className="h-12 w-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
+                    <stat.icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                   </div>
                 </div>
               </CardContent>
@@ -111,7 +115,7 @@ const AdminDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Produtos Recentes
-                  <Button variant="outline" size="sm">Ver Todos</Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate("/admin/products")}>Ver Todos</Button>
                 </CardTitle>
                 <CardDescription>
                   Produtos adicionados recentemente
@@ -120,20 +124,20 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {recentProducts.map((product) => (
-                    <div key={product.id} className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                    <div key={product.id} className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3">
-                          <div className="h-10 w-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg"></div>
+                          <div className="h-10 w-10 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg"></div>
                           <div>
-                            <p className="font-medium text-gray-900">{product.name}</p>
-                            <p className="text-sm text-gray-600">{product.category}</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{product.name}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{product.category}</p>
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">
                         <div className="text-right">
-                          <p className="font-medium text-gray-900">{product.price}</p>
-                          <p className="text-sm text-gray-600">{product.views} views</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{product.price}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{product.views} views</p>
                         </div>
                         <Badge variant={product.status === 'Ativo' ? 'default' : 'secondary'}>
                           {product.status}
@@ -160,12 +164,12 @@ const AdminDashboard = () => {
                   {topCategories.map((category, index) => (
                     <div key={index}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">{category.name}</span>
-                        <span className="text-sm text-gray-600">{category.products} produtos</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{category.name}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{category.products} produtos</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                         <div 
-                          className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-primary-600 dark:bg-primary-400 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${category.percentage}%` }}
                         ></div>
                       </div>
@@ -181,11 +185,11 @@ const AdminDashboard = () => {
                 <CardTitle>Ações Rápidas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => navigate("/admin/products/new")}>
                   <Plus className="h-4 w-4 mr-2" />
                   Adicionar Produto
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => navigate("/admin/categories/new")}>
                   <Tag className="h-4 w-4 mr-2" />
                   Nova Categoria
                 </Button>

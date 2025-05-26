@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -18,7 +18,8 @@ import {
   Sun,
   Moon,
   Bell,
-  User
+  User,
+  Plus
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -31,6 +32,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
 
   const navigation = [
@@ -40,6 +42,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: "Config. Catálogo", href: "/admin/catalog-config", icon: Palette },
     { name: "Config. Sistema", href: "/admin/system-config", icon: Settings },
   ];
+
+  const handleViewCatalog = () => {
+    navigate("/catalog/minhaloja");
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -61,7 +67,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         w-64
       `}>
         <div className="flex items-center justify-between h-16 px-4 border-b border-border">
-          <div className={`flex items-center space-x-2 transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+          <div className={`flex items-center space-x-2 transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
             <div className="h-8 w-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">C</span>
             </div>
@@ -84,6 +90,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             size="sm"
             className="hidden lg:flex"
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            title={sidebarCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
           >
             {sidebarCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -113,7 +120,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     title={sidebarCollapsed ? item.name : undefined}
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
-                    <span className={`ml-3 transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+                    <span className={`ml-3 transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
                       {item.name}
                     </span>
                   </Link>
@@ -121,20 +128,72 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               );
             })}
           </ul>
+
+          {/* Quick Actions */}
+          <div className="mt-8 border-t border-border pt-4">
+            <div className={`text-xs font-semibold text-muted-foreground px-3 mb-2 transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+              Ações Rápidas
+            </div>
+            <ul className="space-y-1">
+              <li>
+                <Link
+                  to="/admin/products/new"
+                  className={`
+                    flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
+                    text-muted-foreground hover:bg-accent hover:text-accent-foreground
+                    ${sidebarCollapsed ? 'lg:justify-center lg:px-2' : ''}
+                  `}
+                  onClick={() => setSidebarOpen(false)}
+                  title={sidebarCollapsed ? "Novo Produto" : undefined}
+                >
+                  <Plus className="h-4 w-4 flex-shrink-0" />
+                  <span className={`ml-3 transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+                    Novo Produto
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/admin/categories/new"
+                  className={`
+                    flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
+                    text-muted-foreground hover:bg-accent hover:text-accent-foreground
+                    ${sidebarCollapsed ? 'lg:justify-center lg:px-2' : ''}
+                  `}
+                  onClick={() => setSidebarOpen(false)}
+                  title={sidebarCollapsed ? "Nova Categoria" : undefined}
+                >
+                  <Tag className="h-4 w-4 flex-shrink-0" />
+                  <span className={`ml-3 transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+                    Nova Categoria
+                  </span>
+                </Link>
+              </li>
+            </ul>
+          </div>
         </nav>
 
         <div className="absolute bottom-4 left-4 right-4 space-y-2">
-          <Link to="/">
-            <Button variant="outline" size="sm" className={`w-full ${sidebarCollapsed ? 'lg:px-2' : 'justify-start'}`}>
-              <Globe className={`h-4 w-4 ${sidebarCollapsed ? '' : 'mr-2'}`} />
-              <span className={`transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
-                Ver Site
-              </span>
-            </Button>
-          </Link>
-          <Button variant="ghost" size="sm" className={`w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 ${sidebarCollapsed ? 'lg:px-2' : 'justify-start'}`}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className={`w-full ${sidebarCollapsed ? 'lg:px-2' : 'justify-start'}`}
+            onClick={handleViewCatalog}
+            title={sidebarCollapsed ? "Ver Catálogo" : undefined}
+          >
+            <Globe className={`h-4 w-4 ${sidebarCollapsed ? '' : 'mr-2'}`} />
+            <span className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+              Ver Catálogo
+            </span>
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={`w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 ${sidebarCollapsed ? 'lg:px-2' : 'justify-start'}`}
+            title={sidebarCollapsed ? "Sair" : undefined}
+          >
             <LogOut className={`h-4 w-4 ${sidebarCollapsed ? '' : 'mr-2'}`} />
-            <span className={`transition-opacity duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
+            <span className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:opacity-0 lg:w-0 lg:overflow-hidden' : 'opacity-100'}`}>
               Sair
             </span>
           </Button>
@@ -167,6 +226,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
+                title="Alternar tema"
               >
                 {theme === 'dark' ? (
                   <Sun className="h-4 w-4" />
@@ -215,11 +275,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/profile")}>
                     <User className="h-4 w-4 mr-2" />
                     Meu Perfil
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/system-config")}>
                     <Settings className="h-4 w-4 mr-2" />
                     Configurações
                   </DropdownMenuItem>
