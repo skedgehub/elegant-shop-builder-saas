@@ -2,17 +2,22 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { categoryService, CreateCategoryData } from '@/services/categoryService';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
-export const useCategories = () => {
+export const useCategories = (companyId?: string) => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const categoriesQuery = useQuery({
-    queryKey: ['categories'],
-    queryFn: categoryService.getCategories,
+    queryKey: ['categories', companyId],
+    queryFn: () => categoryService.getCategories(companyId),
   });
 
   const createCategoryMutation = useMutation({
-    mutationFn: categoryService.createCategory,
+    mutationFn: (data: CreateCategoryData) => {
+      if (!user?.company_id) throw new Error('Company ID is required');
+      return categoryService.createCategory(data, user.company_id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast({

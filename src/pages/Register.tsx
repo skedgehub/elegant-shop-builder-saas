@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const Register = () => {
     password: "",
     confirmPassword: "",
     subdomain: "",
+    companyName: "",
     cardNumber: "",
     expiryDate: "",
     cvv: "",
@@ -84,7 +86,10 @@ const Register = () => {
       register({
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        subdomain: formData.subdomain,
+        companyName: formData.companyName,
+        selectedPlan: selectedPlan
       });
     }
   };
@@ -147,12 +152,12 @@ const Register = () => {
           <Card>
             <CardHeader>
               <CardTitle>
-                {step === 1 && "Dados Pessoais"}
+                {step === 1 && "Dados da Empresa"}
                 {step === 2 && "Escolha seu Plano"}
                 {step === 3 && "Dados do Cartão"}
               </CardTitle>
               <CardDescription>
-                {step === 1 && "Preencha seus dados para criar a conta"}
+                {step === 1 && "Preencha os dados da sua empresa para criar a conta"}
                 {step === 2 && "Selecione o plano ideal para seu negócio"}
                 {step === 3 && "Finalize seu cadastro com os dados de pagamento"}
               </CardDescription>
@@ -162,7 +167,35 @@ const Register = () => {
                 {step === 1 && (
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Nome Completo</Label>
+                      <Label htmlFor="companyName">Nome da Empresa</Label>
+                      <Input
+                        id="companyName"
+                        placeholder="Minha Empresa LTDA"
+                        value={formData.companyName}
+                        onChange={(e) => handleInputChange("companyName", e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="subdomain">Subdomínio</Label>
+                      <div className="flex">
+                        <Input
+                          id="subdomain"
+                          placeholder="minhaempresa"
+                          value={formData.subdomain}
+                          onChange={(e) => handleInputChange("subdomain", e.target.value)}
+                          className="rounded-r-none"
+                          required
+                        />
+                        <div className="bg-gray-100 border border-l-0 px-3 py-2 text-sm text-gray-600 rounded-r-md">
+                          .catalogo.com.br
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Nome do Responsável</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
@@ -189,23 +222,6 @@ const Register = () => {
                           className="pl-10"
                           required
                         />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="subdomain">Subdomínio</Label>
-                      <div className="flex">
-                        <Input
-                          id="subdomain"
-                          placeholder="minhaloja"
-                          value={formData.subdomain}
-                          onChange={(e) => handleInputChange("subdomain", e.target.value)}
-                          className="rounded-r-none"
-                          required
-                        />
-                        <div className="bg-gray-100 border border-l-0 px-3 py-2 text-sm text-gray-600 rounded-r-md">
-                          .catalogo.com.br
-                        </div>
                       </div>
                     </div>
 
@@ -358,8 +374,8 @@ const Register = () => {
                       Voltar
                     </Button>
                   )}
-                  <Button type="submit" className={step === 1 ? "w-full" : ""}>
-                    {step === 3 ? "Finalizar Cadastro" : "Continuar"}
+                  <Button type="submit" className={step === 1 ? "w-full" : ""} disabled={isRegisterLoading}>
+                    {step === 3 ? (isRegisterLoading ? "Finalizando..." : "Finalizar Cadastro") : "Continuar"}
                   </Button>
                 </div>
               </form>

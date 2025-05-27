@@ -32,17 +32,24 @@ export interface CreateProductData {
 }
 
 export const productService = {
-  async getProducts(): Promise<Product[]> {
-    const { data, error } = await supabase
+  async getProducts(companyId?: string): Promise<Product[]> {
+    let query = supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
+
+    if (companyId) {
+      query = query.eq('company_id', companyId);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw new Error(error.message);
     
     return (data || []).map(product => ({
       ...product,
-      custom_fields: product.custom_fields as Record<string, string> || {}
+      custom_fields: product.custom_fields as Record<string, string> || {},
+      company_id: product.company_id || ''
     }));
   },
 
@@ -58,11 +65,12 @@ export const productService = {
     
     return {
       ...data,
-      custom_fields: data.custom_fields as Record<string, string> || {}
+      custom_fields: data.custom_fields as Record<string, string> || {},
+      company_id: data.company_id || ''
     };
   },
 
-  async createProduct(productData: CreateProductData): Promise<Product> {
+  async createProduct(productData: CreateProductData, companyId: string): Promise<Product> {
     const { data, error } = await supabase
       .from('products')
       .insert([
@@ -77,6 +85,7 @@ export const productService = {
           badge: productData.badge,
           stock: productData.stock,
           custom_fields: productData.customFields || {},
+          company_id: companyId,
         },
       ])
       .select()
@@ -87,7 +96,8 @@ export const productService = {
     
     return {
       ...data,
-      custom_fields: data.custom_fields as Record<string, string> || {}
+      custom_fields: data.custom_fields as Record<string, string> || {},
+      company_id: data.company_id || ''
     };
   },
 
@@ -117,7 +127,8 @@ export const productService = {
     
     return {
       ...data,
-      custom_fields: data.custom_fields as Record<string, string> || {}
+      custom_fields: data.custom_fields as Record<string, string> || {},
+      company_id: data.company_id || ''
     };
   },
 
@@ -128,5 +139,33 @@ export const productService = {
       .eq('id', id);
 
     if (error) throw new Error(error.message);
+  },
+
+  async trackProductView(productId: string, companyId: string, visitorId?: string): Promise<void> {
+    const { error } = await supabase
+      .from('product_views')
+      .insert([{
+        product_id: productId,
+        company_id: companyId,
+        visitor_id: visitorId || 'anonymous',
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || null,
+      }]);
+
+    if (error) console.error('Failed to track product view:', error);
+  },
+
+  async trackProductClick(productId: string, companyId: string, clickType: string, visitorId?: string): Promise<void> {
+    const { error } = await supabase
+      .from('product_clicks')
+      .insert([{
+        product_id: productId,
+        company_id: companyId,
+        click_type: clickType,
+        visitor_id: visitorId || 'anonymous',
+        user_agent: navigator.userAgent,
+      }]);
+
+    if (error) console.error('Failed to track product click:', error);
   }
 };

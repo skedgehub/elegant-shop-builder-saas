@@ -2,17 +2,22 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { productService, CreateProductData } from '@/services/productService';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
-export const useProducts = () => {
+export const useProducts = (companyId?: string) => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const productsQuery = useQuery({
-    queryKey: ['products'],
-    queryFn: productService.getProducts,
+    queryKey: ['products', companyId],
+    queryFn: () => productService.getProducts(companyId),
   });
 
   const createProductMutation = useMutation({
-    mutationFn: productService.createProduct,
+    mutationFn: (data: CreateProductData) => {
+      if (!user?.company_id) throw new Error('Company ID is required');
+      return productService.createProduct(data, user.company_id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({

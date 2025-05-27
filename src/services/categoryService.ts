@@ -12,6 +12,7 @@ export interface Category {
   description?: string;
   image?: string;
   subcategories: Subcategory[];
+  company_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -24,16 +25,23 @@ export interface CreateCategoryData {
 }
 
 export const categoryService = {
-  async getCategories(): Promise<Category[]> {
-    const { data, error } = await supabase
+  async getCategories(companyId?: string): Promise<Category[]> {
+    let query = supabase
       .from('categories')
       .select('*')
       .order('created_at', { ascending: false });
+
+    if (companyId) {
+      query = query.eq('company_id', companyId);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw new Error(error.message);
     
     return (data || []).map(category => ({
       ...category,
+      company_id: category.company_id || '',
       subcategories: Array.isArray(category.subcategories) 
         ? category.subcategories.map((sub: any, index: number) => ({
             id: index.toString(),
@@ -55,6 +63,7 @@ export const categoryService = {
     
     return {
       ...data,
+      company_id: data.company_id || '',
       subcategories: Array.isArray(data.subcategories) 
         ? data.subcategories.map((sub: any, index: number) => ({
             id: index.toString(),
@@ -64,7 +73,7 @@ export const categoryService = {
     };
   },
 
-  async createCategory(categoryData: CreateCategoryData): Promise<Category> {
+  async createCategory(categoryData: CreateCategoryData, companyId: string): Promise<Category> {
     const { data, error } = await supabase
       .from('categories')
       .insert([
@@ -73,6 +82,7 @@ export const categoryService = {
           description: categoryData.description,
           image: categoryData.image,
           subcategories: categoryData.subcategories || [],
+          company_id: companyId,
         },
       ])
       .select()
@@ -83,6 +93,7 @@ export const categoryService = {
     
     return {
       ...data,
+      company_id: data.company_id || '',
       subcategories: Array.isArray(data.subcategories) 
         ? data.subcategories.map((sub: any, index: number) => ({
             id: index.toString(),
@@ -110,6 +121,7 @@ export const categoryService = {
     
     return {
       ...data,
+      company_id: data.company_id || '',
       subcategories: Array.isArray(data.subcategories) 
         ? data.subcategories.map((sub: any, index: number) => ({
             id: index.toString(),
