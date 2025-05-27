@@ -1,5 +1,10 @@
 
-import api from './api';
+import { supabase } from '@/integrations/supabase/client';
+
+export interface Subcategory {
+  id: string;
+  name: string;
+}
 
 export interface Category {
   id: string;
@@ -7,15 +12,8 @@ export interface Category {
   description?: string;
   image?: string;
   subcategories: Subcategory[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Subcategory {
-  id: string;
-  name: string;
-  description?: string;
-  categoryId: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateCategoryData {
@@ -25,100 +23,108 @@ export interface CreateCategoryData {
   subcategories?: string[];
 }
 
-// Dados mockados
-let mockCategories: Category[] = [
-  {
-    id: '1',
-    name: 'Eletrônicos',
-    description: 'Produtos eletrônicos em geral',
-    image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400&h=400&fit=crop',
-    subcategories: [
-      { id: '1', name: 'Smartphones', categoryId: '1' },
-      { id: '2', name: 'Notebooks', categoryId: '1' },
-      { id: '3', name: 'Fones de Ouvido', categoryId: '1' }
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '2',
-    name: 'Calçados',
-    description: 'Sapatos, tênis e sandálias',
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
-    subcategories: [
-      { id: '4', name: 'Esportivos', categoryId: '2' },
-      { id: '5', name: 'Sociais', categoryId: '2' },
-      { id: '6', name: 'Casuais', categoryId: '2' }
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const categoryService = {
   async getCategories(): Promise<Category[]> {
-    await delay(600);
-    return mockCategories;
-  },
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  async getCategory(id: string): Promise<Category | null> {
-    await delay(400);
-    return mockCategories.find(c => c.id === id) || null;
-  },
-
-  async createCategory(data: CreateCategoryData): Promise<Category> {
-    await delay(800);
+    if (error) throw new Error(error.message);
     
-    const categoryId = Date.now().toString();
-    const category: Category = {
-      id: categoryId,
-      name: data.name,
-      description: data.description,
-      image: data.image,
-      subcategories: data.subcategories?.map((name, index) => ({
-        id: (Date.now() + index).toString(),
-        name,
-        categoryId: categoryId
-      })) || [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    mockCategories.push(category);
-    return category;
-  },
-
-  async updateCategory(id: string, data: Partial<CreateCategoryData>): Promise<Category> {
-    await delay(700);
-    
-    const index = mockCategories.findIndex(c => c.id === id);
-    if (index === -1) throw new Error('Categoria não encontrada');
-    
-    const updatedCategory: Category = {
-      ...mockCategories[index],
-      ...data,
-      subcategories: data.subcategories 
-        ? data.subcategories.map((name, subIndex) => ({
-            id: (Date.now() + subIndex).toString(),
-            name,
-            categoryId: id
+    return (data || []).map(category => ({
+      ...category,
+      subcategories: Array.isArray(category.subcategories) 
+        ? category.subcategories.map((sub: any, index: number) => ({
+            id: index.toString(),
+            name: typeof sub === 'string' ? sub : sub.name
           }))
-        : mockCategories[index].subcategories,
-      updatedAt: new Date().toISOString()
-    };
+        : []
+    }));
+  },
+
+  async getCategory(id: string): Promise<Category> {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Category not found');
     
-    mockCategories[index] = updatedCategory;
-    return updatedCategory;
+    return {
+      ...data,
+      subcategories: Array.isArray(data.subcategories) 
+        ? data.subcategories.map((sub: any, index: number) => ({
+            id: index.toString(),
+            name: typeof sub === 'string' ? sub : sub.name
+          }))
+        : []
+    };
+  },
+
+  async createCategory(categoryData: CreateCategoryData): Promise<Category> {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert([
+        {
+          name: categoryData.name,
+          description: categoryData.description,
+          image: categoryData.image,
+          subcategories: categoryData.subcategories || [],
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Failed to create category');
+    
+    return {
+      ...data,
+      subcategories: Array.isArray(data.subcategories) 
+        ? data.subcategories.map((sub: any, index: number) => ({
+            id: index.toString(),
+            name: typeof sub === 'string' ? sub : sub.name
+          }))
+        : []
+    };
+  },
+
+  async updateCategory(id: string, categoryData: Partial<CreateCategoryData>): Promise<Category> {
+    const { data, error } = await supabase
+      .from('categories')
+      .update({
+        name: categoryData.name,
+        description: categoryData.description,
+        image: categoryData.image,
+        subcategories: categoryData.subcategories,
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Failed to update category');
+    
+    return {
+      ...data,
+      subcategories: Array.isArray(data.subcategories) 
+        ? data.subcategories.map((sub: any, index: number) => ({
+            id: index.toString(),
+            name: typeof sub === 'string' ? sub : sub.name
+          }))
+        : []
+    };
   },
 
   async deleteCategory(id: string): Promise<void> {
-    await delay(500);
-    
-    const index = mockCategories.findIndex(c => c.id === id);
-    if (index === -1) throw new Error('Categoria não encontrada');
-    
-    mockCategories.splice(index, 1);
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw new Error(error.message);
   }
 };

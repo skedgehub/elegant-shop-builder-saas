@@ -1,110 +1,118 @@
 
-import api from './api';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
-  image?: string;
-  category: string;
+  promotional_price?: number;
+  category_id: string;
   subcategory?: string;
-  status: 'active' | 'inactive';
-  customFields: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
+  image?: string;
+  badge?: string;
+  stock: number;
+  custom_fields: Record<string, string>;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateProductData {
   name: string;
   description: string;
   price: number;
-  image?: string;
+  promotional_price?: number;
   category: string;
   subcategory?: string;
-  customFields?: Record<string, any>;
+  image?: string;
+  badge?: string;
+  stock: number;
+  customFields?: Record<string, string>;
 }
-
-// Dados mockados
-let mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Smartphone Galaxy',
-    description: 'Smartphone Android com 128GB',
-    price: 1299.00,
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop',
-    category: 'eletronicos',
-    subcategory: 'smartphones',
-    status: 'active',
-    customFields: { marca: 'Samsung', modelo: 'Galaxy S21' },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: '2',
-    name: 'Tênis Nike Air',
-    description: 'Tênis esportivo confortável',
-    price: 599.00,
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
-    category: 'calcados',
-    subcategory: 'esportivos',
-    status: 'active',
-    customFields: { marca: 'Nike', tamanho: '42' },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const productService = {
   async getProducts(): Promise<Product[]> {
-    await delay(800);
-    return mockProducts;
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data || [];
   },
 
-  async getProduct(id: string): Promise<Product | null> {
-    await delay(500);
-    return mockProducts.find(p => p.id === id) || null;
+  async getProduct(id: string): Promise<Product> {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Product not found');
+    
+    return data;
   },
 
-  async createProduct(data: CreateProductData): Promise<Product> {
-    await delay(1000);
+  async createProduct(productData: CreateProductData): Promise<Product> {
+    const { data, error } = await supabase
+      .from('products')
+      .insert([
+        {
+          name: productData.name,
+          description: productData.description,
+          price: productData.price,
+          promotional_price: productData.promotional_price,
+          category_id: productData.category,
+          subcategory: productData.subcategory,
+          image: productData.image,
+          badge: productData.badge,
+          stock: productData.stock,
+          custom_fields: productData.customFields || {},
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Failed to create product');
     
-    const product: Product = {
-      id: Date.now().toString(),
-      ...data,
-      status: 'active',
-      customFields: data.customFields || {},
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    mockProducts.push(product);
-    return product;
+    return data;
   },
 
-  async updateProduct(id: string, data: Partial<CreateProductData>): Promise<Product> {
-    await delay(800);
+  async updateProduct(id: string, productData: Partial<CreateProductData>): Promise<Product> {
+    const updateData: any = {};
     
-    const index = mockProducts.findIndex(p => p.id === id);
-    if (index === -1) throw new Error('Produto não encontrado');
+    if (productData.name !== undefined) updateData.name = productData.name;
+    if (productData.description !== undefined) updateData.description = productData.description;
+    if (productData.price !== undefined) updateData.price = productData.price;
+    if (productData.promotional_price !== undefined) updateData.promotional_price = productData.promotional_price;
+    if (productData.category !== undefined) updateData.category_id = productData.category;
+    if (productData.subcategory !== undefined) updateData.subcategory = productData.subcategory;
+    if (productData.image !== undefined) updateData.image = productData.image;
+    if (productData.badge !== undefined) updateData.badge = productData.badge;
+    if (productData.stock !== undefined) updateData.stock = productData.stock;
+    if (productData.customFields !== undefined) updateData.custom_fields = productData.customFields;
+
+    const { data, error } = await supabase
+      .from('products')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Failed to update product');
     
-    mockProducts[index] = {
-      ...mockProducts[index],
-      ...data,
-      updatedAt: new Date().toISOString()
-    };
-    
-    return mockProducts[index];
+    return data;
   },
 
   async deleteProduct(id: string): Promise<void> {
-    await delay(600);
-    
-    const index = mockProducts.findIndex(p => p.id === id);
-    if (index === -1) throw new Error('Produto não encontrado');
-    
-    mockProducts.splice(index, 1);
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw new Error(error.message);
   }
 };

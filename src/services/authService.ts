@@ -1,5 +1,5 @@
 
-import api from './api';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface LoginData {
   email: string;
@@ -16,60 +16,86 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  avatar?: string;
+  avatar_url?: string;
 }
-
-// Simular delay de rede
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const authService = {
   async login(data: LoginData): Promise<{ user: User; token: string }> {
-    await delay(1000);
-    
-    // Simular validação
-    if (data.email === 'admin@test.com' && data.password === '123456') {
-      const user = {
-        id: '1',
-        email: data.email,
-        name: 'Admin User',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-      };
-      const token = 'fake-jwt-token-' + Date.now();
-      
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      return { user, token };
-    } else {
-      throw new Error('Credenciais inválidas');
-    }
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
+
+    if (error) throw new Error(error.message);
+    if (!authData.user) throw new Error('Login failed');
+
+    // Get user profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authData.user.id)
+      .single();
+
+    const user: User = {
+      id: authData.user.id,
+      email: authData.user.email!,
+      name: profile?.name || authData.user.email!,
+      avatar_url: profile?.avatar_url,
+    };
+
+    return { 
+      user, 
+      token: authData.session?.access_token || '' 
+    };
   },
 
   async register(data: RegisterData): Promise<{ user: User; token: string }> {
-    await delay(1000);
-    
-    const user = {
-      id: Date.now().toString(),
+    const { data: authData, error } = await supabase.auth.signUp({
       email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          name: data.name,
+        },
+      },
+    });
+
+    if (error) throw new Error(error.message);
+    if (!authData.user) throw new Error('Registration failed');
+
+    const user: User = {
+      id: authData.user.id,
+      email: authData.user.email!,
       name: data.name,
     };
-    const token = 'fake-jwt-token-' + Date.now();
-    
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    
-    return { user, token };
+
+    return { 
+      user, 
+      token: authData.session?.access_token || '' 
+    };
   },
 
   async logout(): Promise<void> {
-    await delay(500);
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user');
+    const { error } = await supabase.auth.signOut();
+    if (error) throw new Error(error.message);
   },
 
   async getCurrentUser(): Promise<User | null> {
-    await delay(300);
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    
+    if (!authUser) return null;
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authUser.id)
+      .single();
+
+    return {
+      id: authUser.id,
+      email: authUser.email!,
+      name: profile?.name || authUser.email!,
+      avatar_url: profile?.avatar_url,
+    };
   }
 };

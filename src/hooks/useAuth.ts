@@ -2,9 +2,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService, LoginData, RegisterData, User } from '@/services/authService';
 import { toast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
@@ -20,6 +22,7 @@ export const useAuth = () => {
         title: "Login realizado!",
         description: `Bem-vindo, ${data.user.name}!`,
       });
+      navigate('/admin');
     },
     onError: (error: Error) => {
       toast({
@@ -38,6 +41,7 @@ export const useAuth = () => {
         title: "Conta criada!",
         description: `Bem-vindo, ${data.user.name}!`,
       });
+      navigate('/admin');
     },
     onError: (error: Error) => {
       toast({
@@ -57,6 +61,7 @@ export const useAuth = () => {
         title: "Logout realizado",
         description: "Até logo!",
       });
+      navigate('/');
     },
   });
 

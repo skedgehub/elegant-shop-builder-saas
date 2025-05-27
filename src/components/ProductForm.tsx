@@ -94,6 +94,7 @@ const ProductForm = () => {
       name: data.name,
       description: data.description || "",
       price: parseFloat(data.price),
+      promotional_price: data.promotionalPrice ? parseFloat(data.promotionalPrice) : undefined,
       category: data.category,
       subcategory: data.subcategory || "",
       image: data.image || "",
