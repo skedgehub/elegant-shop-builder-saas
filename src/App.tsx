@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import Products from "./pages/Products";
 import Categories from "./pages/Categories";
+import Orders from "./pages/Orders";
 import CatalogConfig from "./pages/CatalogConfig";
 import SystemConfig from "./pages/SystemConfig";
 import CatalogPage from "./pages/CatalogPage";
@@ -62,6 +63,11 @@ const App = () => (
               <Route path="/admin/categories/new" element={
                 <ProtectedRoute>
                   <CategoryForm />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/orders" element={
+                <ProtectedRoute>
+                  <Orders />
                 </ProtectedRoute>
               } />
               <Route path="/admin/catalog-config" element={

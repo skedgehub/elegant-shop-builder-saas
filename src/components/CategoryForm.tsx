@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -13,6 +12,7 @@ import { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useCategories } from "@/hooks/useCategories";
 import { toast } from "@/hooks/use-toast";
+import ImageUpload from "./ImageUpload";
 
 const categorySchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -27,7 +27,6 @@ const CategoryForm = () => {
   const { createCategory, isCreating } = useCategories();
   const [subcategories, setSubcategories] = useState<string[]>([]);
   const [newSubcategory, setNewSubcategory] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
 
   const form = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
@@ -73,11 +72,6 @@ const CategoryForm = () => {
     });
     
     navigate("/admin/categories");
-  };
-
-  const handleImageChange = (url: string) => {
-    setImagePreview(url);
-    form.setValue("image", url);
   };
 
   return (
@@ -225,48 +219,13 @@ const CategoryForm = () => {
                       Imagem da Categoria
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="image"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">URL da Imagem</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="https://exemplo.com/imagem.jpg"
-                              className="h-12 border-2 border-gray-200 dark:border-gray-700 focus:border-purple-500 dark:focus:border-purple-400 transition-all duration-200"
-                              {...field}
-                              onChange={(e) => {
-                                field.onChange(e);
-                                handleImageChange(e.target.value);
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                  <CardContent>
+                    <ImageUpload
+                      value={form.watch("image")}
+                      onChange={(url) => form.setValue("image", url)}
+                      onRemove={() => form.setValue("image", "")}
+                      bucket="categories"
                     />
-
-                    {/* Preview da Imagem */}
-                    <div className="aspect-square w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-600 shadow-inner">
-                      {imagePreview ? (
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                          onError={() => setImagePreview("")}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="text-center">
-                            <ImageIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Preview da imagem</p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Cole uma URL válida acima</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </CardContent>
                 </Card>
               </div>

@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import { toast } from "@/hooks/use-toast";
+import ImageUpload from "./ImageUpload";
 
 const productSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -42,7 +43,6 @@ const ProductForm = () => {
   
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [newFieldName, setNewFieldName] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -61,11 +61,6 @@ const ProductForm = () => {
 
   const badges = ["Oferta", "Novo", "Promoção", "Liquidação", "Bestseller"];
   const selectedCategory = categories.find(cat => cat.id === form.watch("category"));
-
-  const handleImageChange = (url: string) => {
-    setImagePreview(url);
-    form.setValue("image", url);
-  };
 
   const addCustomField = () => {
     if (newFieldName.trim()) {
@@ -343,47 +338,13 @@ const ProductForm = () => {
                       Imagem do Produto
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="image"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>URL da Imagem</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="https://exemplo.com/imagem.jpg"
-                              className="h-11"
-                              {...field}
-                              onChange={(e) => {
-                                field.onChange(e);
-                                handleImageChange(e.target.value);
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                  <CardContent>
+                    <ImageUpload
+                      value={form.watch("image")}
+                      onChange={(url) => form.setValue("image", url)}
+                      onRemove={() => form.setValue("image", "")}
+                      bucket="products"
                     />
-
-                    <div className="aspect-square w-full bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-600">
-                      {imagePreview ? (
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                          onError={() => setImagePreview("")}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="text-center">
-                            <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Preview da imagem</p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Cole uma URL válida acima</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </CardContent>
                 </Card>
 

@@ -1,155 +1,102 @@
 
-import api from './api';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Order {
   id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  customerAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  items: OrderItem[];
-  total: number;
-  status: 'pending' | 'confirmed' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: 'pix' | 'credit_card' | 'cash';
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  customer_address?: string;
+  items: any[];
+  total_amount: number;
+  status: string;
   notes?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface OrderItem {
-  id: string;
-  productId: string;
-  productName: string;
-  productImage?: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
+  company_id: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateOrderData {
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  customerAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  items: {
-    productId: string;
-    quantity: number;
-  }[];
-  paymentMethod: 'pix' | 'credit_card' | 'cash';
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  customer_address?: string;
+  items: any[];
+  total_amount: number;
   notes?: string;
 }
 
-// Dados mockados
-let mockOrders: Order[] = [
-  {
-    id: '1',
-    customerName: 'João Silva',
-    customerEmail: 'joao@email.com',
-    customerPhone: '(11) 99999-9999',
-    customerAddress: {
-      street: 'Rua das Flores, 123',
-      city: 'São Paulo',
-      state: 'SP',
-      zipCode: '01234-567'
-    },
-    items: [
-      {
-        id: '1',
-        productId: '1',
-        productName: 'iPhone 15 Pro',
-        productImage: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&h=300&fit=crop',
-        quantity: 1,
-        unitPrice: 8999.99,
-        totalPrice: 8999.99
-      }
-    ],
-    total: 8999.99,
-    status: 'pending',
-    paymentMethod: 'pix',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const orderService = {
-  async getOrders(): Promise<Order[]> {
-    await delay(600);
-    return mockOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  async getOrders(companyId?: string): Promise<Order[]> {
+    let query = supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (companyId) {
+      query = query.eq('company_id', companyId);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching orders:', error);
+      throw new Error(error.message);
+    }
+    
+    return data || [];
   },
 
-  async getOrder(id: string): Promise<Order | null> {
-    await delay(400);
-    return mockOrders.find(o => o.id === id) || null;
+  async getOrder(id: string): Promise<Order> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Order not found');
+    
+    return data;
   },
 
-  async createOrder(data: CreateOrderData): Promise<Order> {
-    await delay(1000);
+  async updateOrderStatus(id: string, status: string, notes?: string): Promise<Order> {
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ 
+        status,
+        notes,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('Failed to update order');
     
-    // Simular busca de produtos para calcular preços
-    const items: OrderItem[] = data.items.map((item, index) => ({
-      id: (Date.now() + index).toString(),
-      productId: item.productId,
-      productName: `Produto ${item.productId}`,
-      productImage: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop',
-      quantity: item.quantity,
-      unitPrice: 99.99,
-      totalPrice: 99.99 * item.quantity
-    }));
-
-    const total = items.reduce((sum, item) => sum + item.totalPrice, 0);
-
-    const order: Order = {
-      id: Date.now().toString(),
-      customerName: data.customerName,
-      customerEmail: data.customerEmail,
-      customerPhone: data.customerPhone,
-      customerAddress: data.customerAddress,
-      items,
-      total,
-      status: 'pending',
-      paymentMethod: data.paymentMethod,
-      notes: data.notes,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    mockOrders.push(order);
-    return order;
+    return data;
   },
 
-  async updateOrderStatus(id: string, status: Order['status']): Promise<Order> {
-    await delay(500);
-    
-    const index = mockOrders.findIndex(o => o.id === id);
-    if (index === -1) throw new Error('Pedido não encontrado');
-    
-    mockOrders[index] = {
-      ...mockOrders[index],
-      status,
-      updatedAt: new Date().toISOString()
-    };
-    
-    return mockOrders[index];
-  },
+  async createOrder(orderData: CreateOrderData, companyId: string): Promise<Order> {
+    const { data, error } = await supabase
+      .from('orders')
+      .insert([
+        {
+          ...orderData,
+          company_id: companyId,
+          status: 'pending'
+        },
+      ])
+      .select()
+      .single();
 
-  async deleteOrder(id: string): Promise<void> {
-    await delay(400);
+    if (error) {
+      console.error('Error creating order:', error);
+      throw new Error(error.message);
+    }
+    if (!data) throw new Error('Failed to create order');
     
-    const index = mockOrders.findIndex(o => o.id === id);
-    if (index === -1) throw new Error('Pedido não encontrado');
-    
-    mockOrders.splice(index, 1);
+    return data;
   }
 };
