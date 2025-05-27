@@ -13,6 +13,7 @@ export interface Product {
   badge?: string;
   stock: number;
   custom_fields: Record<string, string>;
+  company_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -38,7 +39,11 @@ export const productService = {
       .order('created_at', { ascending: false });
 
     if (error) throw new Error(error.message);
-    return data || [];
+    
+    return (data || []).map(product => ({
+      ...product,
+      custom_fields: product.custom_fields as Record<string, string> || {}
+    }));
   },
 
   async getProduct(id: string): Promise<Product> {
@@ -51,7 +56,10 @@ export const productService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Product not found');
     
-    return data;
+    return {
+      ...data,
+      custom_fields: data.custom_fields as Record<string, string> || {}
+    };
   },
 
   async createProduct(productData: CreateProductData): Promise<Product> {
@@ -77,7 +85,10 @@ export const productService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Failed to create product');
     
-    return data;
+    return {
+      ...data,
+      custom_fields: data.custom_fields as Record<string, string> || {}
+    };
   },
 
   async updateProduct(id: string, productData: Partial<CreateProductData>): Promise<Product> {
@@ -104,7 +115,10 @@ export const productService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Failed to update product');
     
-    return data;
+    return {
+      ...data,
+      custom_fields: data.custom_fields as Record<string, string> || {}
+    };
   },
 
   async deleteProduct(id: string): Promise<void> {
