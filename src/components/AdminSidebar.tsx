@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -12,16 +11,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { 
-  LayoutDashboard, 
-  Package, 
-  FolderOpen, 
-  Settings, 
-  Eye, 
-  User 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/sidebar";
+import {
+  LayoutDashboard,
+  Package,
+  FolderOpen,
+  Settings,
+  Eye,
+  User,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   {
@@ -45,6 +44,11 @@ const menuItems = [
     icon: User,
   },
   {
+    title: "Pedidos",
+    url: "/admin/orders",
+    icon: User,
+  },
+  {
     title: "Configurações",
     url: "/admin/system-config",
     icon: Settings,
@@ -64,13 +68,17 @@ export function AdminSidebar() {
           </div>
           {state === "expanded" && (
             <div>
-              <h2 className="font-semibold text-gray-900 dark:text-white">Admin Panel</h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Painel de controle</p>
+              <h2 className="font-semibold text-gray-900 dark:text-white">
+                Admin Panel
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Painel de controle
+              </p>
             </div>
           )}
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent className="px-2 py-4">
         <SidebarGroup>
           <SidebarGroupLabel className={state === "collapsed" ? "sr-only" : ""}>
@@ -87,16 +95,23 @@ export function AdminSidebar() {
                         to={item.url}
                         className={`
                           flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
-                          ${isActive 
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800' 
-                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white'
+                          ${
+                            isActive
+                              ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800"
+                              : "text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                           }
                         `}
                       >
-                        <item.icon className={`
+                        <item.icon
+                          className={`
                           w-5 h-5 flex-shrink-0 transition-colors duration-200
-                          ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200'}
-                        `} />
+                          ${
+                            isActive
+                              ? "text-blue-600 dark:text-blue-400"
+                              : "text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200"
+                          }
+                        `}
+                        />
                         {state === "expanded" && (
                           <span className="font-medium">{item.title}</span>
                         )}

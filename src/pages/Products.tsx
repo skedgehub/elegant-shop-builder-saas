@@ -76,11 +76,15 @@ const Products = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Produtos</h1>
-            <p className="text-gray-600 dark:text-gray-400">Gerencie seus produtos e estoque</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Produtos
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Gerencie seus produtos e estoque
+            </p>
           </div>
           <Button onClick={() => navigate("/admin/products/new")}>
             <Plus className="h-4 w-4 mr-2" />
@@ -100,7 +104,7 @@ const Products = () => {
                   className="pl-10"
                 />
               </div>
-              
+
               <div className="flex gap-2">
                 <select
                   value={selectedCategory}
@@ -114,7 +118,7 @@ const Products = () => {
                     </option>
                   ))}
                 </select>
-                
+
                 <Button variant="outline" size="sm">
                   <Filter className="h-4 w-4 mr-2" />
                   Filtros
@@ -122,60 +126,91 @@ const Products = () => {
               </div>
             </div>
           </CardHeader>
-          
+
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">Produto</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">Categoria</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">Preço</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">Estoque</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">Status</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white">Ações</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                      Produto
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                      Categoria
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                      Preço
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                      Estoque
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
+                      Status
+                    </th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white">
+                      Ações
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredProducts.map((product) => (
-                    <tr key={product.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <tr
+                      key={product.id}
+                      className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
                       <td className="py-4 px-4">
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex-shrink-0">
-                            <img 
-                              src={product.image} 
+                            <img
+                              src={product.image}
                               alt={product.name}
                               className="h-10 w-10 object-cover rounded-lg"
                             />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{product.name}</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              {product.name}
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{product.category}</td>
+                      <td className="py-4 px-4 text-gray-600 dark:text-gray-400">
+                        {product.category}
+                      </td>
                       <td className="py-4 px-4">
                         <div className="space-y-1">
                           {product.promotionalPrice ? (
                             <>
-                              <p className="font-medium text-green-600">R$ {product.promotionalPrice.toFixed(2)}</p>
-                              <p className="text-sm text-gray-500 line-through">R$ {product.price.toFixed(2)}</p>
+                              <p className="font-medium text-green-600">
+                                R$ {product.promotionalPrice.toFixed(2)}
+                              </p>
+                              <p className="text-sm text-gray-500 line-through">
+                                R$ {product.price.toFixed(2)}
+                              </p>
                             </>
                           ) : (
-                            <p className="font-medium text-gray-900 dark:text-white">R$ {product.price.toFixed(2)}</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              R$ {product.price.toFixed(2)}
+                            </p>
                           )}
                         </div>
                       </td>
                       <td className="py-4 px-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          product.stock > 10 ? 'bg-green-100 text-green-800' :
-                          product.stock > 0 ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            product.stock > 10
+                              ? "bg-green-100 text-green-800"
+                              : product.stock > 0
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
                           {product.stock} unidades
                         </span>
                       </td>
-                      <td className="py-4 px-4">{getStatusBadge(product.status)}</td>
+                      <td className="py-4 px-4">
+                        {getStatusBadge(product.status)}
+                      </td>
                       <td className="py-4 px-4">
                         <div className="flex items-center justify-end space-x-2">
                           <Button variant="ghost" size="sm">
@@ -184,7 +219,11 @@ const Products = () => {
                           <Button variant="ghost" size="sm">
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -197,7 +236,9 @@ const Products = () => {
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400">Nenhum produto encontrado</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Nenhum produto encontrado
+                </p>
               </div>
             )}
           </CardContent>

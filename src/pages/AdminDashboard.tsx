@@ -67,15 +67,23 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-            <p className="text-gray-600 dark:text-gray-400">Visão geral da sua loja</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Visão geral da sua loja
+            </p>
           </div>
           <div className="flex space-x-3 mt-4 sm:mt-0">
-            <Button variant="outline" size="sm" onClick={() => navigate("/catalog/minhaloja")}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/catalog/minhaloja")}
+            >
               <Globe className="h-4 w-4 mr-2" />
               Ver Catálogo
             </Button>
@@ -93,9 +101,19 @@ const AdminDashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                    <p className={`text-sm ${stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      {stat.title}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {stat.value}
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        stat.changeType === "positive"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
                       {stat.change} desde o mês passado
                     </p>
                   </div>
@@ -115,7 +133,13 @@ const AdminDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Produtos Recentes
-                  <Button variant="outline" size="sm" onClick={() => navigate("/admin/products")}>Ver Todos</Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate("/admin/products")}
+                  >
+                    Ver Todos
+                  </Button>
                 </CardTitle>
                 <CardDescription>
                   Produtos adicionados recentemente
@@ -124,22 +148,37 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {recentProducts.map((product) => (
-                    <div key={product.id} className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <div
+                      key={product.id}
+                      className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
                       <div className="flex-1">
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg"></div>
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{product.name}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{product.category}</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              {product.name}
+                            </p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {product.category}
+                            </p>
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">
                         <div className="text-right">
-                          <p className="font-medium text-gray-900 dark:text-white">{product.price}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{product.views} views</p>
+                          <p className="font-medium text-gray-900 dark:text-white">
+                            {product.price}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {product.views} views
+                          </p>
                         </div>
-                        <Badge variant={product.status === 'Ativo' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            product.status === "Ativo" ? "default" : "secondary"
+                          }
+                        >
                           {product.status}
                         </Badge>
                       </div>
@@ -155,20 +194,22 @@ const AdminDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Top Categorias</CardTitle>
-                <CardDescription>
-                  Categorias com mais produtos
-                </CardDescription>
+                <CardDescription>Categorias com mais produtos</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {topCategories.map((category, index) => (
                     <div key={index}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{category.name}</span>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{category.products} produtos</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          {category.name}
+                        </span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          {category.products} produtos
+                        </span>
                       </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div 
+                        <div
                           className="bg-primary-600 dark:bg-primary-400 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${category.percentage}%` }}
                         ></div>
@@ -185,11 +226,19 @@ const AdminDashboard = () => {
                 <CardTitle>Ações Rápidas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start" onClick={() => navigate("/admin/products/new")}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/products/new")}
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Adicionar Produto
                 </Button>
-                <Button variant="outline" className="w-full justify-start" onClick={() => navigate("/admin/categories/new")}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/categories/new")}
+                >
                   <Tag className="h-4 w-4 mr-2" />
                   Nova Categoria
                 </Button>
