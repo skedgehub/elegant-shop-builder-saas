@@ -20,7 +20,9 @@ const Orders = () => {
   const { user } = useAuth();
   const { orders, isLoading, updateOrderStatus, isUpdating } = useOrders(user?.company_id);
   const { categories } = useCategories(user?.company_id);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [detailsOrder, setDetailsOrder] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [newStatus, setNewStatus] = useState("");
@@ -85,6 +87,7 @@ const Orders = () => {
 
       // Category filter - check if any item in the order belongs to the selected category
       if (filters.category && filters.category !== "all" && Array.isArray(order.items)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const hasCategory = order.items.some((item: any) => item.category_id === filters.category);
         if (!hasCategory) {
           return false;
@@ -109,6 +112,7 @@ const Orders = () => {
     setNotes("");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleViewDetails = (order: any) => {
     setDetailsOrder(order);
     setShowDetailsModal(true);
