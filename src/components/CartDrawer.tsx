@@ -20,44 +20,50 @@ interface CartDrawerProps {
 }
 
 const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
-  const { items, updateQuantity, removeFromCart, clearCart, getTotalPrice } = useCart();
+  const { items, updateQuantity, removeFromCart, clearCart, getTotalPrice, createOrder } = useCart();
   const [showCheckout, setShowCheckout] = useState(false);
 
-  const sendToWhatsApp = (customerData: any) => {
-    const phoneNumber = "5511999999999"; // Número configurável
-    let message = "🛒 *Novo Pedido*\n\n";
+  const handleOrderSubmit = async (customerData: any) => {
+    const orderId = await createOrder(customerData);
     
-    message += "*📋 Dados do Cliente:*\n";
-    message += `Nome: ${customerData.name}\n`;
-    message += `Telefone: ${customerData.phone}\n`;
-    if (customerData.email) message += `E-mail: ${customerData.email}\n`;
-    message += `Endereço: ${customerData.address}, ${customerData.city}`;
-    if (customerData.state) message += ` - ${customerData.state}`;
-    if (customerData.zipCode) message += ` - ${customerData.zipCode}`;
-    message += "\n\n";
-    
-    message += "*🛍️ Produtos:*\n";
-    items.forEach(item => {
-      const price = item.promotionalPrice || item.price;
-      message += `• ${item.name}\n`;
-      message += `  Quantidade: ${item.quantity}\n`;
-      message += `  Preço unitário: R$ ${price.toFixed(2)}\n`;
-      message += `  Subtotal: R$ ${(price * item.quantity).toFixed(2)}\n\n`;
-    });
-    
-    message += `💰 *Total: R$ ${getTotalPrice().toFixed(2)}*\n\n`;
-    
-    if (customerData.observations) {
-      message += `📝 *Observações:* ${customerData.observations}\n\n`;
+    if (orderId) {
+      const phoneNumber = "5511999999999"; // Número configurável
+      let message = "🛒 *Novo Pedido*\n\n";
+      
+      message += `*📋 Pedido ID:* ${orderId}\n\n`;
+      
+      message += "*📋 Dados do Cliente:*\n";
+      message += `Nome: ${customerData.name}\n`;
+      message += `Telefone: ${customerData.phone}\n`;
+      if (customerData.email) message += `E-mail: ${customerData.email}\n`;
+      message += `Endereço: ${customerData.address}, ${customerData.city}`;
+      if (customerData.state) message += ` - ${customerData.state}`;
+      if (customerData.zipCode) message += ` - ${customerData.zipCode}`;
+      message += "\n\n";
+      
+      message += "*🛍️ Produtos:*\n";
+      items.forEach(item => {
+        const price = item.promotionalPrice || item.price;
+        message += `• ${item.name}\n`;
+        message += `  Quantidade: ${item.quantity}\n`;
+        message += `  Preço unitário: R$ ${price.toFixed(2)}\n`;
+        message += `  Subtotal: R$ ${(price * item.quantity).toFixed(2)}\n\n`;
+      });
+      
+      message += `💰 *Total: R$ ${getTotalPrice().toFixed(2)}*\n\n`;
+      
+      if (customerData.observations) {
+        message += `📝 *Observações:* ${customerData.observations}\n\n`;
+      }
+      
+      message += "Gostaria de confirmar este pedido!";
+      
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      clearCart();
+      setShowCheckout(false);
+      onClose();
     }
-    
-    message += "Gostaria de confirmar este pedido!";
-    
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-    clearCart();
-    setShowCheckout(false);
-    onClose();
   };
 
   return (
@@ -80,7 +86,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
           {showCheckout ? (
             <CheckoutForm
               onBack={() => setShowCheckout(false)}
-              onSubmit={sendToWhatsApp}
+              onSubmit={handleOrderSubmit}
               totalPrice={getTotalPrice()}
             />
           ) : (

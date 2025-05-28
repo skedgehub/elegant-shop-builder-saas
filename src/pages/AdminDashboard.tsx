@@ -12,57 +12,70 @@ import {
   BarChart3,
   Activity,
   Globe,
-  Tag
+  Tag,
+  Package
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useProducts } from "@/hooks/useProducts";
+import { useOrders } from "@/hooks/useOrders";
+import { useAuth } from "@/hooks/useAuth";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { products } = useProducts(user?.company_id);
+  const { orders } = useOrders(user?.company_id);
+
+  const totalProducts = products.length;
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter(order => order.status === 'pending').length;
+  const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
 
   const stats = [
     {
       title: "Total de Produtos",
-      value: "127",
+      value: totalProducts.toString(),
       change: "+12%",
       changeType: "positive",
       icon: ShoppingBag
     },
     {
-      title: "Visualizações",
-      value: "2.847",
-      change: "+23%",
-      changeType: "positive", 
-      icon: Eye
+      title: "Pedidos Totais",
+      value: totalOrders.toString(),
+      change: `${pendingOrders} pendentes`,
+      changeType: "neutral", 
+      icon: Package
     },
     {
-      title: "Categorias",
-      value: "8",
-      change: "+2",
+      title: "Receita Total",
+      value: `R$ ${totalRevenue.toFixed(2)}`,
+      change: "+15%",
       changeType: "positive",
-      icon: BarChart3
+      icon: TrendingUp
     },
     {
       title: "Taxa de Conversão",
       value: "3.2%",
       change: "+0.5%",
       changeType: "positive",
-      icon: TrendingUp
+      icon: BarChart3
     }
   ];
 
-  const recentProducts = [
-    { id: 1, name: "Smartphone Galaxy", category: "Eletrônicos", price: "R$ 1.299,00", status: "Ativo", views: 234 },
-    { id: 2, name: "Tênis Nike Air", category: "Calçados", price: "R$ 599,00", status: "Ativo", views: 189 },
-    { id: 3, name: "Notebook Dell", category: "Eletrônicos", price: "R$ 2.199,00", status: "Rascunho", views: 156 },
-    { id: 4, name: "Camisa Polo", category: "Roupas", price: "R$ 89,00", status: "Ativo", views: 143 },
-    { id: 5, name: "Fone Bluetooth", category: "Eletrônicos", price: "R$ 199,00", status: "Ativo", views: 98 }
-  ];
+  const recentProducts = products.slice(0, 5).map(product => ({
+    id: product.id,
+    name: product.name,
+    category: "Categoria",
+    price: `R$ ${product.price.toFixed(2)}`,
+    status: "Ativo",
+    views: Math.floor(Math.random() * 300)
+  }));
 
   const topCategories = [
-    { name: "Eletrônicos", products: 45, percentage: 35 },
-    { name: "Roupas", products: 32, percentage: 25 },
-    { name: "Calçados", products: 28, percentage: 22 },
-    { name: "Acessórios", products: 22, percentage: 18 }
+    { name: "Eletrônicos", products: products.filter(p => p.category_id).length, percentage: 35 },
+    { name: "Roupas", products: Math.floor(products.length * 0.25), percentage: 25 },
+    { name: "Calçados", products: Math.floor(products.length * 0.22), percentage: 22 },
+    { name: "Acessórios", products: Math.floor(products.length * 0.18), percentage: 18 }
   ];
 
   return (
@@ -111,10 +124,12 @@ const AdminDashboard = () => {
                       className={`text-sm ${
                         stat.changeType === "positive"
                           ? "text-green-600"
-                          : "text-red-600"
+                          : stat.changeType === "negative"
+                          ? "text-red-600"
+                          : "text-gray-600"
                       }`}
                     >
-                      {stat.change} desde o mês passado
+                      {stat.change}
                     </p>
                   </div>
                   <div className="h-12 w-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
@@ -147,43 +162,50 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3">
-                          <div className="h-10 w-10 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg"></div>
-                          <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
-                              {product.name}
-                            </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {product.category}
-                            </p>
+                  {recentProducts.length === 0 ? (
+                    <div className="text-center py-8">
+                      <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">Nenhum produto encontrado</p>
+                    </div>
+                  ) : (
+                    recentProducts.map((product) => (
+                      <div
+                        key={product.id}
+                        className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3">
+                            <div className="h-10 w-10 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg"></div>
+                            <div>
+                              <p className="font-medium text-gray-900 dark:text-white">
+                                {product.name}
+                              </p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {product.category}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <div className="text-right">
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            {product.price}
-                          </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {product.views} views
-                          </p>
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              {product.price}
+                            </p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {product.views} views
+                            </p>
+                          </div>
+                          <Badge
+                            variant={
+                              product.status === "Ativo" ? "default" : "secondary"
+                            }
+                          >
+                            {product.status}
+                          </Badge>
                         </div>
-                        <Badge
-                          variant={
-                            product.status === "Ativo" ? "default" : "secondary"
-                          }
-                        >
-                          {product.status}
-                        </Badge>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -242,9 +264,13 @@ const AdminDashboard = () => {
                   <Tag className="h-4 w-4 mr-2" />
                   Nova Categoria
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Activity className="h-4 w-4 mr-2" />
-                  Ver Relatórios
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/orders")}
+                >
+                  <Package className="h-4 w-4 mr-2" />
+                  Ver Pedidos
                 </Button>
               </CardContent>
             </Card>

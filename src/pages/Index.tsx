@@ -1,387 +1,185 @@
+
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Check, Star, Zap, Shield, Globe, BarChart3, Palette, Smartphone, Menu, ChevronDown, ArrowRight, Play, TrendingUp, Users, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { 
+  ShoppingBag, 
+  Users, 
+  TrendingUp, 
+  Star,
+  ArrowRight,
+  CheckCircle,
+  Smartphone,
+  Globe,
+  Zap,
+  Shield,
+  HeadphonesIcon,
+  BarChart3
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const features = [
     {
-      icon: <Globe className="h-6 w-6" />,
-      title: "Subdomínio Personalizado",
-      description: "Configure seu próprio subdomínio como minhaloja.catalogo.com.br",
-      color: "from-blue-500 to-cyan-500"
+      icon: Globe,
+      title: "Catálogo Online",
+      description: "Crie seu catálogo profissional em minutos e compartilhe com seus clientes."
     },
     {
-      icon: <Palette className="h-6 w-6" />,
-      title: "Customização Total",
-      description: "Personalize cores, layout e campos dos seus produtos",
-      color: "from-purple-500 to-pink-500"
-    },
-    {
-      icon: <BarChart3 className="h-6 w-6" />,
-      title: "Dashboard Completo",
-      description: "Visualize vendas, produtos mais acessados e estatísticas",
-      color: "from-green-500 to-emerald-500"
-    },
-    {
-      icon: <Smartphone className="h-6 w-6" />,
+      icon: Smartphone,
       title: "Mobile First",
-      description: "Design responsivo que funciona perfeitamente em qualquer dispositivo",
-      color: "from-orange-500 to-red-500"
+      description: "Design responsivo que funciona perfeitamente em todos os dispositivos."
     },
     {
-      icon: <Shield className="h-6 w-6" />,
-      title: "Segurança Total",
-      description: "Seus dados protegidos com criptografia de ponta",
-      color: "from-indigo-500 to-blue-500"
+      icon: Zap,
+      title: "Super Rápido",
+      description: "Carregamento ultrarrápido para não perder nenhuma venda."
     },
     {
-      icon: <Zap className="h-6 w-6" />,
-      title: "Performance",
-      description: "Carregamento ultra-rápido para melhor experiência do cliente",
-      color: "from-yellow-500 to-orange-500"
-    }
-  ];
-
-  const plans = [
-    {
-      name: "Starter",
-      price: "R$ 29",
-      period: "/mês",
-      description: "Perfeito para começar",
-      features: [
-        "Até 100 produtos",
-        "1 subdomínio",
-        "3 categorias",
-        "Suporte por email",
-        "Campos personalizados básicos"
-      ],
-      popular: false,
-      color: "from-blue-500 to-cyan-500"
+      icon: BarChart3,
+      title: "Analytics Avançado",
+      description: "Acompanhe métricas detalhadas e otimize suas vendas."
     },
     {
-      name: "Professional",
-      price: "R$ 79",
-      period: "/mês",
-      description: "Para lojas em crescimento",
-      features: [
-        "Até 1.000 produtos",
-        "3 subdomínios",
-        "Categorias ilimitadas",
-        "Suporte prioritário",
-        "Campos personalizados avançados",
-        "Analytics detalhado",
-        "Backup automático"
-      ],
-      popular: true,
-      color: "from-purple-500 to-pink-500"
+      icon: Shield,
+      title: "Seguro & Confiável",
+      description: "Seus dados protegidos com a mais alta segurança."
     },
     {
-      name: "Enterprise",
-      price: "R$ 199",
-      period: "/mês",
-      description: "Para grandes operações",
-      features: [
-        "Produtos ilimitados",
-        "Subdomínios ilimitados",
-        "Multi-usuário",
-        "Suporte 24/7",
-        "API completa",
-        "White label",
-        "Consultor dedicado"
-      ],
-      popular: false,
-      color: "from-green-500 to-emerald-500"
+      icon: HeadphonesIcon,
+      title: "Suporte 24/7",
+      description: "Nossa equipe está sempre pronta para ajudar você."
     }
   ];
 
   const testimonials = [
     {
       name: "Maria Silva",
-      company: "Loja da Maria",
-      content: "Aumentamos nossas vendas em 300% após migrar para o CatalogoPro. A facilidade de uso é incrível!",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+      role: "Proprietária - Loja da Maria",
+      comment: "Aumentei minhas vendas em 300% depois que comecei a usar a plataforma!",
+      rating: 5
     },
     {
       name: "João Santos",
-      company: "TechStore",
-      content: "O melhor sistema de catálogo que já usei. O suporte é excepcional e as funcionalidades são completas.",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+      role: "Gerente - Tech Store",
+      comment: "Interface super intuitiva e recursos incríveis. Recomendo!",
+      rating: 5
     },
     {
       name: "Ana Costa",
-      company: "Moda & Estilo",
-      content: "Interface moderna e intuitiva. Nossos clientes adoraram a nova experiência de compra.",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
+      role: "Empreendedora",
+      comment: "O melhor investimento que fiz para meu negócio este ano.",
+      rating: 5
     }
   ];
 
+  const stats = [
+    { value: "50k+", label: "Produtos Cadastrados" },
+    { value: "5k+", label: "Lojas Ativas" },
+    { value: "99.9%", label: "Uptime" },
+    { value: "24/7", label: "Suporte" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
-      <header className="border-b bg-white/90 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="h-10 w-10 bg-gradient-to-br from-primary-600 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
-                CatalogoPro
-              </span>
+              <ShoppingBag className="h-8 w-8 text-blue-600" />
+              <span className="text-xl font-bold text-gray-900">CatalogPro</span>
             </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
-                      Funcionalidades
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="grid gap-3 p-6 w-[500px] bg-white shadow-xl rounded-lg border">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-3">
-                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">Recursos Principais</h4>
-                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
-                              <div className="text-sm font-medium leading-none flex items-center">
-                                <BarChart3 className="h-4 w-4 mr-2 text-green-500" />
-                                Dashboard Analytics
-                              </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                                Acompanhe suas vendas em tempo real
-                              </p>
-                            </a>
-                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
-                              <div className="text-sm font-medium leading-none flex items-center">
-                                <Palette className="h-4 w-4 mr-2 text-purple-500" />
-                                Customização
-                              </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                                Personalize sua loja do seu jeito
-                              </p>
-                            </a>
-                          </div>
-                          <div className="space-y-3">
-                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">Integração</h4>
-                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
-                              <div className="text-sm font-medium leading-none flex items-center">
-                                <Globe className="h-4 w-4 mr-2 text-blue-500" />
-                                Subdomínio Próprio
-                              </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                                Configure seu endereço personalizado
-                              </p>
-                            </a>
-                            <a href="#features" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50">
-                              <div className="text-sm font-medium leading-none flex items-center">
-                                <Smartphone className="h-4 w-4 mr-2 text-orange-500" />
-                                Mobile Ready
-                              </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                                Otimizado para dispositivos móveis
-                              </p>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
-                      Soluções
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="grid gap-3 p-6 w-[400px] bg-white shadow-xl rounded-lg border">
-                        <div className="space-y-3">
-                          <a href="#pricing" className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100">
-                            <div className="text-sm font-medium leading-none flex items-center">
-                              <Users className="h-4 w-4 mr-2 text-blue-500" />
-                              Para Pequenas Empresas
-                            </div>
-                            <p className="text-xs leading-snug text-muted-foreground mt-1">
-                              Soluções acessíveis para começar seu negócio online
-                            </p>
-                          </a>
-                          <a href="#pricing" className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100">
-                            <div className="text-sm font-medium leading-none flex items-center">
-                              <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
-                              Para Empresas
-                            </div>
-                            <p className="text-xs leading-snug text-muted-foreground mt-1">
-                              Recursos avançados para escalar suas vendas
-                            </p>
-                          </a>
-                        </div>
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-
-              <a href="#pricing" className="text-gray-600 hover:text-primary-600 transition-colors font-medium">Preços</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-primary-600 transition-colors font-medium">Depoimentos</a>
-              
-              <div className="flex items-center space-x-3 ml-6">
-                <Link to="/login">
-                  <Button variant="outline" size="sm" className="hover:bg-primary-50 hover:border-primary-300">
-                    Entrar
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button size="sm" className="bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-lg">
-                    Começar Grátis
-                  </Button>
-                </Link>
-              </div>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" onClick={() => navigate("/login")}>
+                Entrar
+              </Button>
+              <Button onClick={() => navigate("/register")}>
+                Começar Grátis
+              </Button>
+            </div>
           </div>
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-4 py-4 border-t bg-white/95 backdrop-blur rounded-lg shadow-lg">
-              <div className="flex flex-col space-y-4">
-                <a href="#features" className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2">Funcionalidades</a>
-                <a href="#pricing" className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2">Preços</a>
-                <a href="#testimonials" className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2">Depoimentos</a>
-                <div className="flex flex-col space-y-2 px-4 pt-2 border-t">
-                  <Link to="/login">
-                    <Button variant="outline" size="sm" className="w-full">Entrar</Button>
-                  </Link>
-                  <Link to="/register">
-                    <Button size="sm" className="w-full bg-gradient-to-r from-primary-600 to-purple-600">Começar Grátis</Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </header>
 
-      {/* Hero Section - Melhorada */}
-      <section className="py-24 px-4 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
-          <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-          <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-        </div>
-        
-        <div className="container mx-auto text-center relative z-10">
-          <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200 shadow-lg animate-pulse">
-            🚀 Novo: Campos personalizáveis para produtos
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <Badge className="mb-6 bg-blue-100 text-blue-800 border-blue-200">
+            ✨ Novo: Dashboard Analytics Avançado
           </Badge>
           
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 animate-fade-in leading-tight">
-            O Catálogo Online que
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600"> Vende Mais</span>
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            Crie seu catálogo
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              profissional
+            </span>
+            em minutos
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto animate-fade-in leading-relaxed">
-            Crie sua loja virtual profissional em minutos. Sistema completo com subdomínio personalizado, 
-            dashboard avançado e total customização. <strong>Aumente suas vendas em até 300%!</strong>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            A plataforma completa para criar, gerenciar e compartilhar seu catálogo de produtos. 
+            Aumente suas vendas com uma presença digital profissional.
           </p>
           
-          {/* Stats Cards */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-green-600 mb-2">300%</div>
-                <div className="text-sm text-gray-600">Aumento em vendas</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">10k+</div>
-                <div className="text-sm text-gray-600">Lojas criadas</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
-                <div className="text-sm text-gray-600">Uptime garantido</div>
-              </CardContent>
-            </Card>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-blue-600 hover:bg-blue-700"
+              onClick={() => navigate("/register")}
+            >
+              Começar Grátis
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="text-lg px-8 py-4"
+              onClick={() => navigate("/catalog/demo")}
+            >
+              Ver Demo
+            </Button>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in">
-            <Link to="/register">
-              <Button size="lg" className="text-lg px-10 py-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all group">
-                Começar Teste Grátis
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Link to="/admin">
-              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-2 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 group">
-                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                Ver Demo
-              </Button>
-            </Link>
-          </div>
-          
-          {/* Social Proof */}
-          <div className="mt-16 flex flex-col items-center">
-            <p className="text-sm text-gray-500 mb-4">Confiado por empresas de todos os tamanhos</p>
-            <div className="flex items-center space-x-8 opacity-60">
-              <div className="text-2xl font-bold text-gray-400">TechCorp</div>
-              <div className="text-2xl font-bold text-gray-400">ModaStyle</div>
-              <div className="text-2xl font-bold text-gray-400">FoodDelivery</div>
-              <div className="text-2xl font-bold text-gray-400">SportsPro</div>
-            </div>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-gray-900">{stat.value}</div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 px-4 bg-white relative">
-        <div className="container mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Tudo que você precisa para
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600"> vender online</span>
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Tudo que você precisa para vender mais
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Recursos profissionais para criar a loja dos seus sonhos
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Recursos profissionais para impulsionar seu negócio e alcançar mais clientes.
             </p>
           </div>
+          
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-                <CardHeader className="relative">
-                  <div className={`h-14 w-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
-                    {feature.icon}
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <feature.icon className="h-6 w-6 text-blue-600" />
                   </div>
-                  <CardTitle className="text-xl text-gray-900 group-hover:text-primary-600 transition-colors">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                  <CardDescription className="text-base leading-relaxed">
+                    {feature.description}
+                  </CardDescription>
                 </CardContent>
               </Card>
             ))}
@@ -389,97 +187,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24 px-4 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
-        <div className="container mx-auto relative">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Planos que crescem com
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600"> seu negócio</span>
+      {/* Testimonials */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              O que nossos clientes dizem
             </h2>
             <p className="text-xl text-gray-600">
-              Escolha o plano ideal para sua empresa
+              Histórias reais de sucesso de quem confia na nossa plataforma.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {plans.map((plan, index) => (
-              <Card key={index} className={`relative overflow-hidden ${plan.popular ? 'border-2 border-purple-500 shadow-2xl scale-105 bg-white' : 'border-gray-200 bg-white/80'} hover:shadow-2xl transition-all duration-300`}>
-                {plan.popular && (
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                )}
-                {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
-                    Mais Popular
-                  </Badge>
-                )}
-                <CardHeader className="text-center pb-4 relative">
-                  <div className={`h-16 w-16 bg-gradient-to-br ${plan.color} rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg`}>
-                    <span className="text-white font-bold text-xl">{plan.name[0]}</span>
-                  </div>
-                  <CardTitle className="text-2xl text-gray-900">{plan.name}</CardTitle>
-                  <CardDescription className="text-gray-600">{plan.description}</CardDescription>
-                  <div className="mt-6">
-                    <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
-                    <span className="text-gray-600 text-lg">{plan.period}</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <ul className="space-y-4">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center">
-                        <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button 
-                    className={`w-full mt-8 ${plan.popular 
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg' 
-                      : 'bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800'
-                    }`}
-                  >
-                    Começar Agora
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 px-4 bg-white">
-        <div className="container mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              O que nossos 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600"> clientes dizem</span>
-            </h2>
-            <p className="text-xl text-gray-600">
-              Histórias reais de sucesso
-            </p>
-          </div>
+          
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                <CardContent className="pt-8">
-                  <div className="flex mb-6">
+              <Card key={index} className="border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-8 italic text-lg leading-relaxed">"{testimonial.content}"</p>
-                  <div className="flex items-center">
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name}
-                      className="h-12 w-12 rounded-full mr-4 object-cover"
-                    />
-                    <div>
-                      <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                      <p className="text-gray-600 text-sm">{testimonial.company}</p>
-                    </div>
+                  <p className="text-gray-600 mb-4 italic">"{testimonial.comment}"</p>
+                  <div>
+                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                    <div className="text-sm text-gray-500">{testimonial.role}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -489,72 +221,85 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container mx-auto text-center relative">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Pronto para começar?
           </h2>
-          <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
-            Crie sua loja online profissional em poucos minutos
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Junte-se a milhares de empreendedores que já estão vendendo mais com nossa plataforma.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link to="/register">
-              <Button size="lg" variant="secondary" className="text-lg px-10 py-6 bg-white text-gray-900 hover:bg-gray-100 shadow-xl">
-                Começar Teste Grátis
-              </Button>
-            </Link>
-            <Link to="/admin">
-              <Button size="lg" variant="outline" className="text-lg px-10 py-6 border-2 border-white text-white hover:bg-white hover:text-primary-600 shadow-xl">
-                Acessar Dashboard Demo
-              </Button>
-            </Link>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              variant="secondary"
+              className="text-lg px-8 py-4"
+              onClick={() => navigate("/register")}
+            >
+              Criar Conta Grátis
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-blue-600"
+            >
+              Falar com Vendas
+            </Button>
+          </div>
+          
+          <div className="mt-8 flex items-center justify-center text-blue-100">
+            <CheckCircle className="h-5 w-5 mr-2" />
+            <span>Sem cartão de crédito • Grátis para sempre • Suporte 24/7</span>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4">
-        <div className="container mx-auto">
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="h-10 w-10 bg-gradient-to-br from-primary-600 to-purple-600 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">C</span>
-                </div>
-                <span className="text-2xl font-bold">CatalogoPro</span>
+              <div className="flex items-center space-x-2 mb-4">
+                <ShoppingBag className="h-6 w-6" />
+                <span className="text-lg font-bold">CatalogPro</span>
               </div>
-              <p className="text-gray-400 leading-relaxed">
-                O sistema de catálogo mais completo e moderno do Brasil
+              <p className="text-gray-400">
+                A melhor plataforma para criar e gerenciar seu catálogo online.
               </p>
             </div>
+            
             <div>
-              <h4 className="font-semibold mb-6 text-lg">Produto</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li><a href="#features" className="hover:text-white transition-colors">Recursos</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Preços</a></li>
-                <li><Link to="/admin" className="hover:text-white transition-colors">Demo</Link></li>
+              <h3 className="font-semibold mb-4">Produto</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Recursos</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Demo</a></li>
               </ul>
             </div>
+            
             <div>
-              <h4 className="font-semibold mb-6 text-lg">Suporte</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Central de Ajuda</a></li>
+              <h3 className="font-semibold mb-4">Empresa</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Sobre</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Carreiras</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Suporte</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Ajuda</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Contato</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-semibold mb-6 text-lg">Empresa</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Sobre</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Termos</a></li>
-              </ul>
-            </div>
           </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 CatalogoPro. Todos os direitos reservados.</p>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 CatalogPro. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

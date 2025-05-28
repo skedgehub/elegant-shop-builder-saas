@@ -1,5 +1,8 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { orderService, CreateOrderData } from '@/services/orderService';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
 
 export interface CartItem {
   id: number;
@@ -19,6 +22,7 @@ interface CartContextType {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  createOrder: (customerData: any) => Promise<string | null>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -33,6 +37,7 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { user } = useAuth();
 
   const addToCart = (product: any) => {
     setItems(prevItems => {
@@ -90,6 +95,49 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }, 0);
   };
 
+  const createOrder = async (customerData: any): Promise<string | null> => {
+    try {
+      if (!user?.company_id) {
+        throw new Error('Company ID is required');
+      }
+
+      const orderItems = items.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.promotionalPrice || item.price,
+        quantity: item.quantity,
+        customFields: item.customFields
+      }));
+
+      const orderData: CreateOrderData = {
+        customer_name: customerData.name,
+        customer_email: customerData.email,
+        customer_phone: customerData.phone,
+        customer_address: `${customerData.address}, ${customerData.city}${customerData.state ? ` - ${customerData.state}` : ''}${customerData.zipCode ? ` - ${customerData.zipCode}` : ''}`,
+        items: orderItems,
+        total_amount: getTotalPrice(),
+        notes: customerData.observations
+      };
+
+      const order = await orderService.createOrder(orderData, user.company_id);
+      
+      toast({
+        title: "Pedido criado!",
+        description: "Seu pedido foi registrado com sucesso.",
+      });
+
+      return order.id;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast({
+        title: "Erro ao criar pedido",
+        description: "Não foi possível registrar o pedido.",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+
   return (
     <CartContext.Provider value={{
       items,
@@ -98,7 +146,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       updateQuantity,
       clearCart,
       getTotalItems,
-      getTotalPrice
+      getTotalPrice,
+      createOrder
     }}>
       {children}
     </CartContext.Provider>
