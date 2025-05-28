@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { User, Mail, Phone, Building, Trash2, Edit, Save, X } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,7 +18,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    phone: user?.phone || "",
+    phone: "",
     company: user?.company_id || ""
   });
 
