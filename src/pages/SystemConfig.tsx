@@ -1,62 +1,109 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/hooks/useAuth";
-import { companyService, CompanySettings } from "@/services/companyService";
-import { uploadService } from "@/services/uploadService";
-import { toast } from "@/hooks/use-toast";
-import { Save, Globe, Palette, Settings as SettingsIcon, CreditCard, Upload, ArrowLeft, ImageIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { 
+  Save,
+  ArrowLeft,
+  Upload,
+  Globe,
+  Palette
+} from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import ImageUpload from "@/components/ImageUpload";
 
 const SystemConfig = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [settings, setSettings] = useState<CompanySettings | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState(false);
+  const [companyData, setCompanyData] = useState({
     name: "",
     subdomain: "",
     custom_domain: "",
+    logo_url: "",
     primary_color: "#3B82F6",
     secondary_color: "#1E40AF",
-    logo_url: "",
+    plan: "basic"
   });
 
   useEffect(() => {
     if (user?.company_id) {
-      loadSettings();
+      fetchCompanyData();
     }
-  }, [user]);
+  }, [user?.company_id]);
 
-  const loadSettings = async () => {
-    if (!user?.company_id) return;
-    
+  const fetchCompanyData = async () => {
     try {
-      const data = await companyService.getCompanySettings(user.company_id);
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('id', user?.company_id)
+        .single();
+
+      if (error) throw error;
+
       if (data) {
-        setSettings(data);
-        setFormData({
-          name: data.name,
-          subdomain: data.subdomain,
+        setCompanyData({
+          name: data.name || "",
+          subdomain: data.subdomain || "",
           custom_domain: data.custom_domain || "",
+          logo_url: data.logo_url || "",
           primary_color: data.primary_color || "#3B82F6",
           secondary_color: data.secondary_color || "#1E40AF",
-          logo_url: data.logo_url || "",
+          plan: data.plan || "basic"
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error fetching company data:', error);
       toast({
-        title: "Erro ao carregar configurações",
-        description: "Não foi possível carregar as configurações da empresa.",
+        title: "Erro ao carregar dados",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setCompanyData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('companies')
+        .update({
+          name: companyData.name,
+          custom_domain: companyData.custom_domain,
+          logo_url: companyData.logo_url,
+          primary_color: companyData.primary_color,
+          secondary_color: companyData.secondary_color,
+        })
+        .eq('id', user?.company_id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Configurações salvas!",
+        description: "As configurações da empresa foram atualizadas com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao salvar",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -64,298 +111,170 @@ const SystemConfig = () => {
     }
   };
 
-  const handleSave = async () => {
-    if (!user?.company_id) return;
-    
-    setSaving(true);
-    try {
-      await companyService.updateCompanySettings(user.company_id, formData);
-      toast({
-        title: "Configurações salvas!",
-        description: "As configurações da empresa foram atualizadas com sucesso.",
-      });
-      await loadSettings();
-    } catch (error) {
-      toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar as configurações.",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      const logoUrl = await uploadService.uploadImage(file, 'logos');
-      setFormData(prev => ({ ...prev, logo_url: logoUrl }));
-      toast({
-        title: "Logo enviado!",
-        description: "O logo foi enviado com sucesso.",
-      });
-    } catch (error) {
-      toast({
-        title: "Erro no upload",
-        description: "Não foi possível enviar o logo.",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div className="p-6 space-y-6">
-          <div className="flex items-center space-x-2">
-            <SettingsIcon className="h-6 w-6" />
-            <h1 className="text-2xl font-bold">Configurações do Sistema</h1>
-          </div>
-          <div className="animate-pulse space-y-4">
-            <div className="h-32 bg-gray-200 rounded"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
-
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/admin")}
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Button>
-            <div className="flex items-center space-x-2">
-              <SettingsIcon className="h-6 w-6" />
-              <h1 className="text-2xl font-bold">Configurações do Sistema</h1>
-            </div>
-          </div>
-          <Button onClick={handleSave} disabled={saving}>
-            <Save className="h-4 w-4 mr-2" />
-            {saving ? "Salvando..." : "Salvar Alterações"}
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/admin")}
+            className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar
           </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Configurações do Sistema</h1>
+            <p className="text-gray-600 dark:text-gray-400">Gerencie as configurações da sua empresa</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <form onSubmit={handleSave} className="space-y-6">
           {/* Informações da Empresa */}
           <Card>
             <CardHeader>
-              <div className="flex items-center space-x-2">
-                <SettingsIcon className="h-5 w-5" />
-                <CardTitle>Informações da Empresa</CardTitle>
-              </div>
+              <CardTitle>Informações da Empresa</CardTitle>
               <CardDescription>
                 Configure as informações básicas da sua empresa
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="company-name">Nome da Empresa</Label>
-                <Input
-                  id="company-name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="Nome da sua empresa"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Logo da Empresa</Label>
-                <div className="flex items-center space-x-4">
-                  {formData.logo_url && (
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                      <img 
-                        src={formData.logo_url} 
-                        alt="Logo" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleLogoUpload}
-                      disabled={uploading}
-                      className="hidden"
-                      id="logo-upload"
-                    />
-                    <Label htmlFor="logo-upload" className="cursor-pointer">
-                      <div className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
-                        {uploading ? (
-                          <div className="text-center">
-                            <div className="animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-                            <span className="text-sm text-gray-600">Enviando...</span>
-                          </div>
-                        ) : (
-                          <div className="text-center">
-                            <ImageIcon className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                            <span className="text-sm text-gray-600">Clique para enviar o logo</span>
-                          </div>
-                        )}
-                      </div>
-                    </Label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Plano Atual</Label>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="outline" className="capitalize">
-                    {settings?.plan || "Básico"}
-                  </Badge>
-                  <Button variant="outline" size="sm">
-                    <CreditCard className="h-4 w-4 mr-2" />
-                    Gerenciar Assinatura
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Configurações de Domínio */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center space-x-2">
-                <Globe className="h-5 w-5" />
-                <CardTitle>Configurações de Domínio</CardTitle>
-              </div>
-              <CardDescription>
-                Configure os domínios do seu catálogo
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="subdomain">Subdomínio</Label>
-                <div className="flex">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="company-name">Nome da Empresa</Label>
                   <Input
-                    id="subdomain"
-                    value={formData.subdomain}
-                    onChange={(e) => handleInputChange("subdomain", e.target.value)}
-                    placeholder="minhaempresa"
-                    className="rounded-r-none"
+                    id="company-name"
+                    value={companyData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    placeholder="Digite o nome da empresa"
                   />
-                  <div className="bg-gray-100 border border-l-0 px-3 py-2 text-sm text-gray-600 rounded-r-md">
-                    .catalogo.com.br
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="subdomain">Subdomínio</Label>
+                  <div className="flex">
+                    <Input
+                      id="subdomain"
+                      value={companyData.subdomain}
+                      disabled
+                      className="bg-gray-50"
+                    />
+                    <span className="inline-flex items-center px-3 text-sm text-gray-500 bg-gray-50 border border-l-0 border-gray-300 rounded-r-md">
+                      .lovable.app
+                    </span>
                   </div>
                 </div>
-                <p className="text-sm text-gray-500">
-                  Seu catálogo estará disponível em: {formData.subdomain}.catalogo.com.br
-                </p>
               </div>
-
-              <Separator />
 
               <div className="space-y-2">
                 <Label htmlFor="custom-domain">Domínio Personalizado</Label>
-                <Input
-                  id="custom-domain"
-                  value={formData.custom_domain}
-                  onChange={(e) => handleInputChange("custom_domain", e.target.value)}
-                  placeholder="meusite.com.br"
-                />
+                <div className="relative">
+                  <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    id="custom-domain"
+                    value={companyData.custom_domain}
+                    onChange={(e) => handleInputChange('custom_domain', e.target.value)}
+                    placeholder="www.suaempresa.com.br"
+                    className="pl-10"
+                  />
+                </div>
                 <p className="text-sm text-gray-500">
-                  Configure um domínio personalizado para seu catálogo (planos Pro+)
+                  Configure um domínio personalizado para sua loja
                 </p>
+              </div>
+
+              <div className="space-y-2">
+                <ImageUpload
+                  label="Logo da Empresa"
+                  value={companyData.logo_url}
+                  onChange={(url) => handleInputChange('logo_url', url)}
+                  onRemove={() => handleInputChange('logo_url', '')}
+                  bucket="logos"
+                />
               </div>
             </CardContent>
           </Card>
 
           {/* Personalização */}
-          <Card className="lg:col-span-2">
+          <Card>
             <CardHeader>
-              <div className="flex items-center space-x-2">
-                <Palette className="h-5 w-5" />
-                <CardTitle>Personalização</CardTitle>
-              </div>
+              <CardTitle>Personalização</CardTitle>
               <CardDescription>
-                Personalize as cores e aparência do seu catálogo
+                Configure as cores e aparência da sua loja
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="primary-color">Cor Primária</Label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        id="primary-color"
-                        type="color"
-                        value={formData.primary_color}
-                        onChange={(e) => handleInputChange("primary_color", e.target.value)}
-                        className="w-16 h-10 p-1 border rounded"
-                      />
-                      <Input
-                        value={formData.primary_color}
-                        onChange={(e) => handleInputChange("primary_color", e.target.value)}
-                        placeholder="#3B82F6"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="secondary-color">Cor Secundária</Label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        id="secondary-color"
-                        type="color"
-                        value={formData.secondary_color}
-                        onChange={(e) => handleInputChange("secondary_color", e.target.value)}
-                        className="w-16 h-10 p-1 border rounded"
-                      />
-                      <Input
-                        value={formData.secondary_color}
-                        onChange={(e) => handleInputChange("secondary_color", e.target.value)}
-                        placeholder="#1E40AF"
-                      />
-                    </div>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="primary-color">Cor Primária</Label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="color"
+                      id="primary-color"
+                      value={companyData.primary_color}
+                      onChange={(e) => handleInputChange('primary_color', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded"
+                    />
+                    <Input
+                      value={companyData.primary_color}
+                      onChange={(e) => handleInputChange('primary_color', e.target.value)}
+                      placeholder="#3B82F6"
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Preview das Cores</h4>
-                    <div className="space-y-2">
-                      <div 
-                        className="h-8 rounded flex items-center px-3 text-white text-sm"
-                        style={{ backgroundColor: formData.primary_color }}
-                      >
-                        Cor Primária
-                      </div>
-                      <div 
-                        className="h-8 rounded flex items-center px-3 text-white text-sm"
-                        style={{ backgroundColor: formData.secondary_color }}
-                      >
-                        Cor Secundária
-                      </div>
-                    </div>
+                <div className="space-y-2">
+                  <Label htmlFor="secondary-color">Cor Secundária</Label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="color"
+                      id="secondary-color"
+                      value={companyData.secondary_color}
+                      onChange={(e) => handleInputChange('secondary_color', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded"
+                    />
+                    <Input
+                      value={companyData.secondary_color}
+                      onChange={(e) => handleInputChange('secondary_color', e.target.value)}
+                      placeholder="#1E40AF"
+                    />
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
+
+          {/* Plano Atual */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Plano Atual</CardTitle>
+              <CardDescription>
+                Informações sobre seu plano de assinatura
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <h4 className="font-medium capitalize">{companyData.plan}</h4>
+                  <p className="text-sm text-gray-600">Plano atual da sua empresa</p>
+                </div>
+                <Button variant="outline">
+                  Alterar Plano
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Separator />
+
+          <div className="flex justify-end">
+            <Button type="submit" disabled={loading}>
+              <Save className="h-4 w-4 mr-2" />
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
+        </form>
       </div>
     </AdminLayout>
   );

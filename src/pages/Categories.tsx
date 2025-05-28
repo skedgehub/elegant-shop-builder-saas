@@ -13,51 +13,33 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/AdminLayout";
+import { useCategories } from "@/hooks/useCategories";
+import { useAuth } from "@/hooks/useAuth";
 
 const Categories = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { categories, isLoading } = useCategories(user?.company_id);
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Mock data
-  const categories = [
-    {
-      id: 1,
-      name: "Eletrônicos",
-      description: "Produtos eletrônicos e gadgets",
-      productCount: 45,
-      subcategories: ["Smartphones", "Notebooks", "Fones", "Tablets"],
-      status: "active"
-    },
-    {
-      id: 2,
-      name: "Roupas",
-      description: "Vestuário masculino e feminino",
-      productCount: 32,
-      subcategories: ["Camisetas", "Calças", "Vestidos", "Jaquetas"],
-      status: "active"
-    },
-    {
-      id: 3,
-      name: "Calçados",
-      description: "Sapatos, tênis e sandálias",
-      productCount: 28,
-      subcategories: ["Tênis", "Sapatos", "Sandálias", "Botas"],
-      status: "active"
-    },
-    {
-      id: 4,
-      name: "Casa & Decoração",
-      description: "Itens para casa e decoração",
-      productCount: 22,
-      subcategories: ["Móveis", "Decoração", "Utensílios", "Iluminação"],
-      status: "active"
-    }
-  ];
 
   const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.description.toLowerCase().includes(searchTerm.toLowerCase())
+    (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 space-y-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-gray-200 rounded w-48"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -108,22 +90,13 @@ const Categories = () => {
                             {category.name}
                           </h3>
                           <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {category.description}
+                            {category.description || "Sem descrição"}
                           </p>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          Produtos
-                        </span>
-                        <Badge variant="secondary">
-                          {category.productCount}
-                        </Badge>
-                      </div>
-
                       <div>
                         <span className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
                           Subcategorias:
@@ -137,7 +110,7 @@ const Categories = () => {
                                 variant="outline"
                                 className="text-xs"
                               >
-                                {sub}
+                                {sub.name}
                               </Badge>
                             ))}
                           {category.subcategories.length > 3 && (

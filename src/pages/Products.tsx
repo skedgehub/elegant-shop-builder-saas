@@ -15,51 +15,21 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/AdminLayout";
+import { useProducts } from "@/hooks/useProducts";
+import { useCategories } from "@/hooks/useCategories";
+import { useAuth } from "@/hooks/useAuth";
 
 const Products = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { products, isLoading } = useProducts(user?.company_id);
+  const { categories } = useCategories(user?.company_id);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Mock data
-  const products = [
-    {
-      id: 1,
-      name: "Smartphone Galaxy S24 Ultra",
-      category: "Eletrônicos",
-      price: 1299.00,
-      promotionalPrice: 1099.00,
-      stock: 15,
-      status: "active",
-      image: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      name: "Tênis Nike Air Max 270",
-      category: "Calçados",
-      price: 599.00,
-      promotionalPrice: null,
-      stock: 8,
-      status: "active",
-      image: "/placeholder.svg"
-    },
-    {
-      id: 3,
-      name: "Notebook Gamer Dell G15",
-      category: "Eletrônicos",
-      price: 2199.00,
-      promotionalPrice: 1999.00,
-      stock: 3,
-      status: "active",
-      image: "/placeholder.svg"
-    }
-  ];
-
-  const categories = ["Todos", "Eletrônicos", "Roupas", "Calçados", "Casa & Decoração"];
-
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || product.category_id === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -73,6 +43,25 @@ const Products = () => {
         return <Badge className="bg-gray-100 text-gray-800">Rascunho</Badge>;
     }
   };
+
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category?.name || 'Sem categoria';
+  };
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 space-y-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-gray-200 rounded w-48"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -112,9 +101,9 @@ const Products = () => {
                   className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                 >
                   <option value="all">Todas as categorias</option>
-                  {categories.slice(1).map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
                     </option>
                   ))}
                 </select>
@@ -162,7 +151,7 @@ const Products = () => {
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex-shrink-0">
                             <img
-                              src={product.image}
+                              src={product.image || "/placeholder.svg"}
                               alt={product.name}
                               className="h-10 w-10 object-cover rounded-lg"
                             />
@@ -175,14 +164,14 @@ const Products = () => {
                         </div>
                       </td>
                       <td className="py-4 px-4 text-gray-600 dark:text-gray-400">
-                        {product.category}
+                        {getCategoryName(product.category_id)}
                       </td>
                       <td className="py-4 px-4">
                         <div className="space-y-1">
-                          {product.promotionalPrice ? (
+                          {product.promotional_price ? (
                             <>
                               <p className="font-medium text-green-600">
-                                R$ {product.promotionalPrice.toFixed(2)}
+                                R$ {product.promotional_price.toFixed(2)}
                               </p>
                               <p className="text-sm text-gray-500 line-through">
                                 R$ {product.price.toFixed(2)}
@@ -209,7 +198,7 @@ const Products = () => {
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        {getStatusBadge(product.status)}
+                        {getStatusBadge("active")}
                       </td>
                       <td className="py-4 px-4">
                         <div className="flex items-center justify-end space-x-2">

@@ -44,7 +44,10 @@ export const orderService = {
       throw new Error(error.message);
     }
     
-    return data || [];
+    return (data || []).map(order => ({
+      ...order,
+      items: Array.isArray(order.items) ? order.items : []
+    }));
   },
 
   async getOrder(id: string): Promise<Order> {
@@ -57,7 +60,10 @@ export const orderService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Order not found');
     
-    return data;
+    return {
+      ...data,
+      items: Array.isArray(data.items) ? data.items : []
+    };
   },
 
   async updateOrderStatus(id: string, status: string, notes?: string): Promise<Order> {
@@ -75,7 +81,10 @@ export const orderService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Failed to update order');
     
-    return data;
+    return {
+      ...data,
+      items: Array.isArray(data.items) ? data.items : []
+    };
   },
 
   async createOrder(orderData: CreateOrderData, companyId: string): Promise<Order> {
@@ -97,6 +106,9 @@ export const orderService = {
     }
     if (!data) throw new Error('Failed to create order');
     
-    return data;
+    return {
+      ...data,
+      items: Array.isArray(data.items) ? data.items : []
+    };
   }
 };

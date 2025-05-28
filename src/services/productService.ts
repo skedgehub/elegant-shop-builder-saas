@@ -49,7 +49,12 @@ export const productService = {
       throw new Error(error.message);
     }
     
-    return data || [];
+    return (data || []).map(product => ({
+      ...product,
+      custom_fields: (product.custom_fields && typeof product.custom_fields === 'object') 
+        ? product.custom_fields as Record<string, string>
+        : {}
+    }));
   },
 
   async getProduct(id: string): Promise<Product> {
@@ -62,7 +67,12 @@ export const productService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Product not found');
     
-    return data;
+    return {
+      ...data,
+      custom_fields: (data.custom_fields && typeof data.custom_fields === 'object') 
+        ? data.custom_fields as Record<string, string>
+        : {}
+    };
   },
 
   async createProduct(productData: CreateProductData, companyId: string): Promise<Product> {
@@ -79,7 +89,7 @@ export const productService = {
           image: productData.image,
           badge: productData.badge,
           stock: productData.stock,
-          custom_fields: productData.customFields,
+          custom_fields: productData.customFields || {},
           company_id: companyId,
         },
       ])
@@ -92,7 +102,12 @@ export const productService = {
     }
     if (!data) throw new Error('Failed to create product');
     
-    return data;
+    return {
+      ...data,
+      custom_fields: (data.custom_fields && typeof data.custom_fields === 'object') 
+        ? data.custom_fields as Record<string, string>
+        : {}
+    };
   },
 
   async updateProduct(id: string, productData: Partial<CreateProductData>): Promise<Product> {
@@ -108,7 +123,7 @@ export const productService = {
         image: productData.image,
         badge: productData.badge,
         stock: productData.stock,
-        custom_fields: productData.customFields,
+        custom_fields: productData.customFields || {},
       })
       .eq('id', id)
       .select()
@@ -117,7 +132,12 @@ export const productService = {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Failed to update product');
     
-    return data;
+    return {
+      ...data,
+      custom_fields: (data.custom_fields && typeof data.custom_fields === 'object') 
+        ? data.custom_fields as Record<string, string>
+        : {}
+    };
   },
 
   async deleteProduct(id: string): Promise<void> {

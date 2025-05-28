@@ -23,7 +23,7 @@ import {
   Trash2,
   ArrowLeft,
   CreditCard,
-  Cancel
+  X
 } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
 import { useAuth } from "@/hooks/useAuth";
@@ -268,7 +268,7 @@ const Profile = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-2 text-sm">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>Membro desde {new Date(user?.created_at || '').getFullYear()}</span>
+                <span>Membro desde {new Date().getFullYear()}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
