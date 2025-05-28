@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Clock, Package, Truck, CheckCircle, XCircle } from "lucide-react";
+import { Clock, Package, Truck, CheckCircle, XCircle, User, Calendar } from "lucide-react";
 
 interface OrderDetailsModalProps {
   order: any;
@@ -59,6 +59,26 @@ const OrderDetailsModal = ({ order, open, onOpenChange }: OrderDetailsModalProps
     };
     return statusMap[status as keyof typeof statusMap] || status;
   };
+
+  // Mock order history for demonstration
+  const orderHistory = [
+    {
+      id: 1,
+      action: 'Pedido Criado',
+      status: 'pending',
+      timestamp: order.created_at,
+      user: 'Sistema',
+      notes: 'Pedido criado automaticamente'
+    },
+    {
+      id: 2,
+      action: 'Status Atualizado',
+      status: order.status,
+      timestamp: order.updated_at,
+      user: 'Admin',
+      notes: order.notes || 'Status atualizado manualmente'
+    }
+  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -177,34 +197,43 @@ const OrderDetailsModal = ({ order, open, onOpenChange }: OrderDetailsModalProps
             </div>
           </div>
 
-          {/* Order Timeline */}
+          {/* Order History */}
           <div className="space-y-3">
-            <Label className="text-sm font-semibold text-gray-700">Histórico do Pedido</Label>
+            <Label className="text-sm font-semibold text-gray-700">Histórico de Alterações</Label>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                <Package className="h-5 w-5 text-blue-600" />
-                <div>
-                  <p className="font-medium text-blue-900">Pedido Criado</p>
-                  <p className="text-sm text-blue-700">{formatDate(order.created_at)}</p>
-                </div>
-              </div>
-              
-              {order.updated_at !== order.created_at && (
-                <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <div>
-                    <p className="font-medium text-green-900">Última Atualização</p>
-                    <p className="text-sm text-green-700">{formatDate(order.updated_at)}</p>
+              {orderHistory.map((historyItem) => (
+                <div key={historyItem.id} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex-shrink-0">
+                    {historyItem.action === 'Pedido Criado' ? (
+                      <Package className="h-5 w-5 text-blue-600" />
+                    ) : (
+                      <User className="h-5 w-5 text-green-600" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-blue-900">{historyItem.action}</p>
+                      <div className="flex items-center text-sm text-blue-700">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        {formatDate(historyItem.timestamp)}
+                      </div>
+                    </div>
+                    <div className="mt-1">
+                      <p className="text-sm text-blue-700">Alterado por: {historyItem.user}</p>
+                      {historyItem.notes && (
+                        <p className="text-sm text-gray-600 mt-1">{historyItem.notes}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* Notes */}
+          {/* Current Notes */}
           {order.notes && (
             <div className="space-y-3">
-              <Label className="text-sm font-semibold text-gray-700">Observações</Label>
+              <Label className="text-sm font-semibold text-gray-700">Observações Atuais</Label>
               <div className="p-4 bg-yellow-50 rounded-lg">
                 <p className="text-sm text-gray-700">{order.notes}</p>
               </div>

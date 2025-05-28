@@ -7,12 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Filter, X } from "lucide-react";
+import { CalendarIcon, Filter, X, Search } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 interface OrderFiltersProps {
   onFilterChange: (filters: OrderFilters) => void;
+  onSearchChange: (search: string) => void;
   categories: any[];
 }
 
@@ -24,7 +25,7 @@ export interface OrderFilters {
   customerName: string;
 }
 
-const OrderFilters = ({ onFilterChange, categories }: OrderFiltersProps) => {
+const OrderFilters = ({ onFilterChange, onSearchChange, categories }: OrderFiltersProps) => {
   const [filters, setFilters] = useState<OrderFilters>({
     status: "",
     dateFrom: null,
@@ -32,13 +33,18 @@ const OrderFilters = ({ onFilterChange, categories }: OrderFiltersProps) => {
     category: "",
     customerName: ""
   });
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
   const handleFilterChange = (key: keyof OrderFilters, value: any) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     onFilterChange(newFilters);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    onSearchChange(value);
   };
 
   const clearFilters = () => {
@@ -50,15 +56,28 @@ const OrderFilters = ({ onFilterChange, categories }: OrderFiltersProps) => {
       customerName: ""
     };
     setFilters(emptyFilters);
+    setSearchTerm("");
     onFilterChange(emptyFilters);
+    onSearchChange("");
   };
 
   const hasActiveFilters = Object.values(filters).some(value => 
     value !== "" && value !== null
-  );
+  ) || searchTerm !== "";
 
   return (
     <div className="space-y-4">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          placeholder="Buscar por ID do pedido, nome do cliente ou email..."
+          value={searchTerm}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
@@ -66,10 +85,10 @@ const OrderFilters = ({ onFilterChange, categories }: OrderFiltersProps) => {
           className="flex items-center gap-2"
         >
           <Filter className="h-4 w-4" />
-          Filtros
+          Filtros Avançados
           {hasActiveFilters && (
             <span className="bg-blue-600 text-white text-xs rounded-full px-2 py-1">
-              {Object.values(filters).filter(v => v !== "" && v !== null).length}
+              {Object.values(filters).filter(v => v !== "" && v !== null).length + (searchTerm ? 1 : 0)}
             </span>
           )}
         </Button>
@@ -97,7 +116,7 @@ const OrderFilters = ({ onFilterChange, categories }: OrderFiltersProps) => {
                     <SelectValue placeholder="Todos os status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todos os status</SelectItem>
+                    <SelectItem value="all">Todos os status</SelectItem>
                     <SelectItem value="pending">Pendente</SelectItem>
                     <SelectItem value="processing">Processando</SelectItem>
                     <SelectItem value="shipped">Enviado</SelectItem>
@@ -115,7 +134,7 @@ const OrderFilters = ({ onFilterChange, categories }: OrderFiltersProps) => {
                     <SelectValue placeholder="Todas as categorias" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todas as categorias</SelectItem>
+                    <SelectItem value="all">Todas as categorias</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category.id} value={category.id}>
                         {category.name}

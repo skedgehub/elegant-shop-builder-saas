@@ -25,6 +25,7 @@ const Orders = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [newStatus, setNewStatus] = useState("");
   const [notes, setNotes] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<OrderFiltersType>({
     status: "",
     dateFrom: null,
@@ -49,11 +50,18 @@ const Orders = () => {
     cancelled: XCircle
   };
 
-  // Filter orders based on applied filters
+  // Filter orders based on applied filters and search term
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
+      // Search filter
+      if (searchTerm && !order.id.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !order.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !order.customer_email.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+
       // Status filter
-      if (filters.status && order.status !== filters.status) {
+      if (filters.status && filters.status !== "all" && order.status !== filters.status) {
         return false;
       }
 
@@ -76,7 +84,7 @@ const Orders = () => {
       }
 
       // Category filter - check if any item in the order belongs to the selected category
-      if (filters.category && Array.isArray(order.items)) {
+      if (filters.category && filters.category !== "all" && Array.isArray(order.items)) {
         const hasCategory = order.items.some((item: any) => item.category_id === filters.category);
         if (!hasCategory) {
           return false;
@@ -85,7 +93,7 @@ const Orders = () => {
 
       return true;
     });
-  }, [orders, filters]);
+  }, [orders, filters, searchTerm]);
 
   const handleStatusUpdate = () => {
     if (!selectedOrder || !newStatus) return;
@@ -155,6 +163,7 @@ const Orders = () => {
         {/* Filters */}
         <OrderFilters 
           onFilterChange={setFilters}
+          onSearchChange={setSearchTerm}
           categories={categories}
         />
 
