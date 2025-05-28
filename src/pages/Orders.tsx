@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,18 +8,30 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Eye, Package, Clock, CheckCircle, XCircle, Truck } from "lucide-react";
+import { Eye, Package, Clock, CheckCircle, XCircle, Truck, FileText } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
+import OrderFilters, { OrderFilters as OrderFiltersType } from "@/components/OrderFilters";
+import OrderDetailsModal from "@/components/OrderDetailsModal";
 import { useOrders } from "@/hooks/useOrders";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "@/hooks/use-toast";
+import { useCategories } from "@/hooks/useCategories";
 
 const Orders = () => {
   const { user } = useAuth();
   const { orders, isLoading, updateOrderStatus, isUpdating } = useOrders(user?.company_id);
+  const { categories } = useCategories(user?.company_id);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [detailsOrder, setDetailsOrder] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [newStatus, setNewStatus] = useState("");
   const [notes, setNotes] = useState("");
+  const [filters, setFilters] = useState<OrderFiltersType>({
+    status: "",
+    dateFrom: null,
+    dateTo: null,
+    category: "",
+    customerName: ""
+  });
 
   const statusColors = {
     pending: "bg-yellow-100 text-yellow-800 border-yellow-300",
@@ -37,6 +49,44 @@ const Orders = () => {
     cancelled: XCircle
   };
 
+  // Filter orders based on applied filters
+  const filteredOrders = useMemo(() => {
+    return orders.filter(order => {
+      // Status filter
+      if (filters.status && order.status !== filters.status) {
+        return false;
+      }
+
+      // Customer name filter
+      if (filters.customerName && !order.customer_name.toLowerCase().includes(filters.customerName.toLowerCase())) {
+        return false;
+      }
+
+      // Date filters
+      const orderDate = new Date(order.created_at);
+      if (filters.dateFrom && orderDate < filters.dateFrom) {
+        return false;
+      }
+      if (filters.dateTo) {
+        const dateTo = new Date(filters.dateTo);
+        dateTo.setHours(23, 59, 59, 999); // End of day
+        if (orderDate > dateTo) {
+          return false;
+        }
+      }
+
+      // Category filter - check if any item in the order belongs to the selected category
+      if (filters.category && Array.isArray(order.items)) {
+        const hasCategory = order.items.some((item: any) => item.category_id === filters.category);
+        if (!hasCategory) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [orders, filters]);
+
   const handleStatusUpdate = () => {
     if (!selectedOrder || !newStatus) return;
     
@@ -49,6 +99,11 @@ const Orders = () => {
     setSelectedOrder(null);
     setNewStatus("");
     setNotes("");
+  };
+
+  const handleViewDetails = (order: any) => {
+    setDetailsOrder(order);
+    setShowDetailsModal(true);
   };
 
   const formatCurrency = (value: number) => {
@@ -92,10 +147,16 @@ const Orders = () => {
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-sm">
-              {orders.length} pedidos
+              {filteredOrders.length} de {orders.length} pedidos
             </Badge>
           </div>
         </div>
+
+        {/* Filters */}
+        <OrderFilters 
+          onFilterChange={setFilters}
+          categories={categories}
+        />
 
         <Card>
           <CardHeader>
@@ -105,14 +166,17 @@ const Orders = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {orders.length === 0 ? (
+            {filteredOrders.length === 0 ? (
               <div className="text-center py-12">
                 <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                  Nenhum pedido encontrado
+                  {orders.length === 0 ? "Nenhum pedido encontrado" : "Nenhum pedido corresponde aos filtros"}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Quando você receber pedidos, eles aparecerão aqui.
+                  {orders.length === 0 
+                    ? "Quando você receber pedidos, eles aparecerão aqui."
+                    : "Tente ajustar os filtros para encontrar os pedidos desejados."
+                  }
                 </p>
               </div>
             ) : (
@@ -128,7 +192,7 @@ const Orders = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orders.map((order) => {
+                  {filteredOrders.map((order) => {
                     const StatusIcon = statusIcons[order.status as keyof typeof statusIcons] || Clock;
                     return (
                       <TableRow key={order.id}>
@@ -158,62 +222,35 @@ const Orders = () => {
                           {formatDate(order.created_at)}
                         </TableCell>
                         <TableCell>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => setSelectedOrder(order)}
-                              >
-                                <Eye className="h-4 w-4 mr-1" />
-                                Ver Detalhes
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-2xl">
-                              <DialogHeader>
-                                <DialogTitle>Detalhes do Pedido #{order.id.slice(0, 8)}</DialogTitle>
-                                <DialogDescription>
-                                  Visualize e atualize o status do pedido
-                                </DialogDescription>
-                              </DialogHeader>
-                              
-                              <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div>
-                                    <Label className="text-sm font-medium">Cliente</Label>
-                                    <p className="text-sm">{order.customer_name}</p>
-                                    <p className="text-sm text-gray-600">{order.customer_email}</p>
-                                    {order.customer_phone && (
-                                      <p className="text-sm text-gray-600">{order.customer_phone}</p>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <Label className="text-sm font-medium">Endereço</Label>
-                                    <p className="text-sm">{order.customer_address || 'Não informado'}</p>
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <Label className="text-sm font-medium">Itens do Pedido</Label>
-                                  <div className="mt-2 space-y-2">
-                                    {Array.isArray(order.items) && order.items.map((item: any, index: number) => (
-                                      <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                                        <div>
-                                          <p className="font-medium">{item.name}</p>
-                                          <p className="text-sm text-gray-600">Qtd: {item.quantity}</p>
-                                        </div>
-                                        <p className="font-medium">{formatCurrency(item.price * item.quantity)}</p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                  <div className="mt-4 pt-4 border-t">
-                                    <div className="flex justify-between items-center font-bold">
-                                      <span>Total:</span>
-                                      <span>{formatCurrency(order.total_amount)}</span>
-                                    </div>
-                                  </div>
-                                </div>
-
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewDetails(order)}
+                            >
+                              <FileText className="h-4 w-4 mr-1" />
+                              Detalhes
+                            </Button>
+                            
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setSelectedOrder(order)}
+                                >
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  Editar
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle>Atualizar Pedido #{order.id.slice(0, 8)}</DialogTitle>
+                                  <DialogDescription>
+                                    Atualize o status e adicione observações ao pedido
+                                  </DialogDescription>
+                                </DialogHeader>
+                                
                                 <div className="space-y-4">
                                   <div>
                                     <Label htmlFor="status">Atualizar Status</Label>
@@ -242,18 +279,18 @@ const Orders = () => {
                                     />
                                   </div>
                                 </div>
-                              </div>
 
-                              <DialogFooter>
-                                <Button
-                                  onClick={handleStatusUpdate}
-                                  disabled={!newStatus || isUpdating}
-                                >
-                                  {isUpdating ? "Atualizando..." : "Atualizar Pedido"}
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
+                                <DialogFooter>
+                                  <Button
+                                    onClick={handleStatusUpdate}
+                                    disabled={!newStatus || isUpdating}
+                                  >
+                                    {isUpdating ? "Atualizando..." : "Atualizar Pedido"}
+                                  </Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -263,6 +300,13 @@ const Orders = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Order Details Modal */}
+        <OrderDetailsModal
+          order={detailsOrder}
+          open={showDetailsModal}
+          onOpenChange={setShowDetailsModal}
+        />
       </div>
     </AdminLayout>
   );

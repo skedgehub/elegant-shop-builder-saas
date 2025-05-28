@@ -14,12 +14,17 @@ import {
   Zap,
   Shield,
   HeadphonesIcon,
-  BarChart3
+  BarChart3,
+  Menu,
+  X,
+  Check
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const features = [
     {
@@ -82,17 +87,74 @@ const Index = () => {
     { value: "24/7", label: "Suporte" }
   ];
 
+  const pricingPlans = [
+    {
+      name: "Básico",
+      price: "Grátis",
+      description: "Perfeito para começar",
+      features: [
+        "Até 50 produtos",
+        "1 catálogo online",
+        "Suporte por email",
+        "Analytics básico"
+      ],
+      buttonText: "Começar Grátis",
+      popular: false
+    },
+    {
+      name: "Profissional",
+      price: "R$ 29",
+      period: "/mês",
+      description: "Para negócios em crescimento",
+      features: [
+        "Produtos ilimitados",
+        "Múltiplos catálogos",
+        "Suporte prioritário",
+        "Analytics avançado",
+        "Domínio personalizado",
+        "Integração WhatsApp"
+      ],
+      buttonText: "Assinar Agora",
+      popular: true
+    },
+    {
+      name: "Enterprise",
+      price: "R$ 79",
+      period: "/mês",
+      description: "Para grandes empresas",
+      features: [
+        "Tudo do Profissional",
+        "API personalizada",
+        "Suporte dedicado",
+        "Treinamento personalizado",
+        "Relatórios personalizados",
+        "Integração ERP"
+      ],
+      buttonText: "Falar com Vendas",
+      popular: false
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <ShoppingBag className="h-8 w-8 text-blue-600" />
               <span className="text-xl font-bold text-gray-900">CatalogPro</span>
             </div>
-            <div className="flex items-center space-x-4">
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Recursos</a>
+              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Preços</a>
+              <a href="#testimonials" className="text-gray-600 hover:text-blue-600 transition-colors">Depoimentos</a>
+              <a href="#contact" className="text-gray-600 hover:text-blue-600 transition-colors">Contato</a>
+            </nav>
+
+            <div className="hidden md:flex items-center space-x-4">
               <Button variant="ghost" onClick={() => navigate("/login")}>
                 Entrar
               </Button>
@@ -100,7 +162,35 @@ const Index = () => {
                 Começar Grátis
               </Button>
             </div>
+
+            {/* Mobile menu button */}
+            <button 
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 border-t pt-4">
+              <nav className="flex flex-col space-y-4">
+                <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Recursos</a>
+                <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Preços</a>
+                <a href="#testimonials" className="text-gray-600 hover:text-blue-600 transition-colors">Depoimentos</a>
+                <a href="#contact" className="text-gray-600 hover:text-blue-600 transition-colors">Contato</a>
+                <div className="flex flex-col space-y-2 pt-4">
+                  <Button variant="outline" onClick={() => navigate("/login")}>
+                    Entrar
+                  </Button>
+                  <Button onClick={() => navigate("/register")}>
+                    Começar Grátis
+                  </Button>
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
@@ -156,7 +246,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section id="features" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -187,8 +277,63 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Planos que cabem no seu bolso
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Escolha o plano ideal para o seu negócio. Comece grátis e evolua conforme cresce.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card key={index} className={`relative ${plan.popular ? 'border-blue-500 border-2 shadow-xl scale-105' : 'border-gray-200'}`}>
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-blue-600 text-white px-6 py-1">
+                      Mais Popular
+                    </Badge>
+                  </div>
+                )}
+                <CardHeader className="text-center pb-8">
+                  <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                    {plan.period && <span className="text-gray-600">{plan.period}</span>}
+                  </div>
+                  <CardDescription className="text-base mt-2">
+                    {plan.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center">
+                        <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                        <span className="text-gray-600">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button 
+                    className={`w-full mt-8 ${plan.popular ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+                    variant={plan.popular ? 'default' : 'outline'}
+                    onClick={() => navigate("/register")}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
-      <section className="py-20 bg-gray-50">
+      <section id="testimonials" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -257,7 +402,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer id="contact" className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -273,8 +418,8 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Produto</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Recursos</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Recursos</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Preços</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Demo</a></li>
               </ul>
             </div>
