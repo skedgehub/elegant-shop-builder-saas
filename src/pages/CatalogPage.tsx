@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CartDrawer from "@/components/CartDrawer";
-import CheckoutForm from "@/components/CheckoutForm";
 import { 
   ShoppingCart, 
   Search, 
@@ -29,7 +28,7 @@ import { toast } from "@/hooks/use-toast";
 
 const CatalogPage = () => {
   const { subdomain } = useParams();
-  const { items, addToCart, getTotalItems, createOrder, clearCart } = useCart();
+  const { items, addToCart, getTotalItems } = useCart();
   
   const [company, setCompany] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
@@ -39,7 +38,6 @@ const CatalogPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -98,41 +96,6 @@ const CatalogPage = () => {
       title: "Produto adicionado!",
       description: `${product.name} foi adicionado ao carrinho.`,
     });
-  };
-
-  const handleCheckout = async (customerData: any) => {
-    if (!company?.id) return;
-    
-    const orderId = await createOrder(customerData, company.id);
-    
-    if (orderId) {
-      const phoneNumber = "5511999999999";
-      let message = "🛒 *Novo Pedido*\n\n";
-      
-      message += `*📋 Pedido ID:* ${orderId}\n\n`;
-      message += "*📋 Dados do Cliente:*\n";
-      message += `Nome: ${customerData.name}\n`;
-      message += `Telefone: ${customerData.phone}\n`;
-      if (customerData.email) message += `E-mail: ${customerData.email}\n`;
-      message += `Endereço: ${customerData.address}, ${customerData.city}`;
-      if (customerData.state) message += ` - ${customerData.state}`;
-      if (customerData.zipCode) message += ` - ${customerData.zipCode}`;
-      message += "\n\n";
-      
-      message += "*🛍️ Produtos:*\n";
-      items.forEach(item => {
-        const price = item.promotionalPrice || item.price;
-        message += `• ${item.name}\n`;
-        message += `  Quantidade: ${item.quantity}\n`;
-        message += `  Preço unitário: R$ ${price.toFixed(2)}\n`;
-        message += `  Subtotal: R$ ${(price * item.quantity).toFixed(2)}\n\n`;
-      });
-      
-      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
-      clearCart();
-      setIsCheckoutOpen(false);
-    }
   };
 
   if (isLoading) {
@@ -421,21 +384,6 @@ const CatalogPage = () => {
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Checkout Modal */}
-      {isCheckoutOpen && (
-        <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Finalizar Pedido</DialogTitle>
-            </DialogHeader>
-            <CheckoutForm
-              onSubmit={handleCheckout}
-              totalPrice={items.reduce((total, item) => total + (item.promotionalPrice || item.price) * item.quantity, 0)}
-            />
           </DialogContent>
         </Dialog>
       )}

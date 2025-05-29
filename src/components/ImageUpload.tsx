@@ -18,6 +18,7 @@ interface ImageUploadProps {
 
 const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "images" }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
+  const uploadId = `image-upload-${Math.random().toString(36).substr(2, 9)}`;
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -32,6 +33,7 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
         description: "A imagem foi enviada com sucesso.",
       });
     } catch (error) {
+      console.error('Upload error:', error);
       toast({
         title: "Erro no upload",
         description: "Não foi possível enviar a imagem.",
@@ -39,13 +41,30 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
       });
     } finally {
       setUploading(false);
+      // Reset the input
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     if (value && onRemove) {
-      uploadService.deleteImage(value, bucket).catch(console.error);
-      onRemove();
+      try {
+        await uploadService.deleteImage(value, bucket);
+        onRemove();
+        toast({
+          title: "Imagem removida!",
+          description: "A imagem foi removida com sucesso.",
+        });
+      } catch (error) {
+        console.error('Delete error:', error);
+        toast({
+          title: "Erro ao remover",
+          description: "Não foi possível remover a imagem.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -68,6 +87,7 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
                 size="sm"
                 className="absolute top-2 right-2"
                 onClick={handleRemove}
+                disabled={uploading}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -82,10 +102,10 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
             onChange={handleUpload}
             disabled={uploading}
             className="hidden"
-            id={`image-upload-${Math.random()}`}
+            id={uploadId}
           />
           <Label 
-            htmlFor={`image-upload-${Math.random()}`} 
+            htmlFor={uploadId} 
             className="cursor-pointer"
           >
             <Card className="hover:bg-gray-50 transition-colors">

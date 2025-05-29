@@ -91,7 +91,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                   placeholder="Digite o nome do produto"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name.message as string}</p>
+                  <p className="text-sm text-red-600">{String(errors.name.message)}</p>
                 )}
               </div>
 
@@ -116,7 +116,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                     placeholder="0,00"
                   />
                   {errors.price && (
-                    <p className="text-sm text-red-600">{errors.price.message as string}</p>
+                    <p className="text-sm text-red-600">{String(errors.price.message)}</p>
                   )}
                 </div>
                 <div>
@@ -147,7 +147,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                     </SelectContent>
                   </Select>
                   {errors.category_id && (
-                    <p className="text-sm text-red-600">{errors.category_id.message as string}</p>
+                    <p className="text-sm text-red-600">{String(errors.category_id.message)}</p>
                   )}
                 </div>
                 <div>
@@ -159,7 +159,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                     placeholder="0"
                   />
                   {errors.stock && (
-                    <p className="text-sm text-red-600">{errors.stock.message as string}</p>
+                    <p className="text-sm text-red-600">{String(errors.stock.message)}</p>
                   )}
                 </div>
               </div>
@@ -209,7 +209,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                       <Label>Tipo</Label>
                       <Select 
                         onValueChange={(value) => setValue(`customFields.${index}.type`, value)}
-                        defaultValue={field.type}
+                        defaultValue="text"
                       >
                         <SelectTrigger>
                           <SelectValue />
