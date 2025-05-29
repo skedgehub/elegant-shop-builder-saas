@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { orderService, CreateOrderData } from '@/services/orderService';
-import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 
 export interface CartItem {
@@ -22,7 +21,7 @@ interface CartContextType {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
-  createOrder: (customerData: any) => Promise<string | null>;
+  createOrder: (customerData: any, companyId: string) => Promise<string | null>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -37,7 +36,6 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
-  const { user } = useAuth();
 
   const addToCart = (product: any) => {
     setItems(prevItems => {
@@ -58,7 +56,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         promotionalPrice: product.promotionalPrice,
         image: product.image,
         quantity: 1,
-        customFields: product.customFields
+        customFields: product.customFields || {}
       }];
     });
   };
@@ -95,9 +93,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }, 0);
   };
 
-  const createOrder = async (customerData: any): Promise<string | null> => {
+  const createOrder = async (customerData: any, companyId: string): Promise<string | null> => {
     try {
-      if (!user?.company_id) {
+      if (!companyId) {
         throw new Error('Company ID is required');
       }
 
@@ -119,7 +117,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         notes: customerData.observations
       };
 
-      const order = await orderService.createOrder(orderData, user.company_id);
+      const order = await orderService.createOrder(orderData, companyId);
       
       toast({
         title: "Pedido criado!",

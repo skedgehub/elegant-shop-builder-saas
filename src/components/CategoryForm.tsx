@@ -81,7 +81,7 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
                   placeholder="Digite o nome da categoria"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name.message}</p>
+                  <p className="text-sm text-red-600">{errors.name.message as string}</p>
                 )}
               </div>
 

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import CheckoutForm from "@/components/CheckoutForm";
 import { 
   ShoppingCart, 
@@ -17,14 +16,20 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  companyId?: string;
 }
 
-const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
+const CartDrawer = ({ isOpen, onClose, companyId }: CartDrawerProps) => {
   const { items, updateQuantity, removeFromCart, clearCart, getTotalPrice, createOrder } = useCart();
   const [showCheckout, setShowCheckout] = useState(false);
 
   const handleOrderSubmit = async (customerData: any) => {
-    const orderId = await createOrder(customerData);
+    if (!companyId) {
+      console.error('Company ID is required');
+      return;
+    }
+
+    const orderId = await createOrder(customerData, companyId);
     
     if (orderId) {
       const phoneNumber = "5511999999999"; // Número configurável
