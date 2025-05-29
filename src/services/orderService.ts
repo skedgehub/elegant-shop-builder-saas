@@ -7,8 +7,55 @@ export interface UpdateOrderStatusData {
   notes?: string;
 }
 
+export interface CreateOrderData {
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  customer_address: string;
+  items: any[];
+  total_amount: number;
+  notes?: string;
+}
+
 export const orderService = {
-  async updateOrderStatus({ id, status, notes }: UpdateOrderStatusData) {
+  async getOrders(companyId?: string) {
+    try {
+      let query = supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (companyId) {
+        query = query.eq('company_id', companyId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      throw error;
+    }
+  },
+
+  async getOrder(id: string) {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching order:', error);
+      throw error;
+    }
+  },
+
+  async updateOrderStatus(id: string, status: string, notes?: string) {
     try {
       // Update the order status
       const { error: orderError } = await supabase
@@ -42,11 +89,15 @@ export const orderService = {
     }
   },
 
-  async createOrder(orderData: any) {
+  async createOrder(orderData: CreateOrderData, companyId: string) {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .insert(orderData)
+        .insert({
+          ...orderData,
+          company_id: companyId,
+          status: 'pending'
+        })
         .select()
         .single();
 

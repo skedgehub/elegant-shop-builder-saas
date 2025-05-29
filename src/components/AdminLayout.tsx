@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
 import AdminSidebar from "./AdminSidebar";
 import NotificationDropdown from "./NotificationDropdown";
-import { ThemeToggle } from "./ThemeToggle";
+import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
@@ -22,11 +22,10 @@ interface AdminLayoutProps {
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate("/login");
+    logout();
   };
 
   return (
