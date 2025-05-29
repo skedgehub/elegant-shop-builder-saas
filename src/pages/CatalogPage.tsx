@@ -1,816 +1,447 @@
 
-import { useState } from "react";
-import { useCart } from "@/contexts/CartContext";
+import { useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import CartDrawer from "@/components/CartDrawer";
-import ProductDetailsModal from "@/components/ProductDetailsModal";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { 
   Search, 
   Filter, 
-  Grid3X3, 
-  List,
-  ShoppingCart,
-  Heart,
+  ShoppingCart, 
+  Package,
   Star,
-  Menu,
-  X,
+  Heart,
+  Share2,
+  Grid3X3,
+  List,
   Phone,
   Mail,
   MapPin,
-  Plus
+  Instagram,
+  Facebook,
+  Twitter
 } from "lucide-react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer";
+import { useCart } from "@/contexts/CartContext";
+import { useProducts } from "@/hooks/useProducts";
+import { useCategories } from "@/hooks/useCategories";
+import ProductDetailsModal from "@/components/ProductDetailsModal";
+import CheckoutForm from "@/components/CheckoutForm";
 
 const CatalogPage = () => {
+  const { subdomain } = useParams();
+  const { addToCart, cartItems, removeFromCart, updateQuantity } = useCart();
+  
+  // Para demonstração, vamos usar company_id fictício
+  // Em produção, você buscaria a empresa pelo subdomain
+  const companyId = "demo-company-id";
+  
+  const { products, isLoading } = useProducts(companyId);
+  const { categories } = useCategories(companyId);
+  
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
-  const [viewMode, setViewMode] = useState("grid");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [priceRange, setPriceRange] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  const { addToCart, getTotalItems } = useCart();
+  // Filtrar produtos
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      // Filtro de busca
+      if (searchTerm && !product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !product.description?.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
 
-  const categories = [
-    { 
-      id: "all", 
-      name: "Todos os Produtos", 
-      count: 127,
-      subcategories: []
-    },
-    { 
-      id: "electronics", 
-      name: "Eletrônicos", 
-      count: 45,
-      subcategories: ["Smartphones", "Notebooks", "Fones", "Tablets"]
-    },
-    { 
-      id: "clothing", 
-      name: "Roupas", 
-      count: 32,
-      subcategories: ["Camisetas", "Calças", "Vestidos", "Jaquetas"]
-    },
-    { 
-      id: "shoes", 
-      name: "Calçados", 
-      count: 28,
-      subcategories: ["Tênis", "Sapatos", "Sandálias", "Botas"]
-    },
-    { 
-      id: "home", 
-      name: "Casa & Decoração", 
-      count: 22,
-      subcategories: ["Móveis", "Decoração", "Utensílios", "Iluminação"]
-    }
-  ];
+      // Filtro de categoria
+      if (selectedCategory !== "all" && product.category_id !== selectedCategory) {
+        return false;
+      }
 
-  const products = [
-    {
-      id: 1,
-      name: "Smartphone Galaxy S24 Ultra",
-      category: "electronics",
-      subcategory: "Smartphones",
-      price: 1299.00,
-      promotionalPrice: 1099.00,
-      image: "/placeholder.svg",
-      rating: 4.8,
-      reviews: 234,
-      badge: "Oferta",
-      description: "Smartphone premium com câmera profissional de alta qualidade, tela Dynamic AMOLED 6.8 polegadas e processador Snapdragon 8 Gen 3.",
-      customFields: {
-        marca: "Samsung",
-        cor: "Preto Titânio",
-        memoria: "256GB",
-        tela: "6.8 polegadas"
+      // Filtro de preço
+      if (priceRange !== "all") {
+        const price = product.promotional_price || product.price;
+        switch (priceRange) {
+          case "0-50":
+            if (price > 50) return false;
+            break;
+          case "50-100":
+            if (price <= 50 || price > 100) return false;
+            break;
+          case "100-200":
+            if (price <= 100 || price > 200) return false;
+            break;
+          case "200+":
+            if (price <= 200) return false;
+            break;
+        }
       }
-    },
-    {
-      id: 2,
-      name: "Tênis Nike Air Max 270",
-      category: "shoes",
-      subcategory: "Tênis",
-      price: 599.00,
-      promotionalPrice: null,
-      image: "/placeholder.svg",
-      rating: 4.6,
-      reviews: 189,
-      badge: null,
-      description: "Tênis esportivo com máximo conforto e design moderno",
-      customFields: {
-        marca: "Nike",
-        cor: "Branco/Preto",
-        tamanho: "39-44",
-        tipo: "Corrida"
-      }
-    },
-    {
-      id: 3,
-      name: "Notebook Gamer Dell G15",
-      category: "electronics",
-      subcategory: "Notebooks",
-      price: 2199.00,
-      promotionalPrice: 1999.00,
-      image: "/placeholder.svg",
-      rating: 4.7,
-      reviews: 156,
-      badge: "Novo",
-      description: "Notebook gamer com placa de vídeo dedicada",
-      customFields: {
-        marca: "Dell",
-        processador: "Intel i7",
-        memoria: "16GB RAM",
-        armazenamento: "512GB SSD"
-      }
-    },
-    {
-      id: 4,
-      name: "Camisa Polo Ralph Lauren",
-      category: "clothing",
-      subcategory: "Camisetas",
-      price: 189.00,
-      promotionalPrice: 149.00,
-      image: "/placeholder.svg",
-      rating: 4.5,
-      reviews: 143,
-      badge: "Promoção",
-      description: "Polo clássica 100% algodão",
-      customFields: {
-        marca: "Ralph Lauren",
-        material: "100% Algodão",
-        tamanho: "P, M, G, GG",
-        cor: "Azul Marinho"
-      }
-    },
-    {
-      id: 5,
-      name: "Fone Bluetooth Sony WH-1000XM5",
-      category: "electronics",
-      subcategory: "Fones",
-      price: 399.00,
-      promotionalPrice: null,
-      image: "/placeholder.svg",
-      rating: 4.9,
-      reviews: 298,
-      badge: "Bestseller",
-      description: "Fone com cancelamento de ruído ativo",
-      customFields: {
-        marca: "Sony",
-        conexao: "Bluetooth 5.2",
-        bateria: "30h",
-        cancelamento: "Ruído Ativo"
-      }
-    },
-    {
-      id: 6,
-      name: "Vestido Floral Zara",
-      category: "clothing",
-      subcategory: "Vestidos",
-      price: 129.00,
-      promotionalPrice: 99.00,
-      image: "/placeholder.svg",
-      rating: 4.4,
-      reviews: 87,
-      badge: "Liquidação",
-      description: "Vestido estampado ideal para o verão",
-      customFields: {
-        marca: "Zara",
-        material: "Viscose",
-        tamanho: "P, M, G",
-        estampa: "Floral"
-      }
-    }
-  ];
 
-  const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
+      return true;
+    });
+  }, [products, searchTerm, selectedCategory, priceRange]);
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-    const matchesSubcategory = selectedSubcategory === "all" || product.subcategory === selectedSubcategory;
-    return matchesSearch && matchesCategory && matchesSubcategory;
-  });
-
-  const openProductDetails = (product: any) => {
-    setSelectedProduct(product);
-    setProductModalOpen(true);
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
   };
 
-  const ProductCard = ({ product }: { product: typeof products[0] }) => (
-    <Card 
-      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer"
-      onClick={() => openProductDetails(product)}
-    >
-      <div className="aspect-square relative overflow-hidden bg-gray-100">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-          <span className="text-gray-500 text-sm">Imagem do Produto</span>
-        </div>
-        
-        {product.badge && (
-          <Badge 
-            className={`absolute top-2 left-2 z-10 ${
-              product.badge === "Oferta" || product.badge === "Promoção" || product.badge === "Liquidação" 
-                ? "bg-red-500" 
-                : product.badge === "Novo" 
-                ? "bg-green-500" 
-                : "bg-blue-500"
-            }`}
-          >
-            {product.badge}
-          </Badge>
-        )}
-        
-        <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <Button 
-            size="sm" 
-            variant="secondary" 
-            className="h-8 w-8 p-0 shadow-md"
-            onClick={(e) => {
-              e.stopPropagation();
-              addToCart(product);
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-          <Button 
-            size="sm" 
-            variant="secondary" 
-            className="h-8 w-8 p-0 shadow-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Heart className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-      
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors">
-            {product.name}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {product.description}
-          </p>
-        </div>
+  const handleProductClick = (product: any) => {
+    setSelectedProduct(product);
+    setShowProductModal(true);
+  };
 
-        <div className="flex items-center space-x-1">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star 
-                key={i} 
-                className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-              />
+  const getTotalCartItems = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getTotalCartValue = () => {
+    return cartItems.reduce((total, item) => {
+      const price = item.promotional_price || item.price;
+      return total + (price * item.quantity);
+    }, 0);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="animate-pulse p-6">
+          <div className="h-8 bg-gray-200 rounded w-48 mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-64 bg-gray-200 rounded"></div>
             ))}
           </div>
-          <span className="text-xs text-gray-600">({product.reviews})</span>
         </div>
-
-        <div className="space-y-2">
-          {product.promotionalPrice ? (
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-green-600">
-                R$ {product.promotionalPrice.toFixed(2)}
-              </span>
-              <span className="text-sm text-gray-500 line-through">
-                R$ {product.price.toFixed(2)}
-              </span>
-            </div>
-          ) : (
-            <span className="text-xl font-bold text-gray-900">
-              R$ {product.price.toFixed(2)}
-            </span>
-          )}
-        </div>
-
-        <div className="grid grid-cols-2 gap-1 text-xs">
-          {Object.entries(product.customFields).slice(0, 2).map(([key, value]) => (
-            <div key={key} className="truncate">
-              <span className="text-gray-500 capitalize">{key}:</span>
-              <span className="ml-1 font-medium">{value}</span>
-            </div>
-          ))}
-        </div>
-
-        <Button 
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(product);
-          }}
-          className="w-full mt-4"
-        >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Adicionar ao Carrinho
-        </Button>
-      </CardContent>
-    </Card>
-  );
-
-  const ProductListItem = ({ product }: { product: typeof products[0] }) => (
-    <Card 
-      className="hover:shadow-md transition-shadow cursor-pointer"
-      onClick={() => openProductDetails(product)}
-    >
-      <CardContent className="p-4">
-        <div className="flex space-x-4">
-          <div className="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-              <span className="text-xs text-gray-500">IMG</span>
-            </div>
-          </div>
-          
-          <div className="flex-1 space-y-2">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 line-clamp-1">{product.name}</h3>
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1">{product.description}</p>
-              </div>
-              {product.badge && (
-                <Badge 
-                  className={`ml-2 ${
-                    product.badge === "Oferta" || product.badge === "Promoção" || product.badge === "Liquidação" 
-                      ? "bg-red-500" 
-                      : product.badge === "Novo" 
-                      ? "bg-green-500" 
-                      : "bg-blue-500"
-                  }`}
-                >
-                  {product.badge}
-                </Badge>
-              )}
-            </div>
-
-            <div className="flex items-center space-x-1">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-                  />
-                ))}
-              </div>
-              <span className="text-xs text-gray-600">({product.reviews})</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                {product.promotionalPrice ? (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold text-green-600">
-                      R$ {product.promotionalPrice.toFixed(2)}
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      R$ {product.price.toFixed(2)}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-lg font-bold text-gray-900">
-                    R$ {product.price.toFixed(2)}
-                  </span>
-                )}
-              </div>
-
-              <Button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addToCart(product);
-                }}
-                size="sm"
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Carrinho
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {Object.entries(product.customFields).slice(0, 4).map(([key, value]) => (
-                <div key={key} className="truncate">
-                  <span className="text-gray-500 capitalize">{key}:</span>
-                  <span className="ml-1 font-medium">{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+      <header className="bg-white shadow-sm sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {subdomain || "Minha Loja"}
+              </h1>
+              <Badge variant="secondary" className="hidden sm:inline-flex">
+                Catálogo Online
+              </Badge>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Buscar produtos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-64"
+                />
+              </div>
               
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <div>
-                  <h1 className="font-bold text-gray-900">Minha Loja</h1>
-                  <p className="text-xs text-gray-600 hidden sm:block">Produtos selecionados com qualidade</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              {/* Cart Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCartOpen(true)}
-                className="relative"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                {getTotalItems() > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {getTotalItems()}
-                  </Badge>
-                )}
-              </Button>
-
-              <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
-                <div className="flex items-center space-x-1">
-                  <Phone className="h-4 w-4" />
-                  <span>(11) 99999-9999</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Mail className="h-4 w-4" />
-                  <span>contato@minhaloja.com</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="pb-4">
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input 
-                placeholder="Buscar produtos..."
-                className="pl-10 pr-4 h-12 text-lg"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="relative">
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Carrinho
+                    {getTotalCartItems() > 0 && (
+                      <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center">
+                        {getTotalCartItems()}
+                      </Badge>
+                    )}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Carrinho de Compras</SheetTitle>
+                    <SheetDescription>
+                      {getTotalCartItems()} itens no carrinho
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="py-4 space-y-4">
+                    {cartItems.length === 0 ? (
+                      <div className="text-center py-8">
+                        <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-600">Seu carrinho está vazio</p>
+                      </div>
+                    ) : (
+                      <>
+                        {cartItems.map((item) => (
+                          <div key={item.id} className="flex items-center justify-between border-b pb-4">
+                            <div className="flex items-center space-x-3">
+                              <img
+                                src={item.image || "/placeholder.svg"}
+                                alt={item.name}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div>
+                                <h4 className="font-medium text-sm">{item.name}</h4>
+                                <p className="text-sm text-gray-600">
+                                  {formatPrice(item.promotional_price || item.price)}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                              >
+                                -
+                              </Button>
+                              <span className="w-8 text-center">{item.quantity}</span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              >
+                                +
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="border-t pt-4">
+                          <div className="flex justify-between font-semibold text-lg">
+                            <span>Total:</span>
+                            <span>{formatPrice(getTotalCartValue())}</span>
+                          </div>
+                          <Button 
+                            className="w-full mt-4" 
+                            onClick={() => setShowCheckout(true)}
+                            disabled={cartItems.length === 0}
+                          >
+                            Finalizar Pedido
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-64">
-            <div className="bg-white rounded-lg shadow-sm p-4 space-y-6 sticky top-24">
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
-                <div className="space-y-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => {
-                        setSelectedCategory(category.id);
-                        setSelectedSubcategory("all");
-                      }}
-                      className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between
-                        ${selectedCategory === category.id 
-                          ? 'bg-primary-100 text-primary-700 font-medium' 
-                          : 'text-gray-700 hover:bg-gray-100'
-                        }
-                      `}
-                    >
-                      <span>{category.name}</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {category.count}
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Subcategorias */}
-              {selectedCategoryData && selectedCategoryData.subcategories.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Subcategorias</h3>
-                  <div className="space-y-1">
-                    <button
-                      onClick={() => setSelectedSubcategory("all")}
-                      className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                        ${selectedSubcategory === "all" 
-                          ? 'bg-primary-100 text-primary-700 font-medium' 
-                          : 'text-gray-600 hover:bg-gray-100'
-                        }
-                      `}
-                    >
-                      Todas
-                    </button>
-                    {selectedCategoryData.subcategories.map((sub) => (
-                      <button
-                        key={sub}
-                        onClick={() => setSelectedSubcategory(sub)}
-                        className={`
-                          w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                          ${selectedSubcategory === sub 
-                            ? 'bg-primary-100 text-primary-700 font-medium' 
-                            : 'text-gray-600 hover:bg-gray-100'
-                          }
-                        `}
-                      >
-                        {sub}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Faixa de Preço</h3>
-                <div className="space-y-2">
-                  <div className="flex space-x-2">
-                    <Input placeholder="Min" className="text-sm" />
-                    <Input placeholder="Max" className="text-sm" />
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full">Aplicar</Button>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          {/* Main Content */}
-          <main className="flex-1 space-y-6">
-            {/* Filters and View Toggle */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <p className="text-gray-600">
-                  {filteredProducts.length} produtos encontrados
-                </p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="lg:hidden"
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filtros
-                </Button>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <select className="text-sm border rounded-md px-3 py-1 bg-white">
-                  <option>Mais Relevantes</option>
-                  <option>Menor Preço</option>
-                  <option>Maior Preço</option>
-                  <option>Mais Avaliados</option>
-                </select>
-                
-                <div className="flex border rounded-md">
-                  <Button
-                    variant={viewMode === "grid" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className="rounded-r-none"
-                  >
-                    <Grid3X3 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                    className="rounded-l-none"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Products */}
-            {viewMode === "grid" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+      {/* Filters */}
+      <div className="bg-white border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Todas as categorias" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as categorias</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
                 ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredProducts.map((product) => (
-                  <ProductListItem key={product.id} product={product} />
-                ))}
-              </div>
-            )}
+              </SelectContent>
+            </Select>
 
-            {/* Empty State */}
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <div className="h-32 w-32 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <Search className="h-12 w-12 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum produto encontrado</h3>
-                <p className="text-gray-600 mb-4">
-                  Tente alterar os filtros ou termos de busca
-                </p>
-                <Button 
-                  variant="outline"
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("all");
-                    setSelectedSubcategory("all");
-                  }}
-                >
-                  Limpar Filtros
-                </Button>
-              </div>
-            )}
-          </main>
+            <Select value={priceRange} onValueChange={setPriceRange}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Faixa de preço" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os preços</SelectItem>
+                <SelectItem value="0-50">Até R$ 50</SelectItem>
+                <SelectItem value="50-100">R$ 50 - R$ 100</SelectItem>
+                <SelectItem value="100-200">R$ 100 - R$ 200</SelectItem>
+                <SelectItem value="200+">Acima de R$ 200</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex ml-auto space-x-2">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Products */}
+      <div className="container mx-auto px-4 py-8">
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-16">
+            <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              Nenhum produto encontrado
+            </h3>
+            <p className="text-gray-600">
+              Tente ajustar os filtros ou termos de busca
+            </p>
+          </div>
+        ) : (
+          <div className={
+            viewMode === "grid" 
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              : "space-y-4"
+          }>
+            {filteredProducts.map((product) => (
+              <Card 
+                key={product.id}
+                className={`hover:shadow-lg transition-shadow cursor-pointer ${
+                  viewMode === "list" ? "flex" : ""
+                }`}
+                onClick={() => handleProductClick(product)}
+              >
+                <div className={viewMode === "list" ? "w-48 flex-shrink-0" : ""}>
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    className={`object-cover ${
+                      viewMode === "list" 
+                        ? "w-full h-32 rounded-l-lg" 
+                        : "w-full h-48 rounded-t-lg"
+                    }`}
+                  />
+                </div>
+                <CardContent className={`p-4 ${viewMode === "list" ? "flex-1" : ""}`}>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-semibold text-gray-900 line-clamp-2">
+                      {product.name}
+                    </h3>
+                    {product.badge && (
+                      <Badge variant="secondary" className="ml-2">
+                        {product.badge}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {product.description}
+                  </p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {product.promotional_price ? (
+                        <div>
+                          <span className="text-lg font-bold text-green-600">
+                            {formatPrice(product.promotional_price)}
+                          </span>
+                          <span className="text-sm text-gray-500 line-through ml-2">
+                            {formatPrice(product.price)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-lg font-bold text-gray-900">
+                          {formatPrice(product.price)}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}
+                      disabled={product.stock === 0}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      {product.stock === 0 ? "Esgotado" : "Adicionar"}
+                    </Button>
+                  </div>
+                  
+                  {product.stock <= 5 && product.stock > 0 && (
+                    <p className="text-xs text-orange-600 mt-2">
+                      Apenas {product.stock} restantes!
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Footer */}
-      <footer className="bg-white border-t mt-12">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <span className="text-xl font-bold">Minha Loja</span>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Produtos selecionados com qualidade e preços justos. 
-                Sua satisfação é nossa prioridade.
+      <footer className="bg-gray-800 text-white py-8 mt-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="font-semibold mb-4">{subdomain || "Minha Loja"}</h3>
+              <p className="text-gray-300 text-sm">
+                Sua loja online de confiança com os melhores produtos e atendimento.
               </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>Rua das Flores, 123 - Centro - São Paulo/SP</span>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Contato</h3>
+              <div className="space-y-2 text-sm text-gray-300">
+                <div className="flex items-center">
+                  <Phone className="h-4 w-4 mr-2" />
+                  (11) 99999-9999
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-4 w-4" />
-                  <span>(11) 99999-9999</span>
+                <div className="flex items-center">
+                  <Mail className="h-4 w-4 mr-2" />
+                  contato@minhaloja.com
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4" />
-                  <span>contato@minhaloja.com</span>
+                <div className="flex items-center">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  São Paulo, SP
                 </div>
               </div>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4">Categorias</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Eletrônicos</a></li>
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Roupas</a></li>
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Calçados</a></li>
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Casa & Decoração</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Atendimento</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Central de Ajuda</a></li>
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Trocas e Devoluções</a></li>
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Entrega</a></li>
-                <li><a href="#" className="hover:text-primary-600 transition-colors">Contato</a></li>
-              </ul>
+              <h3 className="font-semibold mb-4">Redes Sociais</h3>
+              <div className="flex space-x-4">
+                <Instagram className="h-5 w-5 text-gray-300 hover:text-white cursor-pointer" />
+                <Facebook className="h-5 w-5 text-gray-300 hover:text-white cursor-pointer" />
+                <Twitter className="h-5 w-5 text-gray-300 hover:text-white cursor-pointer" />
+              </div>
             </div>
           </div>
-          
-          <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
-            <p>&copy; 2024 Minha Loja. Todos os direitos reservados. Powered by CatalogoPro.</p>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-300">
+            © 2024 {subdomain || "Minha Loja"}. Todos os direitos reservados.
           </div>
         </div>
       </footer>
 
-      {/* Mobile Filters Drawer */}
-      <Drawer open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <DrawerContent className="h-[85vh]">
-          <DrawerHeader className="border-b">
-            <div className="flex items-center justify-between">
-              <DrawerTitle>Filtros</DrawerTitle>
-              <DrawerClose asChild>
-                <Button variant="ghost" size="sm">
-                  <X className="h-4 w-4" />
-                </Button>
-              </DrawerClose>
-            </div>
-          </DrawerHeader>
-
-          <div className="p-4 space-y-6 overflow-y-auto">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
-              <div className="space-y-2">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      setSelectedCategory(category.id);
-                      setSelectedSubcategory("all");
-                    }}
-                    className={`
-                      w-full text-left px-3 py-3 rounded-lg transition-colors flex items-center justify-between
-                      ${selectedCategory === category.id 
-                        ? 'bg-primary-100 text-primary-700 font-medium' 
-                        : 'text-gray-700 hover:bg-gray-100'
-                      }
-                    `}
-                  >
-                    <span>{category.name}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {category.count}
-                    </Badge>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile Subcategorias */}
-            {selectedCategoryData && selectedCategoryData.subcategories.length > 0 && (
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Subcategorias</h3>
-                <div className="space-y-1">
-                  <button
-                    onClick={() => setSelectedSubcategory("all")}
-                    className={`
-                      w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                      ${selectedSubcategory === "all" 
-                        ? 'bg-primary-100 text-primary-700 font-medium' 
-                        : 'text-gray-600 hover:bg-gray-100'
-                      }
-                    `}
-                  >
-                    Todas
-                  </button>
-                  {selectedCategoryData.subcategories.map((sub) => (
-                    <button
-                      key={sub}
-                      onClick={() => setSelectedSubcategory(sub)}
-                      className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                        ${selectedSubcategory === sub 
-                          ? 'bg-primary-100 text-primary-700 font-medium' 
-                          : 'text-gray-600 hover:bg-gray-100'
-                        }
-                      `}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Faixa de Preço</h3>
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <Input placeholder="Min" className="text-sm" />
-                  <Input placeholder="Max" className="text-sm" />
-                </div>
-                <Button variant="outline" size="sm" className="w-full">Aplicar</Button>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Button 
-                onClick={() => setSidebarOpen(false)}
-                className="w-full"
-              >
-                Aplicar Filtros
-              </Button>
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
-
-      {/* Cart Drawer */}
-      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
-
-      {/* Product Details Modal */}
+      {/* Modals */}
       <ProductDetailsModal
         product={selectedProduct}
-        isOpen={productModalOpen}
-        onClose={() => {
-          setProductModalOpen(false);
-          setSelectedProduct(null);
-        }}
+        open={showProductModal}
+        onOpenChange={setShowProductModal}
       />
+
+      <Dialog open={showCheckout} onOpenChange={setShowCheckout}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Finalizar Pedido</DialogTitle>
+            <DialogDescription>
+              Complete suas informações para finalizar o pedido
+            </DialogDescription>
+          </DialogHeader>
+          <CheckoutForm onClose={() => setShowCheckout(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

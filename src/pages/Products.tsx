@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Plus, 
   Search, 
-  MoreHorizontal, 
   Edit, 
   Trash2,
-  Filter,
-  Eye
+  Package,
+  ImageIcon
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/AdminLayout";
+import ProductForm from "@/components/ProductForm";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,31 +24,37 @@ import { useAuth } from "@/hooks/useAuth";
 const Products = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { products, isLoading } = useProducts(user?.company_id);
+  const { products, isLoading, deleteProduct } = useProducts(user?.company_id);
   const { categories } = useCategories(user?.company_id);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || product.category_id === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "active":
-        return <Badge className="bg-green-100 text-green-800">Ativo</Badge>;
-      case "inactive":
-        return <Badge className="bg-red-100 text-red-800">Inativo</Badge>;
-      default:
-        return <Badge className="bg-gray-100 text-gray-800">Rascunho</Badge>;
-    }
-  };
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const getCategoryName = (categoryId: string) => {
     const category = categories.find(cat => cat.id === categoryId);
-    return category?.name || 'Sem categoria';
+    return category?.name || "Sem categoria";
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price);
+  };
+
+  const handleEdit = (product: any) => {
+    setSelectedProduct(product);
+    setShowEditDialog(true);
+  };
+
+  const handleCloseEdit = () => {
+    setShowEditDialog(false);
+    setSelectedProduct(null);
   };
 
   if (isLoading) {
@@ -72,7 +80,7 @@ const Products = () => {
               Produtos
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Gerencie seus produtos e estoque
+              Gerencie o catálogo de produtos da sua loja
             </p>
           </div>
           <Button onClick={() => navigate("/admin/products/new")}>
@@ -83,155 +91,154 @@ const Products = () => {
 
         <Card>
           <CardHeader>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Buscar produtos..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                >
-                  <option value="all">Todas as categorias</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-
-                <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filtros
-                </Button>
-              </div>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Buscar produtos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </CardHeader>
 
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
-                      Produto
-                    </th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
-                      Categoria
-                    </th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
-                      Preço
-                    </th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
-                      Estoque
-                    </th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">
-                      Status
-                    </th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white">
-                      Ações
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  Nenhum produto encontrado
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Tente alterar os termos de busca ou criar um novo produto
+                </p>
+                <Button onClick={() => navigate("/admin/products/new")}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Produto
+                </Button>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Produto</TableHead>
+                    <TableHead>Categoria</TableHead>
+                    <TableHead>Preço</TableHead>
+                    <TableHead>Estoque</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {filteredProducts.map((product) => (
-                    <tr
-                      key={product.id}
-                      className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
-                    >
-                      <td className="py-4 px-4">
+                    <TableRow key={product.id}>
+                      <TableCell>
                         <div className="flex items-center space-x-3">
-                          <div className="h-10 w-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex-shrink-0">
-                            <img
-                              src={product.image || "/placeholder.svg"}
-                              alt={product.name}
-                              className="h-10 w-10 object-cover rounded-lg"
-                            />
+                          <div className="h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            {product.image ? (
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="h-10 w-10 object-cover rounded-lg"
+                              />
+                            ) : (
+                              <ImageIcon className="h-5 w-5 text-gray-400" />
+                            )}
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
+                            <div className="font-medium text-gray-900 dark:text-white">
                               {product.name}
-                            </p>
+                            </div>
+                            {product.description && (
+                              <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                                {product.description}
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </td>
-                      <td className="py-4 px-4 text-gray-600 dark:text-gray-400">
-                        {getCategoryName(product.category_id)}
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="space-y-1">
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {getCategoryName(product.category_id)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div>
                           {product.promotional_price ? (
                             <>
-                              <p className="font-medium text-green-600">
-                                R$ {product.promotional_price.toFixed(2)}
-                              </p>
-                              <p className="text-sm text-gray-500 line-through">
-                                R$ {product.price.toFixed(2)}
-                              </p>
+                              <div className="font-medium text-green-600">
+                                {formatPrice(product.promotional_price)}
+                              </div>
+                              <div className="text-sm text-gray-500 line-through">
+                                {formatPrice(product.price)}
+                              </div>
                             </>
                           ) : (
-                            <p className="font-medium text-gray-900 dark:text-white">
-                              R$ {product.price.toFixed(2)}
-                            </p>
+                            <div className="font-medium">
+                              {formatPrice(product.price)}
+                            </div>
                           )}
                         </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            product.stock > 10
-                              ? "bg-green-100 text-green-800"
-                              : product.stock > 0
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={product.stock > 0 ? "default" : "destructive"}
                         >
                           {product.stock} unidades
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        {getStatusBadge("active")}
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center justify-end space-x-2">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={product.stock > 0 ? "default" : "secondary"}
+                        >
+                          {product.stock > 0 ? "Ativo" : "Sem estoque"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(product)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => deleteProduct(product.id)}
                             className="text-red-600 hover:text-red-700"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
-
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400">
-                  Nenhum produto encontrado
-                </p>
-              </div>
+                </TableBody>
+              </Table>
             )}
           </CardContent>
         </Card>
+
+        {/* Edit Product Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Editar Produto</DialogTitle>
+              <DialogDescription>
+                Edite as informações do produto
+              </DialogDescription>
+            </DialogHeader>
+            {selectedProduct && (
+              <ProductForm 
+                initialData={selectedProduct}
+                onSuccess={handleCloseEdit}
+                mode="edit"
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );

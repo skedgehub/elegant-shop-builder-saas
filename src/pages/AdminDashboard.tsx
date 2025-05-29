@@ -7,10 +7,8 @@ import {
   ShoppingBag, 
   Users, 
   TrendingUp, 
-  Eye,
   Plus,
   BarChart3,
-  Activity,
   Globe,
   Tag,
   Package
@@ -18,65 +16,88 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "@/hooks/useProducts";
 import { useOrders } from "@/hooks/useOrders";
+import { useCategories } from "@/hooks/useCategories";
 import { useAuth } from "@/hooks/useAuth";
+import { useMemo } from "react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { products } = useProducts(user?.company_id);
   const { orders } = useOrders(user?.company_id);
+  const { categories } = useCategories(user?.company_id);
 
-  const totalProducts = products.length;
-  const totalOrders = orders.length;
-  const pendingOrders = orders.filter(order => order.status === 'pending').length;
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
+  const stats = useMemo(() => {
+    const totalProducts = products.length;
+    const totalOrders = orders.length;
+    const pendingOrders = orders.filter(order => order.status === 'pending').length;
+    const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
+    
+    // Calcular conversão: pedidos / (visualizações ou produtos * 10)
+    const conversionRate = totalProducts > 0 ? ((totalOrders / (totalProducts * 10)) * 100).toFixed(1) : "0.0";
 
-  const stats = [
-    {
-      title: "Total de Produtos",
-      value: totalProducts.toString(),
-      change: "+12%",
-      changeType: "positive",
-      icon: ShoppingBag
-    },
-    {
-      title: "Pedidos Totais",
-      value: totalOrders.toString(),
-      change: `${pendingOrders} pendentes`,
-      changeType: "neutral", 
-      icon: Package
-    },
-    {
-      title: "Receita Total",
-      value: `R$ ${totalRevenue.toFixed(2)}`,
-      change: "+15%",
-      changeType: "positive",
-      icon: TrendingUp
-    },
-    {
-      title: "Taxa de Conversão",
-      value: "3.2%",
-      change: "+0.5%",
-      changeType: "positive",
-      icon: BarChart3
-    }
-  ];
+    return [
+      {
+        title: "Total de Produtos",
+        value: totalProducts.toString(),
+        change: products.length > 0 ? `${categories.length} categorias` : "Nenhum produto",
+        changeType: "neutral",
+        icon: ShoppingBag
+      },
+      {
+        title: "Pedidos Totais",
+        value: totalOrders.toString(),
+        change: `${pendingOrders} pendentes`,
+        changeType: pendingOrders > 0 ? "neutral" : "positive", 
+        icon: Package
+      },
+      {
+        title: "Receita Total",
+        value: `R$ ${totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+        change: totalRevenue > 0 ? "Receita acumulada" : "Sem vendas",
+        changeType: totalRevenue > 0 ? "positive" : "neutral",
+        icon: TrendingUp
+      },
+      {
+        title: "Taxa de Conversão",
+        value: `${conversionRate}%`,
+        change: "Baseado em pedidos/produtos",
+        changeType: parseFloat(conversionRate) > 5 ? "positive" : "neutral",
+        icon: BarChart3
+      }
+    ];
+  }, [products, orders, categories]);
 
-  const recentProducts = products.slice(0, 5).map(product => ({
-    id: product.id,
-    name: product.name,
-    category: "Categoria",
-    price: `R$ ${product.price.toFixed(2)}`,
-    status: "Ativo",
-    views: Math.floor(Math.random() * 300)
-  }));
+  const recentProducts = useMemo(() => {
+    return products.slice(0, 5).map(product => {
+      const category = categories.find(cat => cat.id === product.category_id);
+      return {
+        id: product.id,
+        name: product.name,
+        category: category?.name || "Sem categoria",
+        price: `R$ ${product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+        status: product.stock > 0 ? "Ativo" : "Sem estoque",
+        views: Math.floor(Math.random() * 300) // Simulado por enquanto
+      };
+    });
+  }, [products, categories]);
 
-  const topCategories = [
-    { name: "Eletrônicos", products: products.filter(p => p.category_id).length, percentage: 35 },
-    { name: "Roupas", products: Math.floor(products.length * 0.25), percentage: 25 },
-    { name: "Calçados", products: Math.floor(products.length * 0.22), percentage: 22 },
-    { name: "Acessórios", products: Math.floor(products.length * 0.18), percentage: 18 }
-  ];
+  const topCategories = useMemo(() => {
+    if (categories.length === 0) return [];
+    
+    const categoryStats = categories.map(category => {
+      const categoryProducts = products.filter(p => p.category_id === category.id);
+      return {
+        name: category.name,
+        products: categoryProducts.length,
+        percentage: categories.length > 0 ? Math.round((categoryProducts.length / products.length) * 100) : 0
+      };
+    }).filter(cat => cat.products > 0)
+      .sort((a, b) => b.products - a.products)
+      .slice(0, 4);
+
+    return categoryStats;
+  }, [categories, products]);
 
   return (
     <AdminLayout>
@@ -166,6 +187,12 @@ const AdminDashboard = () => {
                     <div className="text-center py-8">
                       <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-600">Nenhum produto encontrado</p>
+                      <Button 
+                        className="mt-4" 
+                        onClick={() => navigate("/admin/products/new")}
+                      >
+                        Adicionar Primeiro Produto
+                      </Button>
                     </div>
                   ) : (
                     recentProducts.map((product) => (
@@ -220,24 +247,38 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {topCategories.map((category, index) => (
-                    <div key={index}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          {category.name}
-                        </span>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {category.products} produtos
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                          className="bg-primary-600 dark:bg-primary-400 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${category.percentage}%` }}
-                        ></div>
-                      </div>
+                  {topCategories.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Tag className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">Nenhuma categoria com produtos</p>
+                      <Button 
+                        size="sm" 
+                        className="mt-2" 
+                        onClick={() => navigate("/admin/categories/new")}
+                      >
+                        Criar Categoria
+                      </Button>
                     </div>
-                  ))}
+                  ) : (
+                    topCategories.map((category, index) => (
+                      <div key={index}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {category.name}
+                          </span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {category.products} produtos
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                          <div
+                            className="bg-primary-600 dark:bg-primary-400 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.max(category.percentage, 5)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -271,6 +312,14 @@ const AdminDashboard = () => {
                 >
                   <Package className="h-4 w-4 mr-2" />
                   Ver Pedidos
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/subscribers")}
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Gerenciar Assinantes
                 </Button>
               </CardContent>
             </Card>

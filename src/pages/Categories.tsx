@@ -4,28 +4,43 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   Plus, 
   Search, 
   Edit, 
   Trash2,
-  FolderOpen
+  FolderOpen,
+  ImageIcon
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/AdminLayout";
+import CategoryForm from "@/components/CategoryForm";
 import { useCategories } from "@/hooks/useCategories";
 import { useAuth } from "@/hooks/useAuth";
 
 const Categories = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { categories, isLoading } = useCategories(user?.company_id);
+  const { categories, isLoading, deleteCategory } = useCategories(user?.company_id);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const handleEdit = (category: any) => {
+    setSelectedCategory(category);
+    setShowEditDialog(true);
+  };
+
+  const handleCloseEdit = () => {
+    setShowEditDialog(false);
+    setSelectedCategory(null);
+  };
 
   if (isLoading) {
     return (
@@ -83,7 +98,15 @@ const Categories = () => {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <div className="h-10 w-10 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
-                          <FolderOpen className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                          {category.image ? (
+                            <img
+                              src={category.image}
+                              alt={category.name}
+                              className="h-10 w-10 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <FolderOpen className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                          )}
                         </div>
                         <div>
                           <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -102,20 +125,28 @@ const Categories = () => {
                           Subcategorias:
                         </span>
                         <div className="flex flex-wrap gap-1">
-                          {category.subcategories
-                            .slice(0, 3)
-                            .map((sub, index) => (
-                              <Badge
-                                key={index}
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                {sub.name}
-                              </Badge>
-                            ))}
-                          {category.subcategories.length > 3 && (
+                          {category.subcategories && category.subcategories.length > 0 ? (
+                            <>
+                              {category.subcategories
+                                .slice(0, 3)
+                                .map((sub: any, index: number) => (
+                                  <Badge
+                                    key={index}
+                                    variant="outline"
+                                    className="text-xs"
+                                  >
+                                    {sub.name}
+                                  </Badge>
+                                ))}
+                              {category.subcategories.length > 3 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{category.subcategories.length - 3}
+                                </Badge>
+                              )}
+                            </>
+                          ) : (
                             <Badge variant="outline" className="text-xs">
-                              +{category.subcategories.length - 3}
+                              Nenhuma subcategoria
                             </Badge>
                           )}
                         </div>
@@ -126,12 +157,17 @@ const Categories = () => {
                           Ativo
                         </Badge>
                         <div className="flex space-x-2">
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleEdit(category)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => deleteCategory(category.id)}
                             className="text-red-600 hover:text-red-700"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -161,6 +197,25 @@ const Categories = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Edit Category Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Editar Categoria</DialogTitle>
+              <DialogDescription>
+                Edite as informações da categoria
+              </DialogDescription>
+            </DialogHeader>
+            {selectedCategory && (
+              <CategoryForm 
+                initialData={selectedCategory}
+                onSuccess={handleCloseEdit}
+                mode="edit"
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );
