@@ -1,68 +1,89 @@
 
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import { AdminSidebar } from './AdminSidebar';
-import { Button } from '@/components/ui/button';
-import { Bell, User, LogOut } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { LogOut, User } from "lucide-react";
+import AdminSidebar from "./AdminSidebar";
+import NotificationDropdown from "./NotificationDropdown";
+import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AdminLayoutProps {
-  children?: React.ReactNode;
+  children: ReactNode;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { logout, user } = useAuth();
+const AdminLayout = ({ children }: AdminLayoutProps) => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
-  const handleLogout = () => {
-    logout();
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
   };
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-gray-50 dark:bg-gray-900">
-        <AdminSidebar />
-        <SidebarInset className="flex-1">
-          {/* Top Header */}
-          <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-            <div className="flex h-16 items-center justify-between px-6">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="h-8 w-8" />
-                <div className="hidden md:block">
-                  <nav className="flex items-center space-x-6 text-sm font-medium">
-                    <span className="text-gray-900 dark:text-white">Painel Administrativo</span>
-                  </nav>
-                </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex h-screen">
+        {/* Sidebar */}
+        <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+          <AdminSidebar />
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 lg:pl-64">
+          {/* Header */}
+          <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between px-6 py-4">
+              <div className="flex items-center">
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Painel Administrativo
+                </h1>
               </div>
               
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Bell className="h-4 w-4" />
-                </Button>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <User className="h-4 w-4" />
-                  <span>{user?.name}</span>
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950" 
-                  onClick={handleLogout}
-                  title="Sair"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
+              <div className="flex items-center space-x-4">
+                <NotificationDropdown />
+                <ThemeToggle />
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <User className="h-5 w-5 mr-2" />
+                      {user?.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate("/admin/profile")}>
+                      <User className="h-4 w-4 mr-2" />
+                      Perfil
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sair
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>
 
-          {/* Main Content */}
-          <main className="flex-1">
-            {children || <Outlet />}
+          {/* Page content */}
+          <main className="flex-1 overflow-auto">
+            {children}
           </main>
-        </SidebarInset>
+        </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 

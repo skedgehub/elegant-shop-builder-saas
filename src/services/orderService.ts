@@ -1,114 +1,74 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-export interface Order {
+export interface UpdateOrderStatusData {
   id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone?: string;
-  customer_address?: string;
-  items: any[];
-  total_amount: number;
   status: string;
-  notes?: string;
-  company_id: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CreateOrderData {
-  customer_name: string;
-  customer_email: string;
-  customer_phone?: string;
-  customer_address?: string;
-  items: any[];
-  total_amount: number;
   notes?: string;
 }
 
 export const orderService = {
-  async getOrders(companyId?: string): Promise<Order[]> {
-    let query = supabase
-      .from('orders')
-      .select('*')
-      .order('created_at', { ascending: false });
+  async updateOrderStatus({ id, status, notes }: UpdateOrderStatusData) {
+    try {
+      // Update the order status
+      const { error: orderError } = await supabase
+        .from('orders')
+        .update({ status, notes })
+        .eq('id', id);
 
-    if (companyId) {
-      query = query.eq('company_id', companyId);
+      if (orderError) throw orderError;
+
+      // Add to order history
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error: historyError } = await supabase
+        .from('order_status_history')
+        .insert({
+          order_id: id,
+          status,
+          notes,
+          changed_by: user?.id
+        });
+
+      if (historyError) {
+        console.error('Error adding to order history:', historyError);
+        // Don't throw here as the main update succeeded
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
     }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Error fetching orders:', error);
-      throw new Error(error.message);
-    }
-    
-    return (data || []).map(order => ({
-      ...order,
-      items: Array.isArray(order.items) ? order.items : []
-    }));
   },
 
-  async getOrder(id: string): Promise<Order> {
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('id', id)
-      .single();
+  async createOrder(orderData: any) {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .insert(orderData)
+        .select()
+        .single();
 
-    if (error) throw new Error(error.message);
-    if (!data) throw new Error('Order not found');
-    
-    return {
-      ...data,
-      items: Array.isArray(data.items) ? data.items : []
-    };
-  },
+      if (error) throw error;
 
-  async updateOrderStatus(id: string, status: string, notes?: string): Promise<Order> {
-    const { data, error } = await supabase
-      .from('orders')
-      .update({ 
-        status,
-        notes,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select()
-      .single();
+      // Add initial status to history
+      const { error: historyError } = await supabase
+        .from('order_status_history')
+        .insert({
+          order_id: data.id,
+          status: 'pending',
+          notes: 'Pedido criado'
+        });
 
-    if (error) throw new Error(error.message);
-    if (!data) throw new Error('Failed to update order');
-    
-    return {
-      ...data,
-      items: Array.isArray(data.items) ? data.items : []
-    };
-  },
+      if (historyError) {
+        console.error('Error adding initial order history:', historyError);
+      }
 
-  async createOrder(orderData: CreateOrderData, companyId: string): Promise<Order> {
-    const { data, error } = await supabase
-      .from('orders')
-      .insert([
-        {
-          ...orderData,
-          company_id: companyId,
-          status: 'pending'
-        },
-      ])
-      .select()
-      .single();
-
-    if (error) {
+      return data;
+    } catch (error) {
       console.error('Error creating order:', error);
-      throw new Error(error.message);
+      throw error;
     }
-    if (!data) throw new Error('Failed to create order');
-    
-    return {
-      ...data,
-      items: Array.isArray(data.items) ? data.items : []
-    };
   }
 };

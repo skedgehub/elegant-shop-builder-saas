@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      catalog_settings: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          custom_domain: string | null
+          enabled: boolean
+          id: string
+          seo_settings: Json | null
+          theme_settings: Json | null
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          custom_domain?: string | null
+          enabled?: boolean
+          id?: string
+          seo_settings?: Json | null
+          theme_settings?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          custom_domain?: string | null
+          enabled?: boolean
+          id?: string
+          seo_settings?: Json | null
+          theme_settings?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           company_id: string | null
@@ -91,6 +132,85 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          company_id: string | null
+          created_at: string
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_url?: string | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_url?: string | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_status_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          order_id: string | null
+          status: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          status: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       orders: {
         Row: {
