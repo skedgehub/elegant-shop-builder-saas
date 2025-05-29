@@ -1,22 +1,21 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { 
-  LayoutDashboard, 
-  Package, 
-  FolderOpen, 
-  ShoppingCart, 
-  Users, 
+import {
+  LayoutDashboard,
+  Package,
+  FolderOpen,
+  ShoppingCart,
+  Users,
   Settings,
   Globe,
   Palette,
   Bell,
   BarChart3,
   FileText,
-  CreditCard
+  CreditCard,
 } from "lucide-react";
 
 const sidebarItems = [
@@ -26,14 +25,14 @@ const sidebarItems = [
       {
         title: "Visão Geral",
         href: "/admin",
-        icon: LayoutDashboard
+        icon: LayoutDashboard,
       },
       {
         title: "Relatórios",
         href: "/admin/reports",
-        icon: BarChart3
-      }
-    ]
+        icon: BarChart3,
+      },
+    ],
   },
   {
     title: "Catálogo",
@@ -41,14 +40,14 @@ const sidebarItems = [
       {
         title: "Produtos",
         href: "/admin/products",
-        icon: Package
+        icon: Package,
       },
       {
         title: "Categorias",
         href: "/admin/categories",
-        icon: FolderOpen
-      }
-    ]
+        icon: FolderOpen,
+      },
+    ],
   },
   {
     title: "Vendas",
@@ -56,14 +55,14 @@ const sidebarItems = [
       {
         title: "Pedidos",
         href: "/admin/orders",
-        icon: ShoppingCart
+        icon: ShoppingCart,
       },
       {
         title: "Clientes",
         href: "/admin/subscribers",
-        icon: Users
-      }
-    ]
+        icon: Users,
+      },
+    ],
   },
   {
     title: "Configurações",
@@ -71,20 +70,20 @@ const sidebarItems = [
       {
         title: "Catálogo Online",
         href: "/admin/catalog-config",
-        icon: Globe
+        icon: Globe,
       },
       {
         title: "Sistema",
-        href: "/admin/system-config",
-        icon: Settings
+        href: "/admin/system",
+        icon: Settings,
       },
       {
         title: "Aparência",
         href: "/admin/appearance",
-        icon: Palette
-      }
-    ]
-  }
+        icon: Palette,
+      },
+    ],
+  },
 ];
 
 interface AdminSidebarProps {
@@ -113,7 +112,9 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
                   {section.items.map((item) => (
                     <Button
                       key={item.href}
-                      variant={location.pathname === item.href ? "secondary" : "ghost"}
+                      variant={
+                        location.pathname === item.href ? "secondary" : "ghost"
+                      }
                       className="w-full justify-start"
                       asChild
                     >

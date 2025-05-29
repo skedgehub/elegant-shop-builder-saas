@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -46,11 +45,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   Painel Administrativo
                 </h1>
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 <NotificationDropdown />
                 <ThemeToggle />
-                
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
@@ -61,7 +60,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate("/admin/profile")}>
+                    <DropdownMenuItem
+                      onClick={() => navigate("/admin/profile")}
+                    >
                       <User className="h-4 w-4 mr-2" />
                       Perfil
                     </DropdownMenuItem>
@@ -77,9 +78,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </header>
 
           {/* Page content */}
-          <main className="flex-1 overflow-auto">
-            {children}
-          </main>
+          <main className="flex-1 overflow-auto">{children}</main>
         </div>
       </div>
     </div>
