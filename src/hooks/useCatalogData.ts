@@ -44,13 +44,20 @@ export const useCatalogData = (companySubdomain?: string) => {
     queryFn: async () => {
       if (!companySubdomain) return null;
 
+      console.log('Fetching company data for subdomain:', companySubdomain);
+
       const { data: company, error } = await supabase
         .from('companies')
         .select('*')
         .eq('subdomain', companySubdomain)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching company:', error);
+        throw error;
+      }
+
+      console.log('Company data found:', company);
       return company;
     },
     enabled: !!companySubdomain,
@@ -61,12 +68,17 @@ export const useCatalogData = (companySubdomain?: string) => {
     queryFn: async () => {
       if (!companySubdomain || !companyQuery.data) return [];
 
+      console.log('Fetching categories for company:', companyQuery.data.id);
+
       const { data: categories, error } = await supabase
         .from('categories')
         .select('*')
         .eq('company_id', companyQuery.data.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching categories:', error);
+        throw error;
+      }
 
       const { data: productCounts } = await supabase
         .from('products')
@@ -76,9 +88,9 @@ export const useCatalogData = (companySubdomain?: string) => {
       return categories.map(category => ({
         id: category.id,
         name: category.name,
-        description: category.description,
-        image: category.image,
-        subcategories: Array.isArray(category.subcategories) ? category.subcategories : [],
+        description: category.description || '',
+        image: category.image || '',
+        subcategories: Array.isArray(category.subcategories) ? category.subcategories as string[] : [],
         count: productCounts?.filter(p => p.category_id === category.id).length || 0
       }));
     },
@@ -89,6 +101,8 @@ export const useCatalogData = (companySubdomain?: string) => {
     queryKey: ['catalog-products', companySubdomain],
     queryFn: async () => {
       if (!companySubdomain || !companyQuery.data) return [];
+
+      console.log('Fetching products for company:', companyQuery.data.id);
 
       const { data: products, error } = await supabase
         .from('products')
@@ -101,21 +115,28 @@ export const useCatalogData = (companySubdomain?: string) => {
         .eq('company_id', companyQuery.data.id)
         .gt('stock', 0);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+      }
+
+      console.log('Products found:', products);
 
       return products.map(product => ({
         id: product.id,
         name: product.name,
-        description: product.description,
+        description: product.description || '',
         price: Number(product.price),
         promotional_price: product.promotional_price ? Number(product.promotional_price) : undefined,
-        category_id: product.category_id,
-        category: product.categories?.name || '',
-        subcategory: product.subcategory,
-        image: product.image,
-        badge: product.badge,
+        category_id: product.category_id || '',
+        category: (product.categories as any)?.name || '',
+        subcategory: product.subcategory || '',
+        image: product.image || '',
+        badge: product.badge || '',
         stock: product.stock,
-        custom_fields: typeof product.custom_fields === 'object' ? product.custom_fields as Record<string, string> : {},
+        custom_fields: typeof product.custom_fields === 'object' && product.custom_fields !== null 
+          ? product.custom_fields as Record<string, string> 
+          : {},
         rating: 4.5 + Math.random() * 0.5,
         reviews: Math.floor(Math.random() * 300) + 50
       }));
