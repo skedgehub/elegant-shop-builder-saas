@@ -1,6 +1,11 @@
-
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,8 +32,8 @@ const Appearance = () => {
     setIsSaving(true);
     try {
       // Aqui você implementaria a lógica para salvar as configurações
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simula API call
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula API call
+
       toast({
         title: "Configurações salvas!",
         description: "As alterações de aparência foram aplicadas.",
@@ -44,17 +49,21 @@ const Appearance = () => {
     }
   };
 
-  const applyPreset = (preset: typeof colorPresets[0]) => {
+  const applyPreset = (preset: (typeof colorPresets)[0]) => {
     setPrimaryColor(preset.primary);
     setSecondaryColor(preset.secondary);
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className=" mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Aparência</h1>
-          <p className="text-gray-600 dark:text-gray-400">Personalize a aparência do seu catálogo</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Aparência
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Personalize a aparência do seu catálogo
+          </p>
         </div>
         <Button onClick={handleSave} disabled={isSaving}>
           {isSaving ? (
@@ -129,11 +138,11 @@ const Appearance = () => {
                   >
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1">
-                        <div 
+                        <div
                           className="w-3 h-3 rounded"
                           style={{ backgroundColor: preset.primary }}
                         />
-                        <div 
+                        <div
                           className="w-3 h-3 rounded"
                           style={{ backgroundColor: preset.secondary }}
                         />
@@ -168,7 +177,8 @@ const Appearance = () => {
                 placeholder="https://exemplo.com/logo.png"
               />
               <p className="text-xs text-gray-500">
-                Recomendamos imagens em formato PNG ou SVG com fundo transparente
+                Recomendamos imagens em formato PNG ou SVG com fundo
+                transparente
               </p>
             </div>
 
@@ -176,12 +186,12 @@ const Appearance = () => {
               <div className="space-y-2">
                 <Label>Preview do Logo</Label>
                 <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
-                  <img 
-                    src={logoUrl} 
-                    alt="Logo preview" 
+                  <img
+                    src={logoUrl}
+                    alt="Logo preview"
                     className="h-12 object-contain"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
+                      (e.target as HTMLImageElement).style.display = "none";
                     }}
                   />
                 </div>
@@ -203,15 +213,19 @@ const Appearance = () => {
           </CardHeader>
           <CardContent>
             <div className="border rounded-lg p-6 bg-white dark:bg-gray-900">
-              <div 
+              <div
                 className="p-4 rounded-lg text-white mb-4"
                 style={{ backgroundColor: primaryColor }}
               >
                 <div className="flex items-center gap-3">
                   {logoUrl ? (
-                    <img src={logoUrl} alt="Logo" className="h-8 object-contain" />
+                    <img
+                      src={logoUrl}
+                      alt="Logo"
+                      className="h-8 object-contain"
+                    />
                   ) : (
-                    <div 
+                    <div
                       className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold"
                       style={{ backgroundColor: secondaryColor }}
                     >
@@ -221,29 +235,31 @@ const Appearance = () => {
                   <h3 className="text-xl font-bold">Minha Loja</h3>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="border rounded-lg p-4">
                   <div className="w-full h-32 bg-gray-200 rounded mb-3"></div>
                   <h4 className="font-medium mb-2">Produto Exemplo</h4>
-                  <Badge style={{ backgroundColor: primaryColor, color: 'white' }}>
+                  <Badge
+                    style={{ backgroundColor: primaryColor, color: "white" }}
+                  >
                     Oferta
                   </Badge>
                   <p className="text-lg font-bold mt-2">R$ 99,90</p>
-                  <Button 
+                  <Button
                     className="w-full mt-3"
                     style={{ backgroundColor: secondaryColor }}
                   >
                     Adicionar ao Carrinho
                   </Button>
                 </div>
-                
+
                 <div className="border rounded-lg p-4">
                   <div className="w-full h-32 bg-gray-200 rounded mb-3"></div>
                   <h4 className="font-medium mb-2">Outro Produto</h4>
                   <p className="text-lg font-bold mt-2">R$ 149,90</p>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full mt-3"
                     style={{ borderColor: primaryColor, color: primaryColor }}
                   >

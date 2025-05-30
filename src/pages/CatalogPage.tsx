@@ -1,27 +1,44 @@
-
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Search, ShoppingCart, Star, Filter, Grid, List, Heart, Share2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useCatalogData, type CatalogProduct } from '@/hooks/useCatalogData';
-import { useCart } from '@/contexts/CartContext';
-import { CartDrawer } from '@/components/CartDrawer';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import {
+  Search,
+  ShoppingCart,
+  Star,
+  Filter,
+  Grid,
+  List,
+  Heart,
+  Share2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCatalogData, type CatalogProduct } from "@/hooks/useCatalogData";
+import { useCart } from "@/contexts/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 
 const CatalogPage = () => {
   const { subdomain } = useParams<{ subdomain: string }>();
-  const { company, categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
+  const { company, categories, products, isLoading, searchProducts } =
+    useCatalogData(subdomain);
   const { addToCart, cartItems, isOpen, setIsOpen } = useCart();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>(
+    []
+  );
 
   useEffect(() => {
     let filtered = products;
@@ -30,17 +47,23 @@ const CatalogPage = () => {
       filtered = searchProducts(products, searchTerm);
     }
 
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => product.category_id === selectedCategory);
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(
+        (product) => product.category_id === selectedCategory
+      );
     }
 
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'price-low':
-          return (a.promotional_price || a.price) - (b.promotional_price || b.price);
-        case 'price-high':
-          return (b.promotional_price || b.price) - (a.promotional_price || a.price);
-        case 'rating':
+        case "price-low":
+          return (
+            (a.promotional_price || a.price) - (b.promotional_price || b.price)
+          );
+        case "price-high":
+          return (
+            (b.promotional_price || b.price) - (a.promotional_price || a.price)
+          );
+        case "rating":
           return (b.rating || 0) - (a.rating || 0);
         default:
           return a.name.localeCompare(b.name);
@@ -51,9 +74,9 @@ const CatalogPage = () => {
   }, [products, searchTerm, selectedCategory, sortBy, searchProducts]);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
     }).format(price);
   };
 
@@ -88,15 +111,19 @@ const CatalogPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Catálogo não encontrado</h1>
-          <p className="text-gray-600">O catálogo solicitado não existe ou não está disponível.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Catálogo não encontrado
+          </h1>
+          <p className="text-gray-600">
+            O catálogo solicitado não existe ou não está disponível.
+          </p>
         </div>
       </div>
     );
   }
 
-  const primaryColor = company.primary_color || '#3B82F6';
-  const secondaryColor = company.secondary_color || '#1E40AF';
+  const primaryColor = company.primary_color || "#3B82F6";
+  const secondaryColor = company.secondary_color || "#1E40AF";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -161,8 +188,11 @@ const CatalogPage = () => {
                 className="pl-10"
               />
             </div>
-            
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
@@ -190,17 +220,17 @@ const CatalogPage = () => {
 
             <div className="flex border rounded-lg">
               <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setViewMode('grid')}
+                onClick={() => setViewMode("grid")}
                 className="rounded-r-none"
               >
                 <Grid className="h-4 w-4" />
               </Button>
               <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setViewMode('list')}
+                onClick={() => setViewMode("list")}
                 className="rounded-l-none"
               >
                 <List className="h-4 w-4" />
@@ -212,14 +242,21 @@ const CatalogPage = () => {
         {/* Categories */}
         <Tabs defaultValue="products" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="products">Produtos ({filteredProducts.length})</TabsTrigger>
-            <TabsTrigger value="categories">Categorias ({categories.length})</TabsTrigger>
+            <TabsTrigger value="products">
+              Produtos ({filteredProducts.length})
+            </TabsTrigger>
+            <TabsTrigger value="categories">
+              Categorias ({categories.length})
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="categories" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categories.map((category) => (
-                <Card key={category.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+                <Card
+                  key={category.id}
+                  className="cursor-pointer hover:shadow-lg transition-shadow"
+                >
                   <CardContent className="p-6">
                     {category.image && (
                       <img
@@ -228,11 +265,17 @@ const CatalogPage = () => {
                         className="w-full h-32 object-cover rounded-lg mb-4"
                       />
                     )}
-                    <h3 className="text-lg font-semibold mb-2">{category.name}</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      {category.name}
+                    </h3>
                     {category.description && (
-                      <p className="text-gray-600 text-sm mb-2">{category.description}</p>
+                      <p className="text-gray-600 text-sm mb-2">
+                        {category.description}
+                      </p>
                     )}
-                    <p className="text-sm text-gray-500">{category.count} produtos</p>
+                    <p className="text-sm text-gray-500">
+                      {category.count} produtos
+                    </p>
                   </CardContent>
                 </Card>
               ))}
@@ -245,18 +288,28 @@ const CatalogPage = () => {
                 <p className="text-gray-500">Nenhum produto encontrado.</p>
               </div>
             ) : (
-              <div className={viewMode === 'grid' 
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                : "space-y-4"
-              }>
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                    : "space-y-4"
+                }
+              >
                 {filteredProducts.map((product) => (
-                  <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card
+                    key={product.id}
+                    className="overflow-hidden hover:shadow-lg transition-shadow"
+                  >
                     {product.image && (
                       <div className="relative">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className={viewMode === 'grid' ? "w-full h-48 object-cover" : "w-32 h-32 object-cover"}
+                          className={
+                            viewMode === "grid"
+                              ? "w-full h-48 object-cover"
+                              : "w-32 h-32 object-cover"
+                          }
                         />
                         {product.badge && (
                           <Badge className="absolute top-2 left-2 custom-primary">
@@ -264,10 +317,18 @@ const CatalogPage = () => {
                           </Badge>
                         )}
                         <div className="absolute top-2 right-2 flex space-x-1">
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 bg-white/80 hover:bg-white">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-8 p-0 bg-white/80 hover:bg-white"
+                          >
                             <Heart className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 bg-white/80 hover:bg-white">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-8 p-0 bg-white/80 hover:bg-white"
+                          >
                             <Share2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -276,11 +337,15 @@ const CatalogPage = () => {
 
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold text-lg leading-tight">{product.name}</h3>
+                        <h3 className="font-semibold text-lg leading-tight">
+                          {product.name}
+                        </h3>
                         <div className="flex items-center space-x-1 text-sm">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span>{product.rating?.toFixed(1) || '0.0'}</span>
-                          <span className="text-gray-500">({product.reviews || 0})</span>
+                          <span>{product.rating?.toFixed(1) || "0.0"}</span>
+                          <span className="text-gray-500">
+                            ({product.reviews || 0})
+                          </span>
                         </div>
                       </div>
 
@@ -294,7 +359,8 @@ const CatalogPage = () => {
 
                       <div className="flex items-center justify-between mt-4">
                         <div className="flex flex-col">
-                          {product.promotional_price && product.promotional_price < product.price ? (
+                          {product.promotional_price &&
+                          product.promotional_price < product.price ? (
                             <>
                               <span className="text-lg font-bold custom-primary-text">
                                 {formatPrice(product.promotional_price)}
@@ -317,18 +383,22 @@ const CatalogPage = () => {
                     </CardContent>
 
                     <CardFooter className="p-4 pt-0">
-                      <Button 
+                      <Button
                         className="w-full custom-primary hover:custom-secondary"
-                        onClick={() => addToCart({
-                          id: product.id,
-                          name: product.name,
-                          price: product.promotional_price || product.price,
-                          image: product.image,
-                          stock: product.stock
-                        })}
+                        onClick={() =>
+                          addToCart({
+                            id: product.id,
+                            name: product.name,
+                            price: product.promotional_price || product.price,
+                            image: product.image,
+                            stock: product.stock,
+                          })
+                        }
                         disabled={product.stock <= 0}
                       >
-                        {product.stock <= 0 ? 'Fora de estoque' : 'Adicionar ao carrinho'}
+                        {product.stock <= 0
+                          ? "Fora de estoque"
+                          : "Adicionar ao carrinho"}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -339,7 +409,11 @@ const CatalogPage = () => {
         </Tabs>
       </main>
 
-      <CartDrawer />
+      <CartDrawer
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        companyId=""
+      />
     </div>
   );
 };
