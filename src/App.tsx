@@ -4,8 +4,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
 import { CartProvider } from "@/contexts/CartContext";
+import { ThemeProvider } from "next-themes";
+
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -15,58 +16,123 @@ import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Subscribers from "./pages/Subscribers";
 import Profile from "./pages/Profile";
-import SystemConfig from "./pages/SystemConfig";
 import CatalogConfig from "./pages/CatalogConfig";
+import SystemConfig from "./pages/SystemConfig";
+import Reports from "./pages/Reports";
+import Appearance from "./pages/Appearance";
+import OrderTracking from "./pages/OrderTracking";
 import CatalogPage from "./pages/CatalogPage";
-import ProductForm from "./components/ProductForm";
-import CategoryForm from "./components/CategoryForm";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLayout from "./components/AdminLayout";
 
 const queryClient = new QueryClient();
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <CartProvider>
         <TooltipProvider>
-          <CartProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/catalog/:subdomain" element={<CatalogPage />} />
-
-                {/* Protected admin routes */}
-                <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-                <Route path="/admin/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
-                <Route path="/admin/products/new" element={<ProtectedRoute><ProductForm /></ProtectedRoute>} />
-                <Route path="/admin/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-                <Route path="/admin/categories/new" element={<ProtectedRoute><CategoryForm /></ProtectedRoute>} />
-                <Route path="/admin/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-                <Route path="/admin/subscribers" element={<ProtectedRoute><Subscribers /></ProtectedRoute>} />
-                <Route path="/admin/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="/admin/system" element={<ProtectedRoute><SystemConfig /></ProtectedRoute>} />
-                <Route path="/admin/catalog" element={<ProtectedRoute><CatalogConfig /></ProtectedRoute>} />
-
-                {/* 404 route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </CartProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/track/:orderId" element={<OrderTracking />} />
+              <Route path="/catalog/:subdomain" element={<CatalogPage />} />
+              
+              {/* Protected Admin Routes */}
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminDashboard />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/products" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Products />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/categories" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Categories />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/orders" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Orders />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/subscribers" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Subscribers />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/profile" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Profile />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/catalog-config" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <CatalogConfig />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/system" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <SystemConfig />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/reports" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Reports />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/admin/appearance" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Appearance />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+              
+              {/* 404 Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
         </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-}
+      </CartProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
 
 export default App;

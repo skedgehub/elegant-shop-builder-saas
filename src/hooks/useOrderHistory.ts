@@ -17,17 +17,28 @@ export const useOrderHistory = (orderId?: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchOrderHistory = async () => {
-    if (!orderId) return;
+    if (!orderId) {
+      setHistory([]);
+      setIsLoading(false);
+      return;
+    }
 
     try {
       setIsLoading(true);
+      console.log('Fetching order history for order:', orderId);
+      
       const { data, error } = await supabase
         .from('order_status_history')
         .select('*')
         .eq('order_id', orderId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching order history:', error);
+        throw error;
+      }
+      
+      console.log('Order history data:', data);
       setHistory(data || []);
     } catch (error: any) {
       console.error('Error fetching order history:', error);
@@ -36,6 +47,7 @@ export const useOrderHistory = (orderId?: string) => {
         description: error.message,
         variant: "destructive",
       });
+      setHistory([]);
     } finally {
       setIsLoading(false);
     }
@@ -47,6 +59,8 @@ export const useOrderHistory = (orderId?: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      console.log('Adding to order history:', { orderId, status, notes, userId: user?.id });
+      
       const { error } = await supabase
         .from('order_status_history')
         .insert({
@@ -56,12 +70,20 @@ export const useOrderHistory = (orderId?: string) => {
           changed_by: user?.id
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error adding to order history:', error);
+        throw error;
+      }
       
       // Refresh history
-      fetchOrderHistory();
+      await fetchOrderHistory();
     } catch (error: any) {
       console.error('Error adding to order history:', error);
+      toast({
+        title: "Erro ao adicionar ao histórico",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import CartDrawer from "@/components/CartDrawer";
 import ProductDetailsModal from "@/components/ProductDetailsModal";
+import { useCatalogData, CatalogProduct } from "@/hooks/useCatalogData";
 import {
   Search,
   Filter,
@@ -30,6 +32,7 @@ import {
 } from "@/components/ui/drawer";
 
 const CatalogPage = () => {
+  const { subdomain } = useParams<{ subdomain: string }>();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSubcategory, setSelectedSubcategory] = useState("all");
@@ -40,188 +43,76 @@ const CatalogPage = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
 
   const { addToCart, getTotalItems } = useCart();
+  const { categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
 
-  const categories = [
+  // Add "all" category to the beginning
+  const allCategories = [
     {
       id: "all",
       name: "Todos os Produtos",
-      count: 127,
+      count: products.length,
       subcategories: [],
     },
-    {
-      id: "electronics",
-      name: "Eletrônicos",
-      count: 45,
-      subcategories: ["Smartphones", "Notebooks", "Fones", "Tablets"],
-    },
-    {
-      id: "clothing",
-      name: "Roupas",
-      count: 32,
-      subcategories: ["Camisetas", "Calças", "Vestidos", "Jaquetas"],
-    },
-    {
-      id: "shoes",
-      name: "Calçados",
-      count: 28,
-      subcategories: ["Tênis", "Sapatos", "Sandálias", "Botas"],
-    },
-    {
-      id: "home",
-      name: "Casa & Decoração",
-      count: 22,
-      subcategories: ["Móveis", "Decoração", "Utensílios", "Iluminação"],
-    },
+    ...categories,
   ];
 
-  const products = [
-    {
-      id: 1,
-      name: "Smartphone Galaxy S24 Ultra",
-      category: "electronics",
-      subcategory: "Smartphones",
-      price: 1299.0,
-      promotionalPrice: 1099.0,
-      image: "/placeholder.svg",
-      rating: 4.8,
-      reviews: 234,
-      badge: "Oferta",
-      description:
-        "Smartphone premium com câmera profissional de alta qualidade, tela Dynamic AMOLED 6.8 polegadas e processador Snapdragon 8 Gen 3.",
-      customFields: {
-        marca: "Samsung",
-        cor: "Preto Titânio",
-        memoria: "256GB",
-        tela: "6.8 polegadas",
-      },
-    },
-    {
-      id: 2,
-      name: "Tênis Nike Air Max 270",
-      category: "shoes",
-      subcategory: "Tênis",
-      price: 599.0,
-      promotionalPrice: null,
-      image: "/placeholder.svg",
-      rating: 4.6,
-      reviews: 189,
-      badge: null,
-      description: "Tênis esportivo com máximo conforto e design moderno",
-      customFields: {
-        marca: "Nike",
-        cor: "Branco/Preto",
-        tamanho: "39-44",
-        tipo: "Corrida",
-      },
-    },
-    {
-      id: 3,
-      name: "Notebook Gamer Dell G15",
-      category: "electronics",
-      subcategory: "Notebooks",
-      price: 2199.0,
-      promotionalPrice: 1999.0,
-      image: "/placeholder.svg",
-      rating: 4.7,
-      reviews: 156,
-      badge: "Novo",
-      description: "Notebook gamer com placa de vídeo dedicada",
-      customFields: {
-        marca: "Dell",
-        processador: "Intel i7",
-        memoria: "16GB RAM",
-        armazenamento: "512GB SSD",
-      },
-    },
-    {
-      id: 4,
-      name: "Camisa Polo Ralph Lauren",
-      category: "clothing",
-      subcategory: "Camisetas",
-      price: 189.0,
-      promotionalPrice: 149.0,
-      image: "/placeholder.svg",
-      rating: 4.5,
-      reviews: 143,
-      badge: "Promoção",
-      description: "Polo clássica 100% algodão",
-      customFields: {
-        marca: "Ralph Lauren",
-        material: "100% Algodão",
-        tamanho: "P, M, G, GG",
-        cor: "Azul Marinho",
-      },
-    },
-    {
-      id: 5,
-      name: "Fone Bluetooth Sony WH-1000XM5",
-      category: "electronics",
-      subcategory: "Fones",
-      price: 399.0,
-      promotionalPrice: null,
-      image: "/placeholder.svg",
-      rating: 4.9,
-      reviews: 298,
-      badge: "Bestseller",
-      description: "Fone com cancelamento de ruído ativo",
-      customFields: {
-        marca: "Sony",
-        conexao: "Bluetooth 5.2",
-        bateria: "30h",
-        cancelamento: "Ruído Ativo",
-      },
-    },
-    {
-      id: 6,
-      name: "Vestido Floral Zara",
-      category: "clothing",
-      subcategory: "Vestidos",
-      price: 129.0,
-      promotionalPrice: 99.0,
-      image: "/placeholder.svg",
-      rating: 4.4,
-      reviews: 87,
-      badge: "Liquidação",
-      description: "Vestido estampado ideal para o verão",
-      customFields: {
-        marca: "Zara",
-        material: "Viscose",
-        tamanho: "P, M, G",
-        estampa: "Floral",
-      },
-    },
-  ];
-
-  const selectedCategoryData = categories.find(
+  const selectedCategoryData = allCategories.find(
     (cat) => cat.id === selectedCategory
   );
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    const matchesSubcategory =
-      selectedSubcategory === "all" ||
-      product.subcategory === selectedSubcategory;
-    return matchesSearch && matchesCategory && matchesSubcategory;
-  });
+  // Filter and search products
+  let filteredProducts = products;
 
-  const openProductDetails = (product: any) => {
+  // Apply category filter
+  if (selectedCategory !== "all") {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.category_id === selectedCategory
+    );
+  }
+
+  // Apply subcategory filter
+  if (selectedSubcategory !== "all") {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.subcategory === selectedSubcategory
+    );
+  }
+
+  // Apply search filter
+  filteredProducts = searchProducts(filteredProducts, searchTerm);
+
+  const openProductDetails = (product: CatalogProduct) => {
     setSelectedProduct(product);
     setProductModalOpen(true);
   };
 
-  const ProductCard = ({ product }: { product: (typeof products)[0] }) => (
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando catálogo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const ProductCard = ({ product }: { product: CatalogProduct }) => (
     <Card
       className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer"
       onClick={() => openProductDetails(product)}
     >
       <div className="aspect-square relative overflow-hidden bg-gray-100">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-          <span className="text-gray-500 text-sm">Imagem do Produto</span>
-        </div>
+        {product.image ? (
+          <img 
+            src={product.image} 
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <span className="text-gray-500 text-sm">Imagem do Produto</span>
+          </div>
+        )}
 
         {product.badge && (
           <Badge
@@ -272,27 +163,29 @@ const CatalogPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-1">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3 w-3 ${
-                  i < Math.floor(product.rating)
-                    ? "text-yellow-400 fill-current"
-                    : "text-gray-300"
-                }`}
-              />
-            ))}
+        {product.rating && (
+          <div className="flex items-center space-x-1">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-3 w-3 ${
+                    i < Math.floor(product.rating!)
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-gray-600">({product.reviews})</span>
           </div>
-          <span className="text-xs text-gray-600">({product.reviews})</span>
-        </div>
+        )}
 
         <div className="space-y-2">
-          {product.promotionalPrice ? (
+          {product.promotional_price ? (
             <div className="flex items-center space-x-2">
               <span className="text-xl font-bold text-green-600">
-                R$ {product.promotionalPrice.toFixed(2)}
+                R$ {product.promotional_price.toFixed(2)}
               </span>
               <span className="text-sm text-gray-500 line-through">
                 R$ {product.price.toFixed(2)}
@@ -305,16 +198,18 @@ const CatalogPage = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-1 text-xs">
-          {Object.entries(product.customFields)
-            .slice(0, 2)
-            .map(([key, value]) => (
-              <div key={key} className="truncate">
-                <span className="text-gray-500 capitalize">{key}:</span>
-                <span className="ml-1 font-medium">{value}</span>
-              </div>
-            ))}
-        </div>
+        {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
+          <div className="grid grid-cols-2 gap-1 text-xs">
+            {Object.entries(product.custom_fields)
+              .slice(0, 2)
+              .map(([key, value]) => (
+                <div key={key} className="truncate">
+                  <span className="text-gray-500 capitalize">{key}:</span>
+                  <span className="ml-1 font-medium">{value}</span>
+                </div>
+              ))}
+          </div>
+        )}
 
         <Button
           onClick={(e) => {
@@ -330,7 +225,7 @@ const CatalogPage = () => {
     </Card>
   );
 
-  const ProductListItem = ({ product }: { product: (typeof products)[0] }) => (
+  const ProductListItem = ({ product }: { product: CatalogProduct }) => (
     <Card
       className="hover:shadow-md transition-shadow cursor-pointer"
       onClick={() => openProductDetails(product)}
@@ -338,9 +233,17 @@ const CatalogPage = () => {
       <CardContent className="p-4">
         <div className="flex space-x-4">
           <div className="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-              <span className="text-xs text-gray-500">IMG</span>
-            </div>
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <span className="text-xs text-gray-500">IMG</span>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 space-y-2">
@@ -370,28 +273,30 @@ const CatalogPage = () => {
               )}
             </div>
 
-            <div className="flex items-center space-x-1">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-3 w-3 ${
-                      i < Math.floor(product.rating)
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
+            {product.rating && (
+              <div className="flex items-center space-x-1">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-3 w-3 ${
+                        i < Math.floor(product.rating!)
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-gray-600">({product.reviews})</span>
               </div>
-              <span className="text-xs text-gray-600">({product.reviews})</span>
-            </div>
+            )}
 
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                {product.promotionalPrice ? (
+                {product.promotional_price ? (
                   <div className="flex items-center space-x-2">
                     <span className="text-lg font-bold text-green-600">
-                      R$ {product.promotionalPrice.toFixed(2)}
+                      R$ {product.promotional_price.toFixed(2)}
                     </span>
                     <span className="text-sm text-gray-500 line-through">
                       R$ {product.price.toFixed(2)}
@@ -416,16 +321,18 @@ const CatalogPage = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {Object.entries(product.customFields)
-                .slice(0, 4)
-                .map(([key, value]) => (
-                  <div key={key} className="truncate">
-                    <span className="text-gray-500 capitalize">{key}:</span>
-                    <span className="ml-1 font-medium">{value}</span>
-                  </div>
-                ))}
-            </div>
+            {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {Object.entries(product.custom_fields)
+                  .slice(0, 4)
+                  .map(([key, value]) => (
+                    <div key={key} className="truncate">
+                      <span className="text-gray-500 capitalize">{key}:</span>
+                      <span className="ml-1 font-medium">{value}</span>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
@@ -453,7 +360,7 @@ const CatalogPage = () => {
                   <span className="text-white font-bold text-sm">M</span>
                 </div>
                 <div>
-                  <h1 className="font-bold text-gray-900">Minha Loja</h1>
+                  <h1 className="font-bold text-gray-900">{subdomain || 'Catálogo'}</h1>
                   <p className="text-xs text-gray-600 hidden sm:block">
                     Produtos selecionados com qualidade
                   </p>
@@ -484,7 +391,7 @@ const CatalogPage = () => {
                 </div>
                 <div className="flex items-center space-x-1">
                   <Mail className="h-4 w-4" />
-                  <span>contato@minhaloja.com</span>
+                  <span>contato@{subdomain}.com</span>
                 </div>
               </div>
             </div>
@@ -513,7 +420,7 @@ const CatalogPage = () => {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
                 <div className="space-y-2">
-                  {categories.map((category) => (
+                  {allCategories.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => {
@@ -571,11 +478,10 @@ const CatalogPage = () => {
                               : "text-gray-600 hover:bg-gray-100"
                           }
                         `}
-                        >
-                          {sub}
-                        </button>
-                      ))}
-                    </div>
+                      >
+                        {sub}
+                      </button>
+                    ))}
                   </div>
                 )}
 
@@ -822,7 +728,7 @@ const CatalogPage = () => {
             <div>
               <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
               <div className="space-y-2">
-                {categories.map((category) => (
+                {allCategories.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => {
