@@ -1,835 +1,300 @@
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import CartDrawer from "@/components/CartDrawer";
-import ProductDetailsModal from "@/components/ProductDetailsModal";
-import { useCatalogData, CatalogProduct } from "@/hooks/useCatalogData";
-import {
-  Search,
-  Filter,
-  Grid3X3,
-  List,
-  ShoppingCart,
-  Heart,
-  Star,
-  Menu,
-  X,
-  Phone,
-  Mail,
-  MapPin,
-  Plus,
-} from "lucide-react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerClose,
-} from "@/components/ui/drawer";
+import { Badge } from "@/components/ui/badge";
+import { Search, Star, ShoppingCart, Filter, Grid, List } from "lucide-react";
+import { useCatalogData } from "@/hooks/useCatalogData";
+import { useCart } from "@/contexts/CartContext";
 
 const CatalogPage = () => {
-  const { subdomain } = useParams<{ subdomain: string }>();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
-  const [viewMode, setViewMode] = useState("grid");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [productModalOpen, setProductModalOpen] = useState(false);
-
-  const { addToCart, getTotalItems } = useCart();
+  const { subdomain } = useParams();
   const { categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
+  const { addToCart } = useCart();
+  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [filteredProducts, setFilteredProducts] = useState(products);
 
-  // Add "all" category to the beginning
-  const allCategories = [
-    {
-      id: "all",
-      name: "Todos os Produtos",
-      count: products.length,
-      subcategories: [],
-    },
-    ...categories,
-  ];
+  useEffect(() => {
+    let filtered = products;
+    
+    // Aplicar busca por termo
+    if (searchTerm) {
+      filtered = searchProducts(filtered, searchTerm);
+    }
+    
+    // Aplicar filtro por categoria
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category_id === selectedCategory);
+    }
+    
+    // Aplicar filtro por subcategoria
+    if (selectedSubcategory) {
+      filtered = filtered.filter(product => product.subcategory === selectedSubcategory);
+    }
+    
+    setFilteredProducts(filtered);
+  }, [products, searchTerm, selectedCategory, selectedSubcategory, searchProducts]);
 
-  const selectedCategoryData = allCategories.find(
-    (cat) => cat.id === selectedCategory
-  );
+  const handleAddToCart = (product: any) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.promotional_price || product.price,
+      image: product.image,
+      quantity: 1
+    });
+  };
 
-  // Filter and search products
-  let filteredProducts = products;
-
-  // Apply category filter
-  if (selectedCategory !== "all") {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.category_id === selectedCategory
-    );
-  }
-
-  // Apply subcategory filter
-  if (selectedSubcategory !== "all") {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.subcategory === selectedSubcategory
-    );
-  }
-
-  // Apply search filter
-  filteredProducts = searchProducts(filteredProducts, searchTerm);
-
-  const openProductDetails = (product: CatalogProduct) => {
-    setSelectedProduct(product);
-    setProductModalOpen(true);
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price);
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando catálogo...</p>
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>Carregando catálogo...</p>
         </div>
       </div>
     );
   }
 
-  const ProductCard = ({ product }: { product: CatalogProduct }) => (
-    <Card
-      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer"
-      onClick={() => openProductDetails(product)}
-    >
-      <div className="aspect-square relative overflow-hidden bg-gray-100">
-        {product.image ? (
-          <img 
-            src={product.image} 
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-            <span className="text-gray-500 text-sm">Imagem do Produto</span>
-          </div>
-        )}
-
-        {product.badge && (
-          <Badge
-            className={`absolute top-2 left-2 z-10 ${
-              product.badge === "Oferta" ||
-              product.badge === "Promoção" ||
-              product.badge === "Liquidação"
-                ? "bg-red-500"
-                : product.badge === "Novo"
-                ? "bg-green-500"
-                : "bg-blue-500"
-            }`}
-          >
-            {product.badge}
-          </Badge>
-        )}
-
-        <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <Button
-            size="sm"
-            variant="secondary"
-            className="h-8 w-8 p-0 shadow-md"
-            onClick={(e) => {
-              e.stopPropagation();
-              addToCart(product);
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            className="h-8 w-8 p-0 shadow-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Heart className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors">
-            {product.name}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {product.description}
-          </p>
-        </div>
-
-        {product.rating && (
-          <div className="flex items-center space-x-1">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3 w-3 ${
-                    i < Math.floor(product.rating!)
-                      ? "text-yellow-400 fill-current"
-                      : "text-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-xs text-gray-600">({product.reviews})</span>
-          </div>
-        )}
-
-        <div className="space-y-2">
-          {product.promotional_price ? (
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-green-600">
-                R$ {product.promotional_price.toFixed(2)}
-              </span>
-              <span className="text-sm text-gray-500 line-through">
-                R$ {product.price.toFixed(2)}
-              </span>
-            </div>
-          ) : (
-            <span className="text-xl font-bold text-gray-900">
-              R$ {product.price.toFixed(2)}
-            </span>
-          )}
-        </div>
-
-        {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
-          <div className="grid grid-cols-2 gap-1 text-xs">
-            {Object.entries(product.custom_fields)
-              .slice(0, 2)
-              .map(([key, value]) => (
-                <div key={key} className="truncate">
-                  <span className="text-gray-500 capitalize">{key}:</span>
-                  <span className="ml-1 font-medium">{value}</span>
-                </div>
-              ))}
-          </div>
-        )}
-
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(product);
-          }}
-          className="w-full mt-4"
-        >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Adicionar ao Carrinho
-        </Button>
-      </CardContent>
-    </Card>
-  );
-
-  const ProductListItem = ({ product }: { product: CatalogProduct }) => (
-    <Card
-      className="hover:shadow-md transition-shadow cursor-pointer"
-      onClick={() => openProductDetails(product)}
-    >
-      <CardContent className="p-4">
-        <div className="flex space-x-4">
-          <div className="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-            {product.image ? (
-              <img 
-                src={product.image} 
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <span className="text-xs text-gray-500">IMG</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex-1 space-y-2">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-                  {product.description}
-                </p>
-              </div>
-              {product.badge && (
-                <Badge
-                  className={`ml-2 ${
-                    product.badge === "Oferta" ||
-                    product.badge === "Promoção" ||
-                    product.badge === "Liquidação"
-                      ? "bg-red-500"
-                      : product.badge === "Novo"
-                      ? "bg-green-500"
-                      : "bg-blue-500"
-                  }`}
-                >
-                  {product.badge}
-                </Badge>
-              )}
-            </div>
-
-            {product.rating && (
-              <div className="flex items-center space-x-1">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-3 w-3 ${
-                        i < Math.floor(product.rating!)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-gray-600">({product.reviews})</span>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                {product.promotional_price ? (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold text-green-600">
-                      R$ {product.promotional_price.toFixed(2)}
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      R$ {product.price.toFixed(2)}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-lg font-bold text-gray-900">
-                    R$ {product.price.toFixed(2)}
-                  </span>
-                )}
-              </div>
-
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addToCart(product);
-                }}
-                size="sm"
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Carrinho
-              </Button>
-            </div>
-
-            {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {Object.entries(product.custom_fields)
-                  .slice(0, 4)
-                  .map(([key, value]) => (
-                    <div key={key} className="truncate">
-                      <span className="text-gray-500 capitalize">{key}:</span>
-                      <span className="ml-1 font-medium">{value}</span>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+      <header className="bg-white shadow-sm sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <div>
-                  <h1 className="font-bold text-gray-900">{subdomain || 'Catálogo'}</h1>
-                  <p className="text-xs text-gray-600 hidden sm:block">
-                    Produtos selecionados com qualidade
-                  </p>
-                </div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Catálogo {subdomain}
+              </h1>
+            </div>
+            
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md mx-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Buscar produtos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
             </div>
-
-            <div className="flex items-center space-x-4">
-              {/* Cart Button */}
+            
+            {/* View Mode Toggle */}
+            <div className="flex items-center space-x-2">
               <Button
-                variant="outline"
+                variant={viewMode === "grid" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setCartOpen(true)}
-                className="relative"
+                onClick={() => setViewMode("grid")}
               >
-                <ShoppingCart className="h-4 w-4" />
-                {getTotalItems() > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {getTotalItems()}
-                  </Badge>
-                )}
+                <Grid className="h-4 w-4" />
               </Button>
-
-              <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
-                <div className="flex items-center space-x-1">
-                  <Phone className="h-4 w-4" />
-                  <span>(11) 99999-9999</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Mail className="h-4 w-4" />
-                  <span>contato@{subdomain}.com</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="pb-4">
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input
-                placeholder="Buscar produtos..."
-                className="pl-10 pr-4 h-12 text-lg"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-64">
-            <div className="bg-white rounded-lg shadow-sm p-4 space-y-6 sticky top-24">
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex gap-8">
+          {/* Sidebar */}
+          <aside className="w-64 flex-shrink-0">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+                <Filter className="h-4 w-4 mr-2" />
+                Filtros
+              </h3>
+              
+              {/* Categories Filter */}
+              <div className="mb-6">
+                <h4 className="font-medium text-gray-700 mb-3">Categorias</h4>
                 <div className="space-y-2">
-                  {allCategories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => {
-                        setSelectedCategory(category.id);
-                        setSelectedSubcategory("all");
-                      }}
-                      className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between
-                        ${
-                          selectedCategory === category.id
-                            ? "bg-primary-100 text-primary-700 font-medium"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }
-                      `}
-                    >
-                      <span>{category.name}</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {category.count}
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Subcategorias */}
-              {selectedCategoryData &&
-                selectedCategoryData.subcategories.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">
-                      Subcategorias
-                    </h3>
-                    <div className="space-y-1">
+                  <button
+                    onClick={() => {
+                      setSelectedCategory("");
+                      setSelectedSubcategory("");
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-md text-sm ${
+                      !selectedCategory ? "bg-primary text-white" : "hover:bg-gray-100"
+                    }`}
+                  >
+                    Todas ({products.length})
+                  </button>
+                  {categories.map(category => (
+                    <div key={category.id}>
                       <button
-                        onClick={() => setSelectedSubcategory("all")}
-                        className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                        ${
-                          selectedSubcategory === "all"
-                            ? "bg-primary-100 text-primary-700 font-medium"
-                            : "text-gray-600 hover:bg-gray-100"
-                        }
-                      `}
+                        onClick={() => {
+                          setSelectedCategory(category.id);
+                          setSelectedSubcategory("");
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm ${
+                          selectedCategory === category.id ? "bg-primary text-white" : "hover:bg-gray-100"
+                        }`}
                       >
-                        Todas
+                        {category.name} ({category.count})
                       </button>
-                      {selectedCategoryData.subcategories.map((sub) => (
-                        <button
-                          key={sub}
-                          onClick={() => setSelectedSubcategory(sub)}
-                          className={`
-                          w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                          ${
-                            selectedSubcategory === sub
-                              ? "bg-primary-100 text-primary-700 font-medium"
-                              : "text-gray-600 hover:bg-gray-100"
-                          }
-                        `}
-                      >
-                        {sub}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">
-                  Faixa de Preço
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex space-x-2">
-                    <Input placeholder="Min" className="text-sm" />
-                    <Input placeholder="Max" className="text-sm" />
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Aplicar
-                  </Button>
+                      
+                      {/* Subcategories */}
+                      {selectedCategory === category.id && category.subcategories.length > 0 && (
+                        <div className="ml-4 mt-2 space-y-1">
+                          {category.subcategories.map(subcategory => (
+                            <button
+                              key={subcategory}
+                              onClick={() => setSelectedSubcategory(subcategory)}
+                              className={`w-full text-left px-3 py-1 rounded-md text-xs ${
+                                selectedSubcategory === subcategory ? "bg-primary/20 text-primary" : "hover:bg-gray-50"
+                              }`}
+                            >
+                              {subcategory}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 space-y-6">
-            {/* Filters and View Toggle */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <p className="text-gray-600">
-                  {filteredProducts.length} produtos encontrados
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="lg:hidden"
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filtros
-                </Button>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <select className="text-sm border rounded-md px-3 py-1 bg-white">
-                  <option>Mais Relevantes</option>
-                  <option>Menor Preço</option>
-                  <option>Maior Preço</option>
-                  <option>Mais Avaliados</option>
-                </select>
-
-                <div className="flex border rounded-md">
-                  <Button
-                    variant={viewMode === "grid" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className="rounded-r-none"
-                  >
-                    <Grid3X3 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                    className="rounded-l-none"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
+          <main className="flex-1">
+            {/* Results Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {filteredProducts.length} produto(s) encontrado(s)
+                </h2>
+                {searchTerm && (
+                  <p className="text-sm text-gray-600">
+                    Resultados para "{searchTerm}"
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Products */}
-            {viewMode === "grid" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+            {/* Products Grid/List */}
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">Nenhum produto encontrado</p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Tente ajustar os filtros ou buscar por outros termos
+                </p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {filteredProducts.map((product) => (
-                  <ProductListItem key={product.id} product={product} />
+              <div className={viewMode === "grid" 
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+                : "space-y-4"
+              }>
+                {filteredProducts.map(product => (
+                  <Card key={product.id} className={viewMode === "list" ? "flex" : ""}>
+                    <div className={viewMode === "list" ? "w-48 flex-shrink-0" : ""}>
+                      <div className="aspect-square bg-gray-100 rounded-t-lg overflow-hidden relative">
+                        {product.image ? (
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <span>Sem imagem</span>
+                          </div>
+                        )}
+                        {product.badge && (
+                          <Badge className="absolute top-2 left-2 bg-red-500">
+                            {product.badge}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <CardContent className={`p-4 ${viewMode === "list" ? "flex-1" : ""}`}>
+                      <div className="space-y-2">
+                        <h3 className="font-medium text-gray-900 line-clamp-2">
+                          {product.name}
+                        </h3>
+                        
+                        {product.description && (
+                          <p className="text-sm text-gray-600 line-clamp-2">
+                            {product.description}
+                          </p>
+                        )}
+                        
+                        <div className="flex items-center space-x-1">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-3 w-3 ${
+                                  i < Math.floor(product.rating || 0)
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            ({product.reviews || 0})
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-1">
+                          {product.promotional_price ? (
+                            <>
+                              <div className="flex items-center space-x-2">
+                                <span className="text-lg font-bold text-green-600">
+                                  {formatPrice(product.promotional_price)}
+                                </span>
+                                <span className="text-sm text-gray-500 line-through">
+                                  {formatPrice(product.price)}
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <span className="text-lg font-bold text-gray-900">
+                              {formatPrice(product.price)}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <Button
+                          onClick={() => handleAddToCart(product)}
+                          className="w-full"
+                          size="sm"
+                        >
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Adicionar ao Carrinho
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
-              </div>
-            )}
-
-            {/* Empty State */}
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <div className="h-32 w-32 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <Search className="h-12 w-12 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Nenhum produto encontrado
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Tente alterar os filtros ou termos de busca
-                </p>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("all");
-                    setSelectedSubcategory("all");
-                  }}
-                >
-                  Limpar Filtros
-                </Button>
               </div>
             )}
           </main>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-white border-t mt-12">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <span className="text-xl font-bold">Minha Loja</span>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Produtos selecionados com qualidade e preços justos. Sua
-                satisfação é nossa prioridade.
-              </p>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>Rua das Flores, 123 - Centro - São Paulo/SP</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-4 w-4" />
-                  <span>(11) 99999-9999</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4" />
-                  <span>contato@minhaloja.com</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Categorias</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Eletrônicos
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Roupas
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Calçados
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Casa & Decoração
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Atendimento</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Central de Ajuda
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Trocas e Devoluções
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Entrega
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Contato
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
-            <p>
-              &copy; 2024 Minha Loja. Todos os direitos reservados. Powered by
-              CatalogoPro.
-            </p>
-          </div>
-        </div>
-      </footer>
-
-      {/* Mobile Filters Drawer */}
-      <Drawer open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <DrawerContent className="h-[85vh]">
-          <DrawerHeader className="border-b">
-            <div className="flex items-center justify-between">
-              <DrawerTitle>Filtros</DrawerTitle>
-              <DrawerClose asChild>
-                <Button variant="ghost" size="sm">
-                  <X className="h-4 w-4" />
-                </Button>
-              </DrawerClose>
-            </div>
-          </DrawerHeader>
-
-          <div className="p-4 space-y-6 overflow-y-auto">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
-              <div className="space-y-2">
-                {allCategories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      setSelectedCategory(category.id);
-                      setSelectedSubcategory("all");
-                    }}
-                    className={`
-                      w-full text-left px-3 py-3 rounded-lg transition-colors flex items-center justify-between
-                      ${
-                        selectedCategory === category.id
-                          ? "bg-primary-100 text-primary-700 font-medium"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }
-                    `}
-                  >
-                    <span>{category.name}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {category.count}
-                    </Badge>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile Subcategorias */}
-            {selectedCategoryData &&
-              selectedCategoryData.subcategories.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">
-                    Subcategorias
-                  </h3>
-                  <div className="space-y-1">
-                    <button
-                      onClick={() => setSelectedSubcategory("all")}
-                      className={`
-                      w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                      ${
-                        selectedSubcategory === "all"
-                          ? "bg-primary-100 text-primary-700 font-medium"
-                          : "text-gray-600 hover:bg-gray-100"
-                      }
-                    `}
-                    >
-                      Todas
-                    </button>
-                    {selectedCategoryData.subcategories.map((sub) => (
-                      <button
-                        key={sub}
-                        onClick={() => setSelectedSubcategory(sub)}
-                        className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
-                        ${
-                          selectedSubcategory === sub
-                            ? "bg-primary-100 text-primary-700 font-medium"
-                            : "text-gray-600 hover:bg-gray-100"
-                        }
-                      `}
-                      >
-                        {sub}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">
-                Faixa de Preço
-              </h3>
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <Input placeholder="Min" className="text-sm" />
-                  <Input placeholder="Max" className="text-sm" />
-                </div>
-                <Button variant="outline" size="sm" className="w-full">
-                  Aplicar
-                </Button>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Button onClick={() => setSidebarOpen(false)} className="w-full">
-                Aplicar Filtros
-              </Button>
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
-
-      {/* Cart Drawer */}
-      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
-
-      {/* Product Details Modal */}
-      <ProductDetailsModal
-        product={selectedProduct}
-        isOpen={productModalOpen}
-        onClose={() => {
-          setProductModalOpen(false);
-          setSelectedProduct(null);
-        }}
-      />
     </div>
   );
 };
