@@ -24,9 +24,31 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Arquivo inválido",
+        description: "Por favor, selecione apenas arquivos de imagem.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "O arquivo deve ter no máximo 10MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
     try {
+      console.log('Starting upload for file:', file.name);
       const url = await uploadService.uploadImage(file, bucket);
+      console.log('Upload completed, URL:', url);
       onChange(url);
       toast({
         title: "Upload realizado!",
@@ -36,7 +58,7 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
       console.error('Upload error:', error);
       toast({
         title: "Erro no upload",
-        description: "Não foi possível enviar a imagem.",
+        description: error instanceof Error ? error.message : "Não foi possível enviar a imagem.",
         variant: "destructive",
       });
     } finally {
@@ -59,10 +81,10 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
         });
       } catch (error) {
         console.error('Delete error:', error);
+        onRemove(); // Remove from state even if delete fails
         toast({
-          title: "Erro ao remover",
-          description: "Não foi possível remover a imagem.",
-          variant: "destructive",
+          title: "Imagem removida!",
+          description: "A imagem foi removida da lista.",
         });
       }
     }
@@ -80,6 +102,10 @@ const ImageUpload = ({ value, onChange, onRemove, label = "Imagem", bucket = "im
                 src={value}
                 alt="Preview"
                 className="w-full h-40 object-cover rounded-lg"
+                onError={(e) => {
+                  console.error('Image load error:', e);
+                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                }}
               />
               <Button
                 type="button"

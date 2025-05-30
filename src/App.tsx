@@ -27,6 +27,8 @@ import CatalogPage from "./pages/CatalogPage";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
+import ProductForm from "./components/ProductForm";
+import CategoryForm from "./components/CategoryForm";
 
 const queryClient = new QueryClient();
 
@@ -64,11 +66,31 @@ const App = () => (
                   </AdminLayout>
                 </ProtectedRoute>
               } />
+
+              <Route path="/admin/products/new" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <div className="p-6">
+                      <ProductForm mode="create" />
+                    </div>
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
               
               <Route path="/admin/categories" element={
                 <ProtectedRoute>
                   <AdminLayout>
                     <Categories />
+                  </AdminLayout>
+                </ProtectedRoute>
+              } />
+
+              <Route path="/admin/categories/new" element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <div className="p-6">
+                      <CategoryForm mode="create" />
+                    </div>
                   </AdminLayout>
                 </ProtectedRoute>
               } />

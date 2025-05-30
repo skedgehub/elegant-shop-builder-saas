@@ -11,7 +11,7 @@ import { useCart } from "@/contexts/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 
 const CatalogPage = () => {
-  const { subdomain } = useParams();
+  const { subdomain } = useParams<{ subdomain: string }>();
   const { company, categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
   const { addToCart, getTotalItems } = useCart();
   
