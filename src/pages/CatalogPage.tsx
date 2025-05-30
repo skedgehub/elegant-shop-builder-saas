@@ -5,35 +5,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Star, ShoppingCart, Filter, Grid, List } from "lucide-react";
+import { Search, Star, ShoppingCart, Filter, Grid, List, Menu } from "lucide-react";
 import { useCatalogData } from "@/hooks/useCatalogData";
 import { useCart } from "@/contexts/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 
 const CatalogPage = () => {
   const { subdomain } = useParams();
-  const { categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
-  const { addToCart } = useCart();
+  const { company, categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
+  const { addToCart, getTotalItems } = useCart();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     let filtered = products;
     
-    // Aplicar busca por termo
     if (searchTerm) {
       filtered = searchProducts(filtered, searchTerm);
     }
     
-    // Aplicar filtro por categoria
     if (selectedCategory) {
       filtered = filtered.filter(product => product.category_id === selectedCategory);
     }
     
-    // Aplicar filtro por subcategoria
     if (selectedSubcategory) {
       filtered = filtered.filter(product => product.subcategory === selectedSubcategory);
     }
@@ -69,16 +69,59 @@ const CatalogPage = () => {
     );
   }
 
+  if (!company) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Catálogo não encontrado</h1>
+          <p className="text-gray-600">O catálogo solicitado não foi encontrado.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const primaryColor = company.primary_color || '#3B82F6';
+  const secondaryColor = company.secondary_color || '#1E40AF';
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <style>
+        {`
+          :root {
+            --primary-color: ${primaryColor};
+            --secondary-color: ${secondaryColor};
+          }
+          .theme-primary { color: var(--primary-color); }
+          .theme-bg-primary { background-color: var(--primary-color); }
+          .theme-border-primary { border-color: var(--primary-color); }
+        `}
+      </style>
+
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Catálogo {subdomain}
-              </h1>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              
+              {company.logo_url ? (
+                <img 
+                  src={company.logo_url} 
+                  alt={company.name}
+                  className="h-10 w-auto"
+                />
+              ) : (
+                <h1 className="text-2xl font-bold theme-primary">
+                  {company.name}
+                </h1>
+              )}
             </div>
             
             {/* Search Bar */}
@@ -94,21 +137,40 @@ const CatalogPage = () => {
               </div>
             </div>
             
-            {/* View Mode Toggle */}
-            <div className="flex items-center space-x-2">
+            {/* Right Side Actions */}
+            <div className="flex items-center space-x-4">
+              {/* View Mode Toggle */}
+              <div className="hidden md:flex items-center space-x-2">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className={viewMode === "grid" ? "theme-bg-primary text-white" : ""}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className={viewMode === "list" ? "theme-bg-primary text-white" : ""}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Cart Button */}
               <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
+                onClick={() => setIsCartOpen(true)}
+                className="theme-bg-primary text-white hover:opacity-90 relative"
               >
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="h-4 w-4" />
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Carrinho
+                {getTotalItems() > 0 && (
+                  <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
+                    {getTotalItems()}
+                  </Badge>
+                )}
               </Button>
             </div>
           </div>
@@ -118,7 +180,7 @@ const CatalogPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex gap-8">
           {/* Sidebar */}
-          <aside className="w-64 flex-shrink-0">
+          <aside className={`w-64 flex-shrink-0 ${isSidebarOpen ? 'block' : 'hidden'} md:block`}>
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
                 <Filter className="h-4 w-4 mr-2" />
@@ -135,7 +197,7 @@ const CatalogPage = () => {
                       setSelectedSubcategory("");
                     }}
                     className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                      !selectedCategory ? "bg-primary text-white" : "hover:bg-gray-100"
+                      !selectedCategory ? "theme-bg-primary text-white" : "hover:bg-gray-100"
                     }`}
                   >
                     Todas ({products.length})
@@ -148,7 +210,7 @@ const CatalogPage = () => {
                           setSelectedSubcategory("");
                         }}
                         className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                          selectedCategory === category.id ? "bg-primary text-white" : "hover:bg-gray-100"
+                          selectedCategory === category.id ? "theme-bg-primary text-white" : "hover:bg-gray-100"
                         }`}
                       >
                         {category.name} ({category.count})
@@ -162,7 +224,7 @@ const CatalogPage = () => {
                               key={subcategory}
                               onClick={() => setSelectedSubcategory(subcategory)}
                               className={`w-full text-left px-3 py-1 rounded-md text-xs ${
-                                selectedSubcategory === subcategory ? "bg-primary/20 text-primary" : "hover:bg-gray-50"
+                                selectedSubcategory === subcategory ? "bg-blue-100 theme-primary" : "hover:bg-gray-50"
                               }`}
                             >
                               {subcategory}
@@ -280,7 +342,7 @@ const CatalogPage = () => {
                         
                         <Button
                           onClick={() => handleAddToCart(product)}
-                          className="w-full"
+                          className="w-full theme-bg-primary text-white hover:opacity-90"
                           size="sm"
                         >
                           <ShoppingCart className="h-4 w-4 mr-2" />
@@ -295,6 +357,13 @@ const CatalogPage = () => {
           </main>
         </div>
       </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)}
+        companyId={company?.id}
+      />
     </div>
   );
 };

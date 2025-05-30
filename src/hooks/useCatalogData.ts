@@ -9,6 +9,7 @@ export interface CatalogProduct {
   price: number;
   promotional_price?: number;
   category_id: string;
+  category: string;
   subcategory?: string;
   image?: string;
   badge?: string;
@@ -27,34 +28,50 @@ export interface CatalogCategory {
   count: number;
 }
 
-export const useCatalogData = (companySubdomain?: string) => {
-  const categoriesQuery = useQuery({
-    queryKey: ['catalog-categories', companySubdomain],
-    queryFn: async () => {
-      if (!companySubdomain) return [];
+export interface CompanyData {
+  id: string;
+  name: string;
+  logo_url?: string;
+  primary_color?: string;
+  secondary_color?: string;
+  subdomain: string;
+  settings?: any;
+}
 
-      // Primeiro busca a empresa pelo subdomínio
-      const { data: company } = await supabase
+export const useCatalogData = (companySubdomain?: string) => {
+  const companyQuery = useQuery({
+    queryKey: ['company-data', companySubdomain],
+    queryFn: async () => {
+      if (!companySubdomain) return null;
+
+      const { data: company, error } = await supabase
         .from('companies')
-        .select('id')
+        .select('*')
         .eq('subdomain', companySubdomain)
         .single();
 
-      if (!company) return [];
+      if (error) throw error;
+      return company;
+    },
+    enabled: !!companySubdomain,
+  });
 
-      // Busca as categorias da empresa
+  const categoriesQuery = useQuery({
+    queryKey: ['catalog-categories', companySubdomain],
+    queryFn: async () => {
+      if (!companySubdomain || !companyQuery.data) return [];
+
       const { data: categories, error } = await supabase
         .from('categories')
         .select('*')
-        .eq('company_id', company.id);
+        .eq('company_id', companyQuery.data.id);
 
       if (error) throw error;
 
-      // Busca a contagem de produtos por categoria
       const { data: productCounts } = await supabase
         .from('products')
         .select('category_id')
-        .eq('company_id', company.id);
+        .eq('company_id', companyQuery.data.id);
 
       return categories.map(category => ({
         id: category.id,
@@ -65,24 +82,14 @@ export const useCatalogData = (companySubdomain?: string) => {
         count: productCounts?.filter(p => p.category_id === category.id).length || 0
       }));
     },
-    enabled: !!companySubdomain,
+    enabled: !!companySubdomain && !!companyQuery.data,
   });
 
   const productsQuery = useQuery({
     queryKey: ['catalog-products', companySubdomain],
     queryFn: async () => {
-      if (!companySubdomain) return [];
+      if (!companySubdomain || !companyQuery.data) return [];
 
-      // Primeiro busca a empresa pelo subdomínio
-      const { data: company } = await supabase
-        .from('companies')
-        .select('id')
-        .eq('subdomain', companySubdomain)
-        .single();
-
-      if (!company) return [];
-
-      // Busca os produtos da empresa
       const { data: products, error } = await supabase
         .from('products')
         .select(`
@@ -91,8 +98,8 @@ export const useCatalogData = (companySubdomain?: string) => {
             name
           )
         `)
-        .eq('company_id', company.id)
-        .gt('stock', 0); // Só produtos em estoque
+        .eq('company_id', companyQuery.data.id)
+        .gt('stock', 0);
 
       if (error) throw error;
 
@@ -108,12 +115,12 @@ export const useCatalogData = (companySubdomain?: string) => {
         image: product.image,
         badge: product.badge,
         stock: product.stock,
-        custom_fields: product.custom_fields || {},
-        rating: 4.5 + Math.random() * 0.5, // Rating simulado
-        reviews: Math.floor(Math.random() * 300) + 50 // Reviews simuladas
+        custom_fields: typeof product.custom_fields === 'object' ? product.custom_fields as Record<string, string> : {},
+        rating: 4.5 + Math.random() * 0.5,
+        reviews: Math.floor(Math.random() * 300) + 50
       }));
     },
-    enabled: !!companySubdomain,
+    enabled: !!companySubdomain && !!companyQuery.data,
   });
 
   const searchProducts = (products: CatalogProduct[], searchTerm: string) => {
@@ -126,16 +133,17 @@ export const useCatalogData = (companySubdomain?: string) => {
       product.category.toLowerCase().includes(term) ||
       product.subcategory?.toLowerCase().includes(term) ||
       Object.values(product.custom_fields || {}).some(value =>
-        value.toLowerCase().includes(term)
+        String(value).toLowerCase().includes(term)
       )
     );
   };
 
   return {
+    company: companyQuery.data,
     categories: categoriesQuery.data || [],
     products: productsQuery.data || [],
-    isLoading: categoriesQuery.isLoading || productsQuery.isLoading,
-    error: categoriesQuery.error || productsQuery.error,
+    isLoading: companyQuery.isLoading || categoriesQuery.isLoading || productsQuery.isLoading,
+    error: companyQuery.error || categoriesQuery.error || productsQuery.error,
     searchProducts,
   };
 };
