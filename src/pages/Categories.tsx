@@ -1,17 +1,22 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { 
-  Plus, 
-  Search, 
-  Edit, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Plus,
+  Search,
+  Edit,
   Trash2,
   FolderOpen,
-  ImageIcon
+  ImageIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/AdminLayout";
@@ -22,14 +27,18 @@ import { useAuth } from "@/hooks/useAuth";
 const Categories = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { categories, isLoading, deleteCategory } = useCategories(user?.company_id);
+  const { categories, isLoading, deleteCategory } = useCategories(
+    user?.company_id
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const filteredCategories = categories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredCategories = categories.filter(
+    (category) =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (category.description &&
+        category.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleEdit = (category: any) => {
@@ -44,7 +53,7 @@ const Categories = () => {
 
   if (isLoading) {
     return (
-      <AdminLayout>
+      <>
         <div className="p-6 space-y-6">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-48"></div>
@@ -52,12 +61,12 @@ const Categories = () => {
             <div className="h-32 bg-gray-200 rounded"></div>
           </div>
         </div>
-      </AdminLayout>
+      </>
     );
   }
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -125,7 +134,8 @@ const Categories = () => {
                           Subcategorias:
                         </span>
                         <div className="flex flex-wrap gap-1">
-                          {category.subcategories && category.subcategories.length > 0 ? (
+                          {category.subcategories &&
+                          category.subcategories.length > 0 ? (
                             <>
                               {category.subcategories
                                 .slice(0, 3)
@@ -157,8 +167,8 @@ const Categories = () => {
                           Ativo
                         </Badge>
                         <div className="flex space-x-2">
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(category)}
                           >
@@ -208,7 +218,7 @@ const Categories = () => {
               </DialogDescription>
             </DialogHeader>
             {selectedCategory && (
-              <CategoryForm 
+              <CategoryForm
                 initialData={selectedCategory}
                 onSuccess={handleCloseEdit}
                 mode="edit"
@@ -217,7 +227,7 @@ const Categories = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 

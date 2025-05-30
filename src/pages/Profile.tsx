@@ -58,7 +58,7 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <AdminLayout>
+      <>
         <div className="p-6">
           <Card>
             <CardContent className="p-6">
@@ -66,12 +66,12 @@ const Profile = () => {
             </CardContent>
           </Card>
         </div>
-      </AdminLayout>
+      </>
     );
   }
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -247,7 +247,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 

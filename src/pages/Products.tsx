@@ -59,7 +59,7 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <AdminLayout>
+      <>
         <div className="p-6 space-y-6">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-48"></div>
@@ -67,12 +67,12 @@ const Products = () => {
             <div className="h-32 bg-gray-200 rounded"></div>
           </div>
         </div>
-      </AdminLayout>
+      </>
     );
   }
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -240,7 +240,7 @@ const Products = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 

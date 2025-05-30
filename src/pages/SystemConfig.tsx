@@ -112,7 +112,7 @@ const SystemConfig = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button
@@ -276,7 +276,7 @@ const SystemConfig = () => {
           </div>
         </form>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
