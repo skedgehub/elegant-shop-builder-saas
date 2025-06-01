@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,10 @@ import {
   BarChart3,
   FileText,
   CreditCard,
+  Menu,
+  X,
 } from "lucide-react";
+import { useState } from "react";
 
 const sidebarItems = [
   {
@@ -92,22 +96,41 @@ interface AdminSidebarProps {
 
 const AdminSidebar = ({ className }: AdminSidebarProps) => {
   const location = useLocation();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={cn("pb-12 border-r bg-white dark:bg-gray-900", className)}>
+    <div className={cn(
+      "pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300",
+      isCollapsed ? "w-16" : "w-64",
+      className
+    )}>
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
-            Admin Panel
-          </h2>
+          <div className="flex items-center justify-between">
+            {!isCollapsed && (
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
+                Admin Panel
+              </h2>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="h-8 w-8 p-0"
+            >
+              {isCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
         <ScrollArea className="h-[calc(100vh-100px)] px-1">
           <div className="space-y-6 p-2">
             {sidebarItems.map((section) => (
               <div key={section.title}>
-                <h3 className="mb-2 px-4 text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  {section.title}
-                </h3>
+                {!isCollapsed && (
+                  <h3 className="mb-2 px-4 text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {section.title}
+                  </h3>
+                )}
                 <div className="space-y-1">
                   {section.items.map((item) => (
                     <Button
@@ -115,17 +138,21 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
                       variant={
                         location.pathname === item.href ? "secondary" : "ghost"
                       }
-                      className="w-full justify-start"
+                      className={cn(
+                        "w-full justify-start",
+                        isCollapsed ? "px-2" : "px-4"
+                      )}
                       asChild
+                      title={isCollapsed ? item.title : undefined}
                     >
                       <Link to={item.href}>
-                        <item.icon className="mr-2 h-4 w-4" />
-                        {item.title}
+                        <item.icon className="h-4 w-4" />
+                        {!isCollapsed && <span className="ml-2">{item.title}</span>}
                       </Link>
                     </Button>
                   ))}
                 </div>
-                <Separator className="my-4" />
+                {!isCollapsed && <Separator className="my-4" />}
               </div>
             ))}
           </div>

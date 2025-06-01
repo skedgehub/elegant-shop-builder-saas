@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -30,15 +31,13 @@ const CatalogPage = () => {
   const { subdomain } = useParams<{ subdomain: string }>();
   const { company, categories, products, isLoading, searchProducts } =
     useCatalogData(subdomain);
-  const { addToCart, cartItems, isOpen, setIsOpen } = useCart();
+  const { addToCart, items: cartItems, isOpen, setIsOpen } = useCart();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>(
-    []
-  );
+  const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>([]);
 
   useEffect(() => {
     let filtered = products;
@@ -412,7 +411,7 @@ const CatalogPage = () => {
       <CartDrawer
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        companyId=""
+        companyId={company?.id || ""}
       />
     </div>
   );

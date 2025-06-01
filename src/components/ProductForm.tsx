@@ -33,26 +33,41 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
       name: initialData?.name || "",
       description: initialData?.description || "",
       price: initialData?.price || "",
-      promotionalPrice: initialData?.promotionalPrice || "",
+      promotional_price: initialData?.promotional_price || "",
       category_id: initialData?.category_id || "",
+      subcategory: initialData?.subcategory || "",
       stock: initialData?.stock || "",
-      customFields: initialData?.customFields || [{ name: "", type: "text", required: false }],
+      badge: initialData?.badge || "",
+      custom_fields: initialData?.custom_fields || [{ key: "", value: "" }],
     }
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "customFields"
+    name: "custom_fields"
   });
+
+  const selectedCategoryId = watch("category_id");
+  const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
+  const subcategories = selectedCategory?.subcategories || [];
 
   const onSubmit = (data: any) => {
     const productData = {
-      ...data,
-      image: imageUrl,
+      name: data.name,
+      description: data.description,
       price: parseFloat(data.price),
-      promotionalPrice: data.promotionalPrice ? parseFloat(data.promotionalPrice) : null,
+      promotional_price: data.promotional_price ? parseFloat(data.promotional_price) : null,
+      category: data.category_id,
+      subcategory: data.subcategory,
+      image: imageUrl,
+      badge: data.badge,
       stock: parseInt(data.stock),
-      customFields: data.customFields.filter((field: any) => field.name.trim() !== ""),
+      customFields: data.custom_fields
+        .filter((field: any) => field.key.trim() !== "" && field.value.trim() !== "")
+        .reduce((acc: any, field: any) => {
+          acc[field.key] = field.value;
+          return acc;
+        }, {}),
     };
 
     if (mode === "edit" && initialData) {
@@ -120,12 +135,12 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="promotionalPrice">Preço Promocional</Label>
+                  <Label htmlFor="promotional_price">Preço Promocional</Label>
                   <Input
-                    id="promotionalPrice"
+                    id="promotional_price"
                     type="number"
                     step="0.01"
-                    {...register("promotionalPrice")}
+                    {...register("promotional_price")}
                     placeholder="0,00"
                   />
                 </div>
@@ -151,6 +166,24 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                   )}
                 </div>
                 <div>
+                  <Label htmlFor="subcategory">Subcategoria</Label>
+                  <Select onValueChange={(value) => setValue("subcategory", value)} defaultValue={initialData?.subcategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma subcategoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subcategories.map((sub: any, index: number) => (
+                        <SelectItem key={index} value={sub.name}>
+                          {sub.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <Label htmlFor="stock">Estoque *</Label>
                   <Input
                     id="stock"
@@ -161,6 +194,14 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                   {errors.stock && (
                     <p className="text-sm text-red-600">{String(errors.stock.message)}</p>
                   )}
+                </div>
+                <div>
+                  <Label htmlFor="badge">Badge</Label>
+                  <Input
+                    id="badge"
+                    {...register("badge")}
+                    placeholder="Ex: Novo, Promoção"
+                  />
                 </div>
               </div>
             </div>
@@ -179,15 +220,18 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
 
           <Separator />
 
-          {/* Campos Personalizados */}
+          {/* Campos Personalizados - Metadados */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <Label>Campos Personalizados</Label>
+              <div>
+                <Label>Informações Adicionais (Metadados)</Label>
+                <p className="text-sm text-gray-600">Adicione informações extra sobre o produto como tamanho, cor, material, etc.</p>
+              </div>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => append({ name: "", type: "text", required: false })}
+                onClick={() => append({ key: "", value: "" })}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar Campo
@@ -197,38 +241,20 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
             <div className="space-y-4">
               {fields.map((field, index) => (
                 <div key={field.id} className="p-4 border rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label>Nome do Campo</Label>
+                      <Label>Nome da Informação</Label>
                       <Input
-                        {...register(`customFields.${index}.name`)}
-                        placeholder="Ex: Tamanho, Cor"
+                        {...register(`custom_fields.${index}.key`)}
+                        placeholder="Ex: Tamanho, Cor, Material"
                       />
                     </div>
                     <div>
-                      <Label>Tipo</Label>
-                      <Select 
-                        onValueChange={(value) => setValue(`customFields.${index}.type`, value)}
-                        defaultValue="text"
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="text">Texto</SelectItem>
-                          <SelectItem value="number">Número</SelectItem>
-                          <SelectItem value="select">Seleção</SelectItem>
-                          <SelectItem value="textarea">Texto Longo</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex items-center space-x-2 pt-6">
-                      <input
-                        type="checkbox"
-                        {...register(`customFields.${index}.required`)}
-                        id={`required-${index}`}
+                      <Label>Valor</Label>
+                      <Input
+                        {...register(`custom_fields.${index}.value`)}
+                        placeholder="Ex: Grande, Azul, Algodão"
                       />
-                      <Label htmlFor={`required-${index}`}>Obrigatório</Label>
                     </div>
                     <div className="flex items-end">
                       <Button
