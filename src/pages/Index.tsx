@@ -291,13 +291,13 @@ const Index = () => {
 
               <a
                 href="#pricing"
-                className="text-gray-600 hover:text-primary-600 transition-colors font-medium"
+                className="text-foreground text-sm hover:text-primary-600 transition-colors font-medium"
               >
                 Preços
               </a>
               <a
                 href="#testimonials"
-                className="text-gray-600 hover:text-primary-600 transition-colors font-medium"
+                className="text-foreground text-sm hover:text-primary-600 transition-colors font-medium"
               >
                 Depoimentos
               </a>
@@ -313,10 +313,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-lg"
-                  >
+                  <Button size="sm" variant="default">
                     Começar Grátis
                   </Button>
                 </Link>
