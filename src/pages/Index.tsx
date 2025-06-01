@@ -1,278 +1,510 @@
-
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  ArrowRight,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import {
   Check,
   Star,
-  Globe,
-  Smartphone,
-  BarChart3,
-  Users,
-  ShoppingCart,
   Zap,
   Shield,
-  HeartHandshake,
-  PlayCircle,
-  Quote,
-  ArrowDown,
+  Globe,
+  BarChart3,
+  Palette,
+  Smartphone,
+  Menu,
+  ChevronDown,
+  ArrowRight,
+  Play,
+  TrendingUp,
+  Users,
+  Heart,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Index = () => {
-  const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const features = [
     {
-      icon: Globe,
-      title: "Catálogo Online",
-      description: "Crie seu catálogo digital profissional em minutos"
+      icon: <Globe className="h-6 w-6" />,
+      title: "Subdomínio Personalizado",
+      description:
+        "Configure seu próprio subdomínio como minhaloja.catalogo.com.br",
+      color: "from-blue-500 to-cyan-500",
     },
     {
-      icon: Smartphone,
-      title: "100% Responsivo",
-      description: "Funciona perfeitamente em celulares, tablets e desktop"
+      icon: <Palette className="h-6 w-6" />,
+      title: "Customização Total",
+      description: "Personalize cores, layout e campos dos seus produtos",
+      color: "from-purple-500 to-pink-500",
     },
     {
-      icon: BarChart3,
-      title: "Análises Detalhadas",
-      description: "Acompanhe vendas, produtos mais vistos e muito mais"
+      icon: <BarChart3 className="h-6 w-6" />,
+      title: "Dashboard Completo",
+      description: "Visualize vendas, produtos mais acessados e estatísticas",
+      color: "from-green-500 to-emerald-500",
     },
     {
-      icon: Users,
-      title: "Gestão de Clientes",
-      description: "Organize sua base de clientes e histórico de pedidos"
+      icon: <Smartphone className="h-6 w-6" />,
+      title: "Mobile First",
+      description:
+        "Design responsivo que funciona perfeitamente em qualquer dispositivo",
+      color: "from-orange-500 to-red-500",
     },
     {
-      icon: ShoppingCart,
-      title: "Carrinho de Compras",
-      description: "Sistema completo de pedidos e checkout"
+      icon: <Shield className="h-6 w-6" />,
+      title: "Segurança Total",
+      description: "Seus dados protegidos com criptografia de ponta",
+      color: "from-indigo-500 to-blue-500",
     },
     {
-      icon: Zap,
-      title: "Configuração Rápida",
-      description: "Configure tudo em apenas alguns cliques"
-    }
+      icon: <Zap className="h-6 w-6" />,
+      title: "Performance",
+      description:
+        "Carregamento ultra-rápido para melhor experiência do cliente",
+      color: "from-yellow-500 to-orange-500",
+    },
   ];
 
   const plans = [
     {
-      name: "Básico",
+      name: "Starter",
       price: "R$ 29",
       period: "/mês",
-      popular: false,
+      description: "Perfeito para começar",
       features: [
         "Até 100 produtos",
-        "Catálogo responsivo",
-        "Carrinho de compras",
-        "Suporte básico",
-        "SSL gratuito"
-      ]
+        "1 subdomínio",
+        "3 categorias",
+        "Suporte por email",
+        "Campos personalizados básicos",
+      ],
+      popular: false,
+      color: "from-blue-500 to-cyan-500",
     },
     {
-      name: "Profissional",
-      price: "R$ 69",
+      name: "Professional",
+      price: "R$ 79",
       period: "/mês",
-      popular: true,
+      description: "Para lojas em crescimento",
       features: [
-        "Até 1000 produtos",
-        "Análises avançadas",
-        "Gestão de clientes",
-        "Domínio personalizado",
+        "Até 1.000 produtos",
+        "3 subdomínios",
+        "Categorias ilimitadas",
         "Suporte prioritário",
-        "Integração WhatsApp"
-      ]
+        "Campos personalizados avançados",
+        "Analytics detalhado",
+        "Backup automático",
+      ],
+      popular: true,
+      color: "from-purple-500 to-pink-500",
     },
     {
       name: "Enterprise",
-      price: "R$ 149",
+      price: "R$ 199",
       period: "/mês",
-      popular: false,
+      description: "Para grandes operações",
       features: [
         "Produtos ilimitados",
-        "Multi-lojas",
-        "API completa",
-        "Relatórios customizados",
+        "Subdomínios ilimitados",
+        "Multi-usuário",
         "Suporte 24/7",
-        "Gerente dedicado"
-      ]
-    }
+        "API completa",
+        "White label",
+        "Consultor dedicado",
+      ],
+      popular: false,
+      color: "from-green-500 to-emerald-500",
+    },
   ];
 
   const testimonials = [
     {
       name: "Maria Silva",
-      role: "Proprietária da Boutique Elegance",
-      content: "Aumentei minhas vendas em 300% desde que comecei a usar o CatalogoPro. A facilidade de uso é incrível!",
-      rating: 5
+      company: "Loja da Maria",
+      content:
+        "Aumentamos nossas vendas em 300% após migrar para o CatalogoPro. A facilidade de uso é incrível!",
+      rating: 5,
+      avatar:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
     },
     {
       name: "João Santos",
-      role: "Dono da Eletrônicos Tech",
-      content: "O sistema de gestão é muito completo. Consigo acompanhar tudo em tempo real e meus clientes adoram a experiência.",
-      rating: 5
+      company: "TechStore",
+      content:
+        "O melhor sistema de catálogo que já usei. O suporte é excepcional e as funcionalidades são completas.",
+      rating: 5,
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     },
     {
       name: "Ana Costa",
-      role: "Empreendedora Digital",
-      content: "Simples, rápido e eficiente. Em 1 hora já tinha minha loja online funcionando perfeitamente.",
-      rating: 5
-    }
+      company: "Moda & Estilo",
+      content:
+        "Interface moderna e intuitiva. Nossos clientes adoraram a nova experiência de compra.",
+      rating: 5,
+      avatar:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Header */}
+      <header className="border-b bg-white/90 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
+              <div className="h-10 w-10 bg-gradient-to-br from-primary-600 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-lg">C</span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
                 CatalogoPro
               </span>
             </div>
 
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Recursos
-              </a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-6">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
+                      Funcionalidades
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="grid gap-3 p-6 w-[500px] bg-white shadow-xl rounded-lg border">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">
+                              Recursos Principais
+                            </h4>
+                            <a
+                              href="#features"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
+                            >
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <BarChart3 className="h-4 w-4 mr-2 text-green-500" />
+                                Dashboard Analytics
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Acompanhe suas vendas em tempo real
+                              </p>
+                            </a>
+                            <a
+                              href="#features"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
+                            >
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Palette className="h-4 w-4 mr-2 text-purple-500" />
+                                Customização
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Personalize sua loja do seu jeito
+                              </p>
+                            </a>
+                          </div>
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">
+                              Integração
+                            </h4>
+                            <a
+                              href="#features"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
+                            >
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Globe className="h-4 w-4 mr-2 text-blue-500" />
+                                Subdomínio Próprio
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Configure seu endereço personalizado
+                              </p>
+                            </a>
+                            <a
+                              href="#features"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
+                            >
+                              <div className="text-sm font-medium leading-none flex items-center">
+                                <Smartphone className="h-4 w-4 mr-2 text-orange-500" />
+                                Mobile Ready
+                              </div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                Otimizado para dispositivos móveis
+                              </p>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
+                      Soluções
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="grid gap-3 p-6 w-[400px] bg-white shadow-xl rounded-lg border">
+                        <div className="space-y-3">
+                          <a
+                            href="#pricing"
+                            className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100"
+                          >
+                            <div className="text-sm font-medium leading-none flex items-center">
+                              <Users className="h-4 w-4 mr-2 text-blue-500" />
+                              Para Pequenas Empresas
+                            </div>
+                            <p className="text-xs leading-snug text-muted-foreground mt-1">
+                              Soluções acessíveis para começar seu negócio
+                              online
+                            </p>
+                          </a>
+                          <a
+                            href="#pricing"
+                            className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100"
+                          >
+                            <div className="text-sm font-medium leading-none flex items-center">
+                              <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
+                              Para Empresas
+                            </div>
+                            <p className="text-xs leading-snug text-muted-foreground mt-1">
+                              Recursos avançados para escalar suas vendas
+                            </p>
+                          </a>
+                        </div>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+
+              <a
+                href="#pricing"
+                className="text-gray-600 hover:text-primary-600 transition-colors font-medium"
+              >
                 Preços
               </a>
-              <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <a
+                href="#testimonials"
+                className="text-gray-600 hover:text-primary-600 transition-colors font-medium"
+              >
                 Depoimentos
               </a>
-            </div>
 
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={() => navigate("/login")}
-                className="hidden sm:inline-flex"
-              >
-                Entrar
-              </Button>
-              <Button
-                onClick={() => navigate("/register")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                Começar Grátis
-              </Button>
-            </div>
+              <div className="flex items-center space-x-3 ml-6">
+                <Link to="/login">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="hover:bg-primary-50 hover:border-primary-300"
+                  >
+                    Entrar
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-lg"
+                  >
+                    Começar Grátis
+                  </Button>
+                </Link>
+              </div>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 py-4 border-t bg-white/95 backdrop-blur rounded-lg shadow-lg">
+              <div className="flex flex-col space-y-4">
+                <a
+                  href="#features"
+                  className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2"
+                >
+                  Funcionalidades
+                </a>
+                <a
+                  href="#pricing"
+                  className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2"
+                >
+                  Preços
+                </a>
+                <a
+                  href="#testimonials"
+                  className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2"
+                >
+                  Depoimentos
+                </a>
+                <div className="flex flex-col space-y-2 px-4 pt-2 border-t">
+                  <Link to="/login">
+                    <Button variant="outline" size="sm" className="w-full">
+                      Entrar
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-primary-600 to-purple-600"
+                    >
+                      Começar Grátis
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50"></div>
-        <div className="container mx-auto px-4 relative">
-          <div className={`text-center space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <Badge className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border-0 px-4 py-2">
-              ✨ Transforme seu negócio em uma loja online profissional
-            </Badge>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Catálogo Digital
-              </span>
-              <br />
-              <span className="text-gray-900">que Vende</span>
-            </h1>
-            
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Crie sua loja online profissional em minutos. Sistema completo com catálogo responsivo, 
-              carrinho de compras e gestão inteligente para impulsionar suas vendas.
-            </p>
+      {/* Hero Section - Melhorada */}
+      <section className="py-24 px-4 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
+          <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+        </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+        <div className="container mx-auto text-center relative z-10">
+          <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200 shadow-lg animate-pulse">
+            🚀 Novo: Campos personalizáveis para produtos
+          </Badge>
+
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 animate-fade-in leading-tight">
+            O Catálogo Online que
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600">
+              {" "}
+              Vende Mais
+            </span>
+          </h1>
+
+          <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto animate-fade-in leading-relaxed">
+            Crie sua loja virtual profissional em minutos. Sistema completo com
+            subdomínio personalizado, dashboard avançado e total customização.{" "}
+            <strong>Aumente suas vendas em até 300%!</strong>
+          </p>
+
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">
+                  300%
+                </div>
+                <div className="text-sm text-gray-600">Aumento em vendas</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">
+                  10k+
+                </div>
+                <div className="text-sm text-gray-600">Lojas criadas</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">
+                  99.9%
+                </div>
+                <div className="text-sm text-gray-600">Uptime garantido</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in">
+            <Link to="/register">
               <Button
                 size="lg"
-                onClick={() => navigate("/register")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 text-lg h-auto"
+                className="text-lg px-10 py-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all group"
               >
-                Criar Minha Loja Grátis
-                <ArrowRight className="ml-2 h-5 w-5" />
+                Começar Teste Grátis
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              
+            </Link>
+            <Link to="/admin">
               <Button
                 variant="outline"
                 size="lg"
-                className="px-8 py-4 text-lg h-auto border-2 hover:bg-gray-50"
+                className="text-lg px-10 py-6 border-2 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 group"
               >
-                <PlayCircle className="mr-2 h-5 w-5" />
-                Ver Demonstração
+                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                Ver Demo
               </Button>
-            </div>
-
-            <div className="flex items-center justify-center space-x-8 pt-8 text-sm text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Check className="h-4 w-4 text-green-500" />
-                <span>Grátis por 14 dias</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Check className="h-4 w-4 text-green-500" />
-                <span>Sem taxa de configuração</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Check className="h-4 w-4 text-green-500" />
-                <span>Cancele quando quiser</span>
-              </div>
-            </div>
+            </Link>
           </div>
 
-          <div className={`mt-16 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="relative max-w-5xl mx-auto">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
-              <div className="relative bg-white rounded-2xl shadow-2xl p-4 border border-gray-200">
-                <img
-                  src="/placeholder.svg"
-                  alt="Dashboard Preview"
-                  className="w-full rounded-lg"
-                />
+          {/* Social Proof */}
+          <div className="mt-16 flex flex-col items-center">
+            <p className="text-sm text-gray-500 mb-4">
+              Confiado por empresas de todos os tamanhos
+            </p>
+            <div className="flex items-center space-x-8 opacity-60">
+              <div className="text-2xl font-bold text-gray-400">TechCorp</div>
+              <div className="text-2xl font-bold text-gray-400">ModaStyle</div>
+              <div className="text-2xl font-bold text-gray-400">
+                FoodDelivery
               </div>
+              <div className="text-2xl font-bold text-gray-400">SportsPro</div>
             </div>
           </div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ArrowDown className="h-6 w-6 text-gray-400" />
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-blue-100 text-blue-800 border-0">Recursos</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Tudo que você precisa para vender online
+      <section id="features" className="py-24 px-4 bg-white relative">
+        <div className="container mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Tudo que você precisa para
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600">
+                {" "}
+                vender online
+              </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ferramentas profissionais que simplificam a gestão do seu negócio
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Recursos profissionais para criar a loja dos seus sonhos
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6">
-                    <feature.icon className="h-7 w-7 text-white" />
+              <Card
+                key={index}
+                className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden"
+              >
+                <CardHeader className="relative">
+                  <div
+                    className={`h-14 w-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}
+                  >
+                    {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  <CardTitle className="text-xl text-gray-900 group-hover:text-primary-600 transition-colors">
                     {feature.title}
-                  </h3>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <p className="text-gray-600 leading-relaxed">
                     {feature.description}
                   </p>
@@ -283,83 +515,79 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-purple-100 text-purple-800 border-0">Depoimentos</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Mais de 10.000 empresas confiam no CatalogoPro
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-lg">
-                <CardContent className="p-8">
-                  <Quote className="h-8 w-8 text-blue-500 mb-4" />
-                  <p className="text-gray-700 mb-6 leading-relaxed">
-                    "{testimonial.content}"
-                  </p>
-                  <div className="flex items-center space-x-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-sm text-gray-600">{testimonial.role}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-green-100 text-green-800 border-0">Preços</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Planos que se adaptam ao seu negócio
+      <section
+        id="pricing"
+        className="py-24 px-4 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
+        <div className="container mx-auto relative">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Planos que crescem com
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600">
+                {" "}
+                seu negócio
+              </span>
             </h2>
             <p className="text-xl text-gray-600">
-              Escolha o plano ideal para o tamanho da sua empresa
+              Escolha o plano ideal para sua empresa
             </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {plans.map((plan, index) => (
-              <Card key={index} className={`relative border-2 ${plan.popular ? 'border-blue-500 shadow-xl scale-105' : 'border-gray-200'}`}>
+              <Card
+                key={index}
+                className={`relative overflow-hidden ${
+                  plan.popular
+                    ? "border-2 border-purple-500 shadow-2xl scale-105 bg-white"
+                    : "border-gray-200 bg-white/80"
+                } hover:shadow-2xl transition-all duration-300`}
+              >
                 {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white">
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                )}
+                {plan.popular && (
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
                     Mais Popular
                   </Badge>
                 )}
-                <CardContent className="p-8 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                    <span className="text-gray-600">{plan.period}</span>
+                <CardHeader className="text-center pb-4 relative">
+                  <div
+                    className={`h-16 w-16 bg-gradient-to-br ${plan.color} rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg`}
+                  >
+                    <span className="text-white font-bold text-xl">
+                      {plan.name[0]}
+                    </span>
                   </div>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center space-x-3">
-                        <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                  <CardTitle className="text-2xl text-gray-900">
+                    {plan.name}
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    {plan.description}
+                  </CardDescription>
+                  <div className="mt-6">
+                    <span className="text-5xl font-bold text-gray-900">
+                      {plan.price}
+                    </span>
+                    <span className="text-gray-600 text-lg">{plan.period}</span>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <ul className="space-y-4">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center">
+                        <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
                         <span className="text-gray-700">{feature}</span>
                       </li>
                     ))}
                   </ul>
-
                   <Button
-                    className={`w-full ${plan.popular 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700' 
-                      : 'bg-gray-900 hover:bg-gray-800'
+                    className={`w-full mt-8 ${
+                      plan.popular
+                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg"
+                        : "bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800"
                     }`}
-                    onClick={() => navigate("/register")}
                   >
                     Começar Agora
                   </Button>
@@ -370,82 +598,178 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Pronto para revolucionar suas vendas?
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-24 px-4 bg-white">
+        <div className="container mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              O que nossos
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600">
+                {" "}
+                clientes dizem
+              </span>
             </h2>
-            <p className="text-xl text-blue-100">
-              Junte-se a milhares de empresários que já transformaram seus negócios com o CatalogoPro
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <p className="text-xl text-gray-600">Histórias reais de sucesso</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card
+                key={index}
+                className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+              >
+                <CardContent className="pt-8">
+                  <div className="flex mb-6">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="h-5 w-5 text-yellow-400 fill-current"
+                      />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-8 italic text-lg leading-relaxed">
+                    "{testimonial.content}"
+                  </p>
+                  <div className="flex items-center">
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      className="h-12 w-12 rounded-full mr-4 object-cover"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        {testimonial.company}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 px-4 bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="container mx-auto text-center relative">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Pronto para começar?
+          </h2>
+          <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
+            Crie sua loja online profissional em poucos minutos
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link to="/register">
               <Button
                 size="lg"
-                onClick={() => navigate("/register")}
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg h-auto"
+                variant="secondary"
+                className="text-lg px-10 py-6 bg-white text-gray-900 hover:bg-gray-100 shadow-xl"
               >
-                Criar Minha Loja Grátis
-                <ArrowRight className="ml-2 h-5 w-5" />
+                Começar Teste Grátis
               </Button>
-            </div>
-
-            <div className="flex items-center justify-center space-x-8 text-blue-100 text-sm">
-              <div className="flex items-center space-x-2">
-                <Shield className="h-4 w-4" />
-                <span>100% Seguro</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <HeartHandshake className="h-4 w-4" />
-                <span>Suporte Dedicado</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Zap className="h-4 w-4" />
-                <span>Configuração Instantânea</span>
-              </div>
-            </div>
+            </Link>
+            <Link to="/admin">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-10 py-6 border-2 border-white text-white hover:bg-white hover:text-primary-600 shadow-xl"
+              >
+                Acessar Dashboard Demo
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
+      <footer className="bg-gray-900 text-white py-16 px-4">
+        <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
+            <div>
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="h-10 w-10 bg-gradient-to-br from-primary-600 to-purple-600 rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">C</span>
                 </div>
-                <span className="text-xl font-bold">CatalogoPro</span>
+                <span className="text-2xl font-bold">CatalogoPro</span>
               </div>
-              <p className="text-gray-400 mb-4 max-w-md">
-                A plataforma completa para criar e gerenciar seu catálogo digital profissional.
+              <p className="text-gray-400 leading-relaxed">
+                O sistema de catálogo mais completo e moderno do Brasil
               </p>
             </div>
-
             <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Recursos</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentação</a></li>
+              <h4 className="font-semibold mb-6 text-lg">Produto</h4>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a
+                    href="#features"
+                    className="hover:text-white transition-colors"
+                  >
+                    Recursos
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#pricing"
+                    className="hover:text-white transition-colors"
+                  >
+                    Preços
+                  </a>
+                </li>
+                <li>
+                  <Link
+                    to="/admin"
+                    className="hover:text-white transition-colors"
+                  >
+                    Demo
+                  </Link>
+                </li>
               </ul>
             </div>
-
             <div>
-              <h4 className="font-semibold mb-4">Suporte</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Central de Ajuda</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contato</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
+              <h4 className="font-semibold mb-6 text-lg">Suporte</h4>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Central de Ajuda
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Contato
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Status
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-6 text-lg">Empresa</h4>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Sobre
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Termos
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
             <p>&copy; 2024 CatalogoPro. Todos os direitos reservados.</p>
           </div>
         </div>
