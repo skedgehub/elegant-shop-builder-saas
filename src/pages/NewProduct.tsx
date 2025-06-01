@@ -3,18 +3,19 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import ProductForm from "@/components/ProductForm";
+import AdminLayout from "@/components/AdminLayout";
 
 const NewProduct = () => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isLoading && !user) {
       navigate("/login");
     }
-  }, [user, loading, navigate]);
+  }, [user, isLoading, navigate]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -27,7 +28,7 @@ const NewProduct = () => {
   }
 
   return (
-    <>
+    <AdminLayout>
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -39,7 +40,7 @@ const NewProduct = () => {
         </div>
         <ProductForm mode="create" />
       </div>
-    </>
+    </AdminLayout>
   );
 };
 

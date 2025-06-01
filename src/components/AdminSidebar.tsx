@@ -13,10 +13,7 @@ import {
   Settings,
   Globe,
   Palette,
-  Bell,
   BarChart3,
-  FileText,
-  CreditCard,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -100,7 +97,7 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
 
   return (
     <div className={cn(
-      "pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300 flex-shrink-0",
+      "relative pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300 flex-shrink-0",
       isCollapsed ? "w-16" : "w-64",
       className
     )}>
