@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import CartDrawer from "@/components/CartDrawer";
 import ProductDetailsModal from "@/components/ProductDetailsModal";
+import { useCatalogData } from "@/hooks/useCatalogData";
 import {
   Search,
   Filter,
@@ -20,6 +23,8 @@ import {
   Mail,
   MapPin,
   Plus,
+  ChevronDown,
+  SlidersHorizontal,
 } from "lucide-react";
 import {
   Drawer,
@@ -28,184 +33,93 @@ import {
   DrawerTitle,
   DrawerClose,
 } from "@/components/ui/drawer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CatalogPage = () => {
+  const { subdomain } = useParams<{ subdomain: string }>();
+  const { company, categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSubcategory, setSelectedSubcategory] = useState("all");
-  const [viewMode, setViewMode] = useState("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("relevance");
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
 
   const { addToCart, getTotalItems } = useCart();
 
-  const categories = [
+  // Transform categories for the filter
+  const categoryFilters = [
     {
       id: "all",
       name: "Todos os Produtos",
-      count: 127,
+      count: products.length,
       subcategories: [],
     },
-    {
-      id: "electronics",
-      name: "Eletrônicos",
-      count: 45,
-      subcategories: ["Smartphones", "Notebooks", "Fones", "Tablets"],
-    },
-    {
-      id: "clothing",
-      name: "Roupas",
-      count: 32,
-      subcategories: ["Camisetas", "Calças", "Vestidos", "Jaquetas"],
-    },
-    {
-      id: "shoes",
-      name: "Calçados",
-      count: 28,
-      subcategories: ["Tênis", "Sapatos", "Sandálias", "Botas"],
-    },
-    {
-      id: "home",
-      name: "Casa & Decoração",
-      count: 22,
-      subcategories: ["Móveis", "Decoração", "Utensílios", "Iluminação"],
-    },
+    ...categories.map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      count: cat.count,
+      subcategories: cat.subcategories,
+    }))
   ];
 
-  const products = [
-    {
-      id: 1,
-      name: "Smartphone Galaxy S24 Ultra",
-      category: "electronics",
-      subcategory: "Smartphones",
-      price: 1299.0,
-      promotionalPrice: 1099.0,
-      image: "/placeholder.svg",
-      rating: 4.8,
-      reviews: 234,
-      badge: "Oferta",
-      description:
-        "Smartphone premium com câmera profissional de alta qualidade, tela Dynamic AMOLED 6.8 polegadas e processador Snapdragon 8 Gen 3.",
-      customFields: {
-        marca: "Samsung",
-        cor: "Preto Titânio",
-        memoria: "256GB",
-        tela: "6.8 polegadas",
-      },
-    },
-    {
-      id: 2,
-      name: "Tênis Nike Air Max 270",
-      category: "shoes",
-      subcategory: "Tênis",
-      price: 599.0,
-      promotionalPrice: null,
-      image: "/placeholder.svg",
-      rating: 4.6,
-      reviews: 189,
-      badge: null,
-      description: "Tênis esportivo com máximo conforto e design moderno",
-      customFields: {
-        marca: "Nike",
-        cor: "Branco/Preto",
-        tamanho: "39-44",
-        tipo: "Corrida",
-      },
-    },
-    {
-      id: 3,
-      name: "Notebook Gamer Dell G15",
-      category: "electronics",
-      subcategory: "Notebooks",
-      price: 2199.0,
-      promotionalPrice: 1999.0,
-      image: "/placeholder.svg",
-      rating: 4.7,
-      reviews: 156,
-      badge: "Novo",
-      description: "Notebook gamer com placa de vídeo dedicada",
-      customFields: {
-        marca: "Dell",
-        processador: "Intel i7",
-        memoria: "16GB RAM",
-        armazenamento: "512GB SSD",
-      },
-    },
-    {
-      id: 4,
-      name: "Camisa Polo Ralph Lauren",
-      category: "clothing",
-      subcategory: "Camisetas",
-      price: 189.0,
-      promotionalPrice: 149.0,
-      image: "/placeholder.svg",
-      rating: 4.5,
-      reviews: 143,
-      badge: "Promoção",
-      description: "Polo clássica 100% algodão",
-      customFields: {
-        marca: "Ralph Lauren",
-        material: "100% Algodão",
-        tamanho: "P, M, G, GG",
-        cor: "Azul Marinho",
-      },
-    },
-    {
-      id: 5,
-      name: "Fone Bluetooth Sony WH-1000XM5",
-      category: "electronics",
-      subcategory: "Fones",
-      price: 399.0,
-      promotionalPrice: null,
-      image: "/placeholder.svg",
-      rating: 4.9,
-      reviews: 298,
-      badge: "Bestseller",
-      description: "Fone com cancelamento de ruído ativo",
-      customFields: {
-        marca: "Sony",
-        conexao: "Bluetooth 5.2",
-        bateria: "30h",
-        cancelamento: "Ruído Ativo",
-      },
-    },
-    {
-      id: 6,
-      name: "Vestido Floral Zara",
-      category: "clothing",
-      subcategory: "Vestidos",
-      price: 129.0,
-      promotionalPrice: 99.0,
-      image: "/placeholder.svg",
-      rating: 4.4,
-      reviews: 87,
-      badge: "Liquidação",
-      description: "Vestido estampado ideal para o verão",
-      customFields: {
-        marca: "Zara",
-        material: "Viscose",
-        tamanho: "P, M, G",
-        estampa: "Floral",
-      },
-    },
-  ];
-
-  const selectedCategoryData = categories.find(
+  const selectedCategoryData = categoryFilters.find(
     (cat) => cat.id === selectedCategory
   );
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    const matchesSubcategory =
-      selectedSubcategory === "all" ||
-      product.subcategory === selectedSubcategory;
-    return matchesSearch && matchesCategory && matchesSubcategory;
+  // Filter and search products
+  let filteredProducts = products;
+  
+  // Apply search
+  if (searchTerm) {
+    filteredProducts = searchProducts(filteredProducts, searchTerm);
+  }
+
+  // Apply category filter
+  if (selectedCategory !== "all") {
+    filteredProducts = filteredProducts.filter(product => product.category_id === selectedCategory);
+  }
+
+  // Apply subcategory filter
+  if (selectedSubcategory !== "all") {
+    filteredProducts = filteredProducts.filter(product => product.subcategory === selectedSubcategory);
+  }
+
+  // Apply price range filter
+  if (priceRange.min || priceRange.max) {
+    filteredProducts = filteredProducts.filter(product => {
+      const price = product.promotional_price || product.price;
+      const min = priceRange.min ? parseFloat(priceRange.min) : 0;
+      const max = priceRange.max ? parseFloat(priceRange.max) : Infinity;
+      return price >= min && price <= max;
+    });
+  }
+
+  // Apply sorting
+  filteredProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case "price-asc":
+        return (a.promotional_price || a.price) - (b.promotional_price || b.price);
+      case "price-desc":
+        return (b.promotional_price || b.price) - (a.promotional_price || a.price);
+      case "rating":
+        return (b.rating || 0) - (a.rating || 0);
+      case "name":
+        return a.name.localeCompare(b.name);
+      default:
+        return 0;
+    }
   });
 
   const openProductDetails = (product: any) => {
@@ -213,15 +127,42 @@ const CatalogPage = () => {
     setProductModalOpen(true);
   };
 
-  const ProductCard = ({ product }: { product: (typeof products)[0] }) => (
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!company) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Loja não encontrada</h1>
+          <p className="text-gray-600">O subdomínio informado não existe.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const ProductCard = ({ product }: { product: any }) => (
     <Card
-      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer"
+      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer bg-white"
       onClick={() => openProductDetails(product)}
     >
       <div className="aspect-square relative overflow-hidden bg-gray-100">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-          <span className="text-gray-500 text-sm">Imagem do Produto</span>
-        </div>
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <span className="text-gray-500 text-sm">Sem imagem</span>
+          </div>
+        )}
 
         {product.badge && (
           <Badge
@@ -243,7 +184,7 @@ const CatalogPage = () => {
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 shadow-md"
+            className="h-8 w-8 p-0 shadow-md bg-white/90"
             onClick={(e) => {
               e.stopPropagation();
               addToCart(product);
@@ -254,7 +195,7 @@ const CatalogPage = () => {
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 shadow-md"
+            className="h-8 w-8 p-0 shadow-md bg-white/90"
             onClick={(e) => e.stopPropagation()}
           >
             <Heart className="h-4 w-4" />
@@ -272,27 +213,31 @@ const CatalogPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-1">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3 w-3 ${
-                  i < Math.floor(product.rating)
-                    ? "text-yellow-400 fill-current"
-                    : "text-gray-300"
-                }`}
-              />
-            ))}
+        {product.rating && (
+          <div className="flex items-center space-x-1">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-3 w-3 ${
+                    i < Math.floor(product.rating)
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-gray-600">
+              {product.rating.toFixed(1)} ({product.reviews || 0})
+            </span>
           </div>
-          <span className="text-xs text-gray-600">({product.reviews})</span>
-        </div>
+        )}
 
         <div className="space-y-2">
-          {product.promotionalPrice ? (
+          {product.promotional_price ? (
             <div className="flex items-center space-x-2">
               <span className="text-xl font-bold text-green-600">
-                R$ {product.promotionalPrice.toFixed(2)}
+                R$ {product.promotional_price.toFixed(2)}
               </span>
               <span className="text-sm text-gray-500 line-through">
                 R$ {product.price.toFixed(2)}
@@ -305,16 +250,18 @@ const CatalogPage = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-1 text-xs">
-          {Object.entries(product.customFields)
-            .slice(0, 2)
-            .map(([key, value]) => (
-              <div key={key} className="truncate">
-                <span className="text-gray-500 capitalize">{key}:</span>
-                <span className="ml-1 font-medium">{value}</span>
-              </div>
-            ))}
-        </div>
+        {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
+          <div className="grid grid-cols-2 gap-1 text-xs">
+            {Object.entries(product.custom_fields)
+              .slice(0, 2)
+              .map(([key, value]) => (
+                <div key={key} className="truncate">
+                  <span className="text-gray-500 capitalize">{key}:</span>
+                  <span className="ml-1 font-medium">{value}</span>
+                </div>
+              ))}
+          </div>
+        )}
 
         <Button
           onClick={(e) => {
@@ -330,17 +277,25 @@ const CatalogPage = () => {
     </Card>
   );
 
-  const ProductListItem = ({ product }: { product: (typeof products)[0] }) => (
+  const ProductListItem = ({ product }: { product: any }) => (
     <Card
-      className="hover:shadow-md transition-shadow cursor-pointer"
+      className="hover:shadow-md transition-shadow cursor-pointer bg-white"
       onClick={() => openProductDetails(product)}
     >
       <CardContent className="p-4">
         <div className="flex space-x-4">
           <div className="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-              <span className="text-xs text-gray-500">IMG</span>
-            </div>
+            {product.image ? (
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <span className="text-xs text-gray-500">IMG</span>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 space-y-2">
@@ -370,28 +325,32 @@ const CatalogPage = () => {
               )}
             </div>
 
-            <div className="flex items-center space-x-1">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-3 w-3 ${
-                      i < Math.floor(product.rating)
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
+            {product.rating && (
+              <div className="flex items-center space-x-1">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-3 w-3 ${
+                        i < Math.floor(product.rating)
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-gray-600">
+                  {product.rating.toFixed(1)} ({product.reviews || 0})
+                </span>
               </div>
-              <span className="text-xs text-gray-600">({product.reviews})</span>
-            </div>
+            )}
 
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                {product.promotionalPrice ? (
+                {product.promotional_price ? (
                   <div className="flex items-center space-x-2">
                     <span className="text-lg font-bold text-green-600">
-                      R$ {product.promotionalPrice.toFixed(2)}
+                      R$ {product.promotional_price.toFixed(2)}
                     </span>
                     <span className="text-sm text-gray-500 line-through">
                       R$ {product.price.toFixed(2)}
@@ -416,16 +375,18 @@ const CatalogPage = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {Object.entries(product.customFields)
-                .slice(0, 4)
-                .map(([key, value]) => (
-                  <div key={key} className="truncate">
-                    <span className="text-gray-500 capitalize">{key}:</span>
-                    <span className="ml-1 font-medium">{value}</span>
-                  </div>
-                ))}
-            </div>
+            {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {Object.entries(product.custom_fields)
+                  .slice(0, 4)
+                  .map(([key, value]) => (
+                    <div key={key} className="truncate">
+                      <span className="text-gray-500 capitalize">{key}:</span>
+                      <span className="ml-1 font-medium">{value}</span>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
@@ -449,11 +410,21 @@ const CatalogPage = () => {
               </Button>
 
               <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
+                {company.logo_url ? (
+                  <img
+                    src={company.logo_url}
+                    alt={company.name}
+                    className="h-8 w-8 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {company.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
                 <div>
-                  <h1 className="font-bold text-gray-900">Minha Loja</h1>
+                  <h1 className="font-bold text-gray-900">{company.name}</h1>
                   <p className="text-xs text-gray-600 hidden sm:block">
                     Produtos selecionados com qualidade
                   </p>
@@ -462,7 +433,6 @@ const CatalogPage = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              {/* Cart Button */}
               <Button
                 variant="outline"
                 size="sm"
@@ -484,13 +454,12 @@ const CatalogPage = () => {
                 </div>
                 <div className="flex items-center space-x-1">
                   <Mail className="h-4 w-4" />
-                  <span>contato@minhaloja.com</span>
+                  <span>contato@{company.subdomain}.com</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Search Bar */}
           <div className="pb-4">
             <div className="relative max-w-2xl mx-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -513,7 +482,7 @@ const CatalogPage = () => {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
                 <div className="space-y-2">
-                  {categories.map((category) => (
+                  {categoryFilters.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => {
@@ -538,7 +507,6 @@ const CatalogPage = () => {
                 </div>
               </div>
 
-              {/* Subcategorias */}
               {selectedCategoryData &&
                 selectedCategoryData.subcategories.length > 0 && (
                   <div>
@@ -585,11 +553,28 @@ const CatalogPage = () => {
                 </h3>
                 <div className="space-y-2">
                   <div className="flex space-x-2">
-                    <Input placeholder="Min" className="text-sm" />
-                    <Input placeholder="Max" className="text-sm" />
+                    <Input
+                      placeholder="Min"
+                      className="text-sm"
+                      value={priceRange.min}
+                      onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
+                      type="number"
+                    />
+                    <Input
+                      placeholder="Max"
+                      className="text-sm"
+                      value={priceRange.max}
+                      onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
+                      type="number"
+                    />
                   </div>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Aplicar
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setPriceRange({ min: "", max: "" })}
+                  >
+                    Limpar
                   </Button>
                 </div>
               </div>
@@ -598,7 +583,6 @@ const CatalogPage = () => {
 
           {/* Main Content */}
           <main className="flex-1 space-y-6">
-            {/* Filters and View Toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <p className="text-gray-600">
@@ -610,18 +594,24 @@ const CatalogPage = () => {
                   className="lg:hidden"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <Filter className="h-4 w-4 mr-2" />
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
                   Filtros
                 </Button>
               </div>
 
               <div className="flex items-center space-x-2">
-                <select className="text-sm border rounded-md px-3 py-1 bg-white">
-                  <option>Mais Relevantes</option>
-                  <option>Menor Preço</option>
-                  <option>Maior Preço</option>
-                  <option>Mais Avaliados</option>
-                </select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="relevance">Mais Relevantes</SelectItem>
+                    <SelectItem value="price-asc">Menor Preço</SelectItem>
+                    <SelectItem value="price-desc">Maior Preço</SelectItem>
+                    <SelectItem value="rating">Mais Avaliados</SelectItem>
+                    <SelectItem value="name">Nome A-Z</SelectItem>
+                  </SelectContent>
+                </Select>
 
                 <div className="flex border rounded-md">
                   <Button
@@ -677,6 +667,7 @@ const CatalogPage = () => {
                     setSearchTerm("");
                     setSelectedCategory("all");
                     setSelectedSubcategory("all");
+                    setPriceRange({ min: "", max: "" });
                   }}
                 >
                   Limpar Filtros
@@ -693,10 +684,20 @@ const CatalogPage = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <span className="text-xl font-bold">Minha Loja</span>
+                {company.logo_url ? (
+                  <img
+                    src={company.logo_url}
+                    alt={company.name}
+                    className="h-8 w-8 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {company.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <span className="text-xl font-bold">{company.name}</span>
               </div>
               <p className="text-gray-600 mb-4">
                 Produtos selecionados com qualidade e preços justos. Sua
@@ -713,7 +714,7 @@ const CatalogPage = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4" />
-                  <span>contato@minhaloja.com</span>
+                  <span>contato@{company.subdomain}.com</span>
                 </div>
               </div>
             </div>
@@ -721,38 +722,19 @@ const CatalogPage = () => {
             <div>
               <h4 className="font-semibold mb-4">Categorias</h4>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Eletrônicos
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Roupas
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Calçados
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
-                    Casa & Decoração
-                  </a>
-                </li>
+                {categories.slice(0, 4).map((category) => (
+                  <li key={category.id}>
+                    <button
+                      onClick={() => {
+                        setSelectedCategory(category.id);
+                        setSelectedSubcategory("all");
+                      }}
+                      className="hover:text-primary-600 transition-colors"
+                    >
+                      {category.name}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -760,34 +742,22 @@ const CatalogPage = () => {
               <h4 className="font-semibold mb-4">Atendimento</h4>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
+                  <a href="#" className="hover:text-primary-600 transition-colors">
                     Central de Ajuda
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
+                  <a href="#" className="hover:text-primary-600 transition-colors">
                     Trocas e Devoluções
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
+                  <a href="#" className="hover:text-primary-600 transition-colors">
                     Entrega
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-primary-600 transition-colors"
-                  >
+                  <a href="#" className="hover:text-primary-600 transition-colors">
                     Contato
                   </a>
                 </li>
@@ -797,7 +767,7 @@ const CatalogPage = () => {
 
           <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
             <p>
-              &copy; 2024 Minha Loja. Todos os direitos reservados. Powered by
+              &copy; 2024 {company.name}. Todos os direitos reservados. Powered by
               CatalogoPro.
             </p>
           </div>
@@ -822,7 +792,7 @@ const CatalogPage = () => {
             <div>
               <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
               <div className="space-y-2">
-                {categories.map((category) => (
+                {categoryFilters.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => {
@@ -847,7 +817,6 @@ const CatalogPage = () => {
               </div>
             </div>
 
-            {/* Mobile Subcategorias */}
             {selectedCategoryData &&
               selectedCategoryData.subcategories.length > 0 && (
                 <div>
@@ -894,11 +863,28 @@ const CatalogPage = () => {
               </h3>
               <div className="space-y-2">
                 <div className="flex space-x-2">
-                  <Input placeholder="Min" className="text-sm" />
-                  <Input placeholder="Max" className="text-sm" />
+                  <Input
+                    placeholder="Min"
+                    className="text-sm"
+                    value={priceRange.min}
+                    onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
+                    type="number"
+                  />
+                  <Input
+                    placeholder="Max"
+                    className="text-sm"
+                    value={priceRange.max}
+                    onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
+                    type="number"
+                  />
                 </div>
-                <Button variant="outline" size="sm" className="w-full">
-                  Aplicar
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => setPriceRange({ min: "", max: "" })}
+                >
+                  Limpar
                 </Button>
               </div>
             </div>
@@ -912,10 +898,8 @@ const CatalogPage = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Cart Drawer */}
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      {/* Product Details Modal */}
       <ProductDetailsModal
         product={selectedProduct}
         isOpen={productModalOpen}

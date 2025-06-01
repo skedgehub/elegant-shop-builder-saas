@@ -1,3 +1,4 @@
+
 import { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="flex h-screen">
         {/* Sidebar */}
-        <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+        <div className={cn(
+          "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 transition-all duration-300",
+          isCollapsed ? "lg:w-16" : "lg:w-64"
+        )}>
           <AdminSidebar
             isCollapsed={isCollapsed}
             onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
@@ -41,9 +45,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
 
         {/* Main content */}
-        <div className={cn("flex-1", isCollapsed ? "lg:pl-16" : "lg:pl-64")}>
-          {/* Header */}
-          <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className={cn("flex-1 flex flex-col transition-all duration-300", isCollapsed ? "lg:pl-16" : "lg:pl-64")}>
+          {/* Header - Fixed */}
+          <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
             <div className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center">
                 <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -82,7 +86,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             </div>
           </header>
 
-          {/* Page content */}
+          {/* Page content - Scrollable */}
           <main className="flex-1 overflow-auto">{children}</main>
         </div>
       </div>
