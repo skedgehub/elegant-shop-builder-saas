@@ -28,9 +28,9 @@ const Products = () => {
   }
 
   return (
-    <AdminLayout>
+    <>
       <ProductsContent />
-    </AdminLayout>
+    </>
   );
 };
 

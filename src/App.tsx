@@ -22,6 +22,9 @@ import NewCategory from "@/pages/NewCategory";
 import EditCategory from "@/pages/EditCategory";
 import CatalogPage from "@/pages/CatalogPage";
 import PlanSelection from "@/pages/PlanSelection";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLayout from "./components/AdminLayout";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -32,27 +35,144 @@ function App() {
         <CartProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              
+
               <Route path="/plans" element={<PlanSelection />} />
-              
+
               <Route path="/catalog/:subdomain" element={<CatalogPage />} />
 
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/products" element={<Products />} />
-              <Route path="/admin/products/new" element={<NewProduct />} />
-              <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-              <Route path="/admin/categories" element={<Categories />} />
-              <Route path="/admin/categories/new" element={<NewCategory />} />
-              <Route path="/admin/categories/edit/:id" element={<EditCategory />} />
-              <Route path="/admin/orders" element={<Orders />} />
-              <Route path="/admin/subscribers" element={<Subscribers />} />
-              <Route path="/admin/system" element={<SystemConfig />} />
-              <Route path="/admin/appearance" element={<Appearance />} />
-              <Route path="/admin/catalog-config" element={<CatalogConfig />} />
-              <Route path="/admin/reports" element={<Reports />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Admin />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Products />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/products/new"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <NewProduct />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/products/edit/:id"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <EditProduct />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/categories"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Categories />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/categories/new"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <NewCategory />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/categories/edit/:id"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <EditCategory />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/orders"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Orders />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/subscribers"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Subscribers />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/system"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <SystemConfig />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/appearance"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Appearance />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/catalog-config"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <CatalogConfig />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/reports"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Reports />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <Toaster />
           </Router>

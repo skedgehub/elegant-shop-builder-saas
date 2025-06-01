@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import AdminLayout from "@/components/AdminLayout";
 import CategoryForm from "@/components/CategoryForm";
 
 const NewCategory = () => {
@@ -28,7 +27,7 @@ const NewCategory = () => {
   }
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -40,7 +39,7 @@ const NewCategory = () => {
         </div>
         <CategoryForm mode="create" />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
