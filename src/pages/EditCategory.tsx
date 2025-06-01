@@ -1,10 +1,32 @@
 
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import AdminLayout from "@/components/AdminLayout";
 import CategoryForm from "@/components/CategoryForm";
-import { useParams } from "react-router-dom";
 
 const EditCategory = () => {
   const { id } = useParams();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <AdminLayout>
@@ -17,7 +39,7 @@ const EditCategory = () => {
             Edite as informações da categoria
           </p>
         </div>
-        <CategoryForm mode="edit" categoryId={id} />
+        <CategoryForm mode="edit" initialData={{ id }} />
       </div>
     </AdminLayout>
   );

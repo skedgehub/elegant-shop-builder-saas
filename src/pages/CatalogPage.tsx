@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,8 @@ import {
   Grid,
   List,
   Heart,
-  Share2
+  Share2,
+  Package
 } from "lucide-react";
 import { useCatalogData } from "@/hooks/useCatalogData";
 import { useCart } from "@/contexts/CartContext";
@@ -166,11 +168,10 @@ const ProductDetailsModal = ({ product, isOpen, onClose, onAddToCart }: ProductD
 const CatalogPage = () => {
   const { subdomain } = useParams();
   const { company, products, categories, isLoading } = useCatalogData(subdomain || '');
-  const { addItem, items } = useCart();
+  const { items, addToCart } = useCart();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showProductModal, setShowProductModal] = useState(false);
 
@@ -189,7 +190,7 @@ const CatalogPage = () => {
   };
 
   const handleAddToCart = (product: any, quantity: number = 1) => {
-    addItem({
+    addToCart({
       id: product.id,
       name: product.name,
       price: product.promotional_price || product.price,
@@ -225,38 +226,32 @@ const CatalogPage = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-white"
-      style={{ 
-        backgroundColor: company.primary_color ? `${company.primary_color}10` : undefined 
-      }}
-    >
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200">
-        <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - estilo iFood */}
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              {company.logo && (
+              {company.logo_url && (
                 <img
-                  src={company.logo}
+                  src={company.logo_url}
                   alt={company.name}
-                  className="h-12 w-auto"
+                  className="h-12 w-auto rounded-lg"
                 />
               )}
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{company.name}</h1>
-                <p className="text-sm text-gray-600">{company.description}</p>
+                <h1 className="text-xl font-bold text-gray-900">{company.name}</h1>
+                <p className="text-sm text-gray-600">Delivery</p>
               </div>
             </div>
 
             <Button
-              className="relative"
-              style={{ backgroundColor: company.primary_color }}
+              className="relative bg-red-500 hover:bg-red-600 text-white"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
               Carrinho
               {cartItemsCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                <Badge className="absolute -top-2 -right-2 bg-yellow-500 text-black rounded-full w-6 h-6 flex items-center justify-center text-xs">
                   {cartItemsCount}
                 </Badge>
               )}
@@ -265,60 +260,54 @@ const CatalogPage = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  placeholder="Buscar produtos..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-12 border-gray-300 rounded-xl"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-xl bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="all">Todas as categorias</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex border border-gray-300 rounded-xl overflow-hidden">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="rounded-none"
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="rounded-none"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+      {/* Search Bar - estilo iFood */}
+      <div className="bg-white border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Input
+              placeholder="Busque por pratos ou restaurantes"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 h-14 border-gray-300 rounded-full bg-gray-50 text-lg"
+            />
           </div>
         </div>
+      </div>
 
-        {/* Products Grid */}
+      {/* Categories - estilo horizontal como iFood */}
+      <div className="bg-white border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex space-x-4 overflow-x-auto scrollbar-hide">
+            <button
+              onClick={() => setSelectedCategory("all")}
+              className={`px-6 py-3 rounded-full font-medium whitespace-nowrap ${
+                selectedCategory === "all"
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Todos
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-6 py-3 rounded-full font-medium whitespace-nowrap ${
+                  selectedCategory === category.id
+                    ? "bg-red-500 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Products Grid - estilo cards como iFood */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
         {filteredProducts.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-gray-400 mb-4">
@@ -332,96 +321,78 @@ const CatalogPage = () => {
             </p>
           </div>
         ) : (
-          <div className={`grid gap-6 ${
-            viewMode === "grid" 
-              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
-              : "grid-cols-1"
-          }`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
               <Card 
                 key={product.id} 
-                className={`group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-0 shadow-md ${
-                  viewMode === "list" ? "flex-row" : ""
-                }`}
+                className="group cursor-pointer transition-all duration-300 hover:shadow-lg border-0 shadow-md bg-white overflow-hidden"
                 onClick={() => handleProductClick(product)}
               >
-                <div className={`${viewMode === "list" ? "flex" : ""}`}>
-                  <div className={`${
-                    viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-square"
-                  } bg-gray-100 rounded-xl overflow-hidden relative`}>
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <Package className="h-12 w-12" />
-                      </div>
+                <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <Package className="h-12 w-12" />
+                    </div>
+                  )}
+                  {product.promotional_price && (
+                    <Badge className="absolute top-3 left-3 bg-red-500 text-white">
+                      Oferta
+                    </Badge>
+                  )}
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
+                </div>
+
+                <CardContent className="p-4">
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-lg text-gray-900 line-clamp-1">
+                      {product.name}
+                    </h3>
+                    
+                    {product.description && (
+                      <p className="text-gray-600 text-sm line-clamp-2 leading-5">
+                        {product.description}
+                      </p>
                     )}
-                    {product.promotional_price && (
-                      <Badge className="absolute top-3 left-3 bg-red-500 text-white">
-                        Oferta
-                      </Badge>
-                    )}
-                  </div>
 
-                  <CardContent className={`${viewMode === "list" ? "flex-1" : ""} p-6`}>
-                    <div className="space-y-3">
-                      <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
-                        {product.name}
-                      </h3>
-                      
-                      {product.description && viewMode === "list" && (
-                        <p className="text-gray-600 text-sm line-clamp-2">
-                          {product.description}
-                        </p>
-                      )}
-
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-4 w-4 ${
-                                i < (product.rating || 4) ? "text-yellow-400 fill-current" : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500">
-                          ({product.reviews || 0})
-                        </span>
-                      </div>
-
-                      <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
                         <div className="flex items-center space-x-2">
-                          <span className="text-2xl font-bold text-green-600">
+                          <span className="text-xl font-bold text-gray-900">
                             R$ {(product.promotional_price || product.price).toFixed(2).replace('.', ',')}
                           </span>
                           {product.promotional_price && (
-                            <span className="text-lg text-gray-500 line-through">
+                            <span className="text-sm text-gray-500 line-through">
                               R$ {product.price.toFixed(2).replace('.', ',')}
                             </span>
                           )}
                         </div>
-
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToCart(product);
-                          }}
-                          className="w-full bg-green-600 hover:bg-green-700 text-white"
-                          style={{ backgroundColor: company.primary_color }}
-                        >
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Adicionar ao Carrinho
-                        </Button>
+                        <div className="flex items-center mt-1">
+                          <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                          <span className="text-sm text-gray-600 ml-1">
+                            {(product.rating || 4.5).toFixed(1)}
+                          </span>
+                        </div>
                       </div>
+
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                        size="sm"
+                        className="bg-red-500 hover:bg-red-600 text-white rounded-full px-4"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
                     </div>
-                  </CardContent>
-                </div>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
