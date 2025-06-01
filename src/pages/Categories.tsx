@@ -1,8 +1,6 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import AdminLayout from "@/components/AdminLayout";
 import CategoriesContent from "@/components/CategoriesContent";
 
 const Categories = () => {
@@ -28,9 +26,9 @@ const Categories = () => {
   }
 
   return (
-    <AdminLayout>
+    <>
       <CategoriesContent />
-    </AdminLayout>
+    </>
   );
 };
 

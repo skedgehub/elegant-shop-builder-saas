@@ -1,8 +1,6 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import AdminLayout from "@/components/AdminLayout";
 import ProductsContent from "@/components/ProductsContent";
 
 const Products = () => {
@@ -28,9 +26,9 @@ const Products = () => {
   }
 
   return (
-    <AdminLayout>
+    <>
       <ProductsContent />
-    </AdminLayout>
+    </>
   );
 };
 

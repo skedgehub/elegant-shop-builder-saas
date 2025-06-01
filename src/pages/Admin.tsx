@@ -1,10 +1,8 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, Users, ShoppingCart, TrendingUp } from "lucide-react";
-import AdminLayout from "@/components/AdminLayout";
 
 const Admin = () => {
   const { user, isLoading } = useAuth();
@@ -29,7 +27,7 @@ const Admin = () => {
   }
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6 space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -96,7 +94,7 @@ const Admin = () => {
           </Card>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
