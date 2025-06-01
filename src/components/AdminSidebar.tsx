@@ -108,10 +108,15 @@ const AdminSidebar = ({
     >
       <div className="space-y-4 py-4 h-full">
         <div className="px-3 py-2">
-          <div className="flex items-center justify-between min-h-[40px]">
+          <div
+            className={cn(
+              "flex items-center justify-between min-h-[40px]",
+              isCollapsed
+            )}
+          >
             {!isCollapsed && (
               <h2 className="px-4 text-lg font-semibold tracking-tight text-gray-900 dark:text-white truncate">
-                Admin Panel
+                Marketing Link
               </h2>
             )}
             <div className="flex-shrink-0">
@@ -152,15 +157,21 @@ const AdminSidebar = ({
                         location.pathname === item.href ? "secondary" : "ghost"
                       }
                       className={cn(
-                        "w-full justify-start hover:bg-gray-100 dark:hover:bg-gray-800",
+                        "w-full justify-start hover:bg-primary dark:hover:bg-primary dark:hover:text-black",
                         isCollapsed ? "px-2" : "px-4",
                         location.pathname === item.href &&
-                          "bg-gray-100 dark:bg-gray-800"
+                          "bg-primary dark:bg-primary  dark:text-black"
                       )}
                       asChild
                       title={isCollapsed ? item.title : undefined}
                     >
-                      <Link to={item.href} className="flex items-center">
+                      <Link
+                        to={item.href}
+                        className={cn(
+                          "flex items-center",
+                          isCollapsed && "justify-center"
+                        )}
+                      >
                         <item.icon className="h-4 w-4 flex-shrink-0" />
                         {!isCollapsed && (
                           <span className="ml-2 truncate">{item.title}</span>
