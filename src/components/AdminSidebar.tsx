@@ -17,8 +17,8 @@ import {
   BarChart3,
   FileText,
   CreditCard,
-  Menu,
-  X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -100,11 +100,11 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
 
   return (
     <div className={cn(
-      "pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300",
+      "pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300 flex-shrink-0",
       isCollapsed ? "w-16" : "w-64",
       className
     )}>
-      <div className="space-y-4 py-4">
+      <div className="space-y-4 py-4 h-full">
         <div className="px-3 py-2">
           <div className="flex items-center justify-between">
             {!isCollapsed && (
@@ -116,13 +116,19 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
               variant="ghost"
               size="sm"
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+              title={isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"}
             >
-              {isCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+              {isCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
-        <ScrollArea className="h-[calc(100vh-100px)] px-1">
+        
+        <ScrollArea className="h-[calc(100vh-120px)] px-1">
           <div className="space-y-6 p-2">
             {sidebarItems.map((section) => (
               <div key={section.title}>
@@ -139,15 +145,16 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
                         location.pathname === item.href ? "secondary" : "ghost"
                       }
                       className={cn(
-                        "w-full justify-start",
-                        isCollapsed ? "px-2" : "px-4"
+                        "w-full justify-start hover:bg-gray-100 dark:hover:bg-gray-800",
+                        isCollapsed ? "px-2" : "px-4",
+                        location.pathname === item.href && "bg-gray-100 dark:bg-gray-800"
                       )}
                       asChild
                       title={isCollapsed ? item.title : undefined}
                     >
-                      <Link to={item.href}>
-                        <item.icon className="h-4 w-4" />
-                        {!isCollapsed && <span className="ml-2">{item.title}</span>}
+                      <Link to={item.href} className="flex items-center">
+                        <item.icon className="h-4 w-4 flex-shrink-0" />
+                        {!isCollapsed && <span className="ml-2 truncate">{item.title}</span>}
                       </Link>
                     </Button>
                   ))}
