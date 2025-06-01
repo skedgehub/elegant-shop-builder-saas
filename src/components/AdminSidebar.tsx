@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useState } from "react";
 
 const sidebarItems = [
   {
@@ -89,42 +87,54 @@ const sidebarItems = [
 
 interface AdminSidebarProps {
   className?: string;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
-const AdminSidebar = ({ className }: AdminSidebarProps) => {
+const AdminSidebar = ({
+  className,
+  isCollapsed,
+  onToggleCollapse,
+}: AdminSidebarProps) => {
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={cn(
-      "relative pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300 flex-shrink-0",
-      isCollapsed ? "w-16" : "w-64",
-      className
-    )}>
+    <div
+      className={cn(
+        "relative pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300 ease-in-out flex-shrink-0",
+        isCollapsed ? "w-16" : "w-64",
+        className
+      )}
+    >
       <div className="space-y-4 py-4 h-full">
         <div className="px-3 py-2">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between min-h-[40px]">
             {!isCollapsed && (
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
+              <h2 className="px-4 text-lg font-semibold tracking-tight text-gray-900 dark:text-white truncate">
                 Admin Panel
               </h2>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
-              title={isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"}
-            >
-              {isCollapsed ? (
-                <ChevronRight className="h-4 w-4" />
-              ) : (
-                <ChevronLeft className="h-4 w-4" />
-              )}
-            </Button>
+            <div className="flex-shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleCollapse}
+                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 visible"
+                title={isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"}
+                aria-label={
+                  isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"
+                }
+              >
+                {isCollapsed ? (
+                  <ChevronRight className="h-4 w-4" />
+                ) : (
+                  <ChevronLeft className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
-        
+
         <ScrollArea className="h-[calc(100vh-120px)] px-1">
           <div className="space-y-6 p-2">
             {sidebarItems.map((section) => (
@@ -144,14 +154,17 @@ const AdminSidebar = ({ className }: AdminSidebarProps) => {
                       className={cn(
                         "w-full justify-start hover:bg-gray-100 dark:hover:bg-gray-800",
                         isCollapsed ? "px-2" : "px-4",
-                        location.pathname === item.href && "bg-gray-100 dark:bg-gray-800"
+                        location.pathname === item.href &&
+                          "bg-gray-100 dark:bg-gray-800"
                       )}
                       asChild
                       title={isCollapsed ? item.title : undefined}
                     >
                       <Link to={item.href} className="flex items-center">
                         <item.icon className="h-4 w-4 flex-shrink-0" />
-                        {!isCollapsed && <span className="ml-2 truncate">{item.title}</span>}
+                        {!isCollapsed && (
+                          <span className="ml-2 truncate">{item.title}</span>
+                        )}
                       </Link>
                     </Button>
                   ))}

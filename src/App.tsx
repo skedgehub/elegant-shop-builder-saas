@@ -25,6 +25,7 @@ import PlanSelection from "@/pages/PlanSelection";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
 import Index from "./pages/Index";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +49,7 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <AdminLayout>
-                      <Admin />
+                      <AdminDashboard />
                     </AdminLayout>
                   </ProtectedRoute>
                 }
