@@ -26,6 +26,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
 import Index from "./pages/Index";
 import AdminDashboard from "./pages/AdminDashboard";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -170,6 +171,17 @@ function App() {
                   <ProtectedRoute>
                     <AdminLayout>
                       <Reports />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/admin/profile"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout>
+                      <Profile />
                     </AdminLayout>
                   </ProtectedRoute>
                 }
