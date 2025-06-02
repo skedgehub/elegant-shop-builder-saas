@@ -42,8 +42,8 @@ interface Product {
 }
 
 const CatalogPage = () => {
-  const { data: catalogData, isLoading } = useCatalogData();
-  const { addToCart, removeFromCart, getItemQuantity, items } = useCart();
+  const { company, categories, products, isLoading } = useCatalogData();
+  const { addToCart, removeFromCart, items } = useCart();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -53,8 +53,14 @@ const CatalogPage = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // Helper function to get item quantity from cart
+  const getItemQuantity = (productId: string): number => {
+    const item = items.find(item => item.id === Number(productId));
+    return item ? item.quantity : 0;
+  };
+
   // Transform catalog products to match our Product interface
-  const products: Product[] = catalogData?.products?.map(product => ({
+  const transformedProducts: Product[] = products?.map(product => ({
     id: product.id,
     name: product.name,
     description: product.description || '',
@@ -71,10 +77,8 @@ const CatalogPage = () => {
     reviews: 127
   })) || [];
 
-  const categories = catalogData?.categories || [];
-
   // Filter and sort products
-  const filteredProducts = products
+  const filteredProducts = transformedProducts
     .filter(product => 
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedCategory === "all" || product.category_id === selectedCategory) &&
@@ -112,7 +116,7 @@ const CatalogPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <h1 className="text-2xl font-bold text-gray-900">
-                {catalogData?.company?.name || 'Catálogo'}
+                {company?.name || 'Catálogo'}
               </h1>
             </div>
             
@@ -369,7 +373,7 @@ const CatalogPage = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => removeFromCart(product.id)}
+                              onClick={() => removeFromCart(Number(product.id))}
                               className="h-8 w-8 p-0"
                             >
                               <Minus className="h-3 w-3" />
@@ -380,7 +384,7 @@ const CatalogPage = () => {
                             <Button
                               size="sm"
                               onClick={() => addToCart({
-                                id: product.id,
+                                id: Number(product.id),
                                 name: product.name,
                                 price: product.promotional_price || product.price,
                                 image: product.image
@@ -394,7 +398,7 @@ const CatalogPage = () => {
                           <Button
                             size="sm"
                             onClick={() => addToCart({
-                              id: product.id,
+                              id: Number(product.id),
                               name: product.name,
                               price: product.promotional_price || product.price,
                               image: product.image
@@ -421,7 +425,7 @@ const CatalogPage = () => {
           isOpen={!!selectedProduct}
           onClose={() => setSelectedProduct(null)}
           onAddToCart={(product) => addToCart({
-            id: product.id,
+            id: Number(product.id),
             name: product.name,
             price: product.promotional_price || product.price,
             image: product.image
