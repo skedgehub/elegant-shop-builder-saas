@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import CartDrawer from "@/components/CartDrawer";
 import ProductDetailsModal from "@/components/ProductDetailsModal";
-import { useCatalogData } from "@/hooks/useCatalogData";
+import CheckoutForm from "@/components/CheckoutForm";
+import { useCatalogData, CatalogProduct } from "@/hooks/useCatalogData";
 import {
   Search,
   Filter,
@@ -25,6 +26,7 @@ import {
   Plus,
   ChevronDown,
   SlidersHorizontal,
+  Package,
 } from "lucide-react";
 import {
   Drawer,
@@ -51,15 +53,20 @@ const CatalogPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
-  const { addToCart, items } = useCart();
+  const { addToCart, items, clearCart } = useCart();
 
   const getTotalItems = () => {
     return items.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getTotalPrice = () => {
+    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   // Transform categories for the filter
@@ -82,8 +89,11 @@ const CatalogPage = () => {
     (cat) => cat.id === selectedCategory
   );
 
+  // Get subcategories for selected category
+  const availableSubcategories = selectedCategoryData?.subcategories || [];
+
   // Filter and search products
-  let filteredProducts = [...products];
+  let filteredProducts: CatalogProduct[] = [...products];
   
   // Apply search
   if (searchTerm) {
@@ -126,9 +136,29 @@ const CatalogPage = () => {
     }
   });
 
-  const openProductDetails = (product: any) => {
+  const openProductDetails = (product: CatalogProduct) => {
     setSelectedProduct(product);
     setProductModalOpen(true);
+  };
+
+  const handleCheckout = (orderData: any) => {
+    // Simulate order creation
+    const orderId = Math.random().toString(36).substr(2, 9);
+    
+    console.log('Pedido criado:', {
+      id: orderId,
+      items: items,
+      total: getTotalPrice(),
+      customer: orderData
+    });
+
+    // Clear cart and close checkout
+    clearCart();
+    setCheckoutOpen(false);
+    setCartOpen(false);
+
+    // Show success message (you could replace with a proper toast)
+    alert(`Pedido #${orderId} criado com sucesso! Entraremos em contato em breve.`);
   };
 
   if (isLoading) {
@@ -150,9 +180,9 @@ const CatalogPage = () => {
     );
   }
 
-  const ProductCard = ({ product }: { product: any }) => (
+  const ProductCard = ({ product }: { product: CatalogProduct }) => (
     <Card
-      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer bg-white"
+      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer bg-white h-full flex flex-col"
       onClick={() => openProductDetails(product)}
     >
       <div className="aspect-square relative overflow-hidden bg-gray-100">
@@ -164,7 +194,7 @@ const CatalogPage = () => {
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-            <span className="text-gray-500 text-sm">Sem imagem</span>
+            <Package className="h-12 w-12 text-gray-400" />
           </div>
         )}
 
@@ -207,14 +237,16 @@ const CatalogPage = () => {
         </div>
       </div>
 
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors">
+      <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
+        <div className="flex-1">
+          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors text-sm">
             {product.name}
           </h3>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {product.description || "Sem descrição"}
-          </p>
+          {product.description && (
+            <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+              {product.description}
+            </p>
+          )}
         </div>
 
         {product.rating && (
@@ -224,7 +256,7 @@ const CatalogPage = () => {
                 <Star
                   key={i}
                   className={`h-3 w-3 ${
-                    i < Math.floor(product.rating)
+                    i < Math.floor(product.rating || 0)
                       ? "text-yellow-400 fill-current"
                       : "text-gray-300"
                   }`}
@@ -232,7 +264,7 @@ const CatalogPage = () => {
               ))}
             </div>
             <span className="text-xs text-gray-600">
-              {product.rating.toFixed(1)} ({product.reviews || 0})
+              {product.rating?.toFixed(1)} ({product.reviews || 0})
             </span>
           </div>
         )}
@@ -240,7 +272,7 @@ const CatalogPage = () => {
         <div className="space-y-2">
           {product.promotional_price ? (
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-green-600">
+              <span className="text-lg font-bold text-green-600">
                 R$ {product.promotional_price.toFixed(2)}
               </span>
               <span className="text-sm text-gray-500 line-through">
@@ -248,40 +280,28 @@ const CatalogPage = () => {
               </span>
             </div>
           ) : (
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-lg font-bold text-gray-900">
               R$ {product.price.toFixed(2)}
             </span>
           )}
         </div>
-
-        {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
-          <div className="grid grid-cols-2 gap-1 text-xs">
-            {Object.entries(product.custom_fields)
-              .slice(0, 2)
-              .map(([key, value]) => (
-                <div key={key} className="truncate">
-                  <span className="text-gray-500 capitalize">{key}:</span>
-                  <span className="ml-1 font-medium">{String(value)}</span>
-                </div>
-              ))}
-          </div>
-        )}
 
         <Button
           onClick={(e) => {
             e.stopPropagation();
             addToCart(product);
           }}
-          className="w-full mt-4"
+          className="w-full mt-auto"
+          size="sm"
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
-          Adicionar ao Carrinho
+          Adicionar
         </Button>
       </CardContent>
     </Card>
   );
 
-  const ProductListItem = ({ product }: { product: any }) => (
+  const ProductListItem = ({ product }: { product: CatalogProduct }) => (
     <Card
       className="hover:shadow-md transition-shadow cursor-pointer bg-white"
       onClick={() => openProductDetails(product)}
@@ -297,7 +317,7 @@ const CatalogPage = () => {
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <span className="text-xs text-gray-500">IMG</span>
+                <Package className="h-8 w-8 text-gray-400" />
               </div>
             )}
           </div>
@@ -305,12 +325,14 @@ const CatalogPage = () => {
           <div className="flex-1 space-y-2 min-w-0">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 line-clamp-1">
+                <h3 className="font-semibold text-gray-900 line-clamp-1 text-sm">
                   {product.name}
                 </h3>
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-                  {product.description || "Sem descrição"}
-                </p>
+                {product.description && (
+                  <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                    {product.description}
+                  </p>
+                )}
               </div>
               {product.badge && (
                 <Badge
@@ -336,7 +358,7 @@ const CatalogPage = () => {
                     <Star
                       key={i}
                       className={`h-3 w-3 ${
-                        i < Math.floor(product.rating)
+                        i < Math.floor(product.rating || 0)
                           ? "text-yellow-400 fill-current"
                           : "text-gray-300"
                       }`}
@@ -344,7 +366,7 @@ const CatalogPage = () => {
                   ))}
                 </div>
                 <span className="text-xs text-gray-600">
-                  {product.rating.toFixed(1)} ({product.reviews || 0})
+                  {product.rating?.toFixed(1)} ({product.reviews || 0})
                 </span>
               </div>
             )}
@@ -378,19 +400,6 @@ const CatalogPage = () => {
                 Carrinho
               </Button>
             </div>
-
-            {product.custom_fields && Object.keys(product.custom_fields).length > 0 && (
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {Object.entries(product.custom_fields)
-                  .slice(0, 4)
-                  .map(([key, value]) => (
-                    <div key={key} className="truncate">
-                      <span className="text-gray-500 capitalize">{key}:</span>
-                      <span className="ml-1 font-medium">{String(value)}</span>
-                    </div>
-                  ))}
-              </div>
-            )}
           </div>
         </div>
       </CardContent>
@@ -398,7 +407,7 @@ const CatalogPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 light">
       {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-40">
         <div className="container mx-auto px-4">
@@ -511,45 +520,44 @@ const CatalogPage = () => {
                 </div>
               </div>
 
-              {selectedCategoryData &&
-                selectedCategoryData.subcategories.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">
-                      Subcategorias
-                    </h3>
-                    <div className="space-y-1">
+              {availableSubcategories.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Subcategorias
+                  </h3>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => setSelectedSubcategory("all")}
+                      className={`
+                      w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                      ${
+                        selectedSubcategory === "all"
+                          ? "bg-primary-100 text-primary-700 font-medium"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }
+                    `}
+                    >
+                      Todas
+                    </button>
+                    {availableSubcategories.map((sub) => (
                       <button
-                        onClick={() => setSelectedSubcategory("all")}
+                        key={sub}
+                        onClick={() => setSelectedSubcategory(sub)}
                         className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm truncate
                         ${
-                          selectedSubcategory === "all"
+                          selectedSubcategory === sub
                             ? "bg-primary-100 text-primary-700 font-medium"
                             : "text-gray-600 hover:bg-gray-100"
                         }
                       `}
                       >
-                        Todas
+                        {sub}
                       </button>
-                      {selectedCategoryData.subcategories.map((sub) => (
-                        <button
-                          key={sub}
-                          onClick={() => setSelectedSubcategory(sub)}
-                          className={`
-                          w-full text-left px-3 py-2 rounded-lg transition-colors text-sm truncate
-                          ${
-                            selectedSubcategory === sub
-                              ? "bg-primary-100 text-primary-700 font-medium"
-                              : "text-gray-600 hover:bg-gray-100"
-                          }
-                        `}
-                        >
-                          {sub}
-                        </button>
-                      ))}
-                    </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
 
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">
@@ -821,45 +829,44 @@ const CatalogPage = () => {
               </div>
             </div>
 
-            {selectedCategoryData &&
-              selectedCategoryData.subcategories.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">
-                    Subcategorias
-                  </h3>
-                  <div className="space-y-1">
+            {availableSubcategories.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-3">
+                  Subcategorias
+                </h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setSelectedSubcategory("all")}
+                    className={`
+                    w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                    ${
+                      selectedSubcategory === "all"
+                        ? "bg-primary-100 text-primary-700 font-medium"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }
+                  `}
+                  >
+                    Todas
+                  </button>
+                  {availableSubcategories.map((sub) => (
                     <button
-                      onClick={() => setSelectedSubcategory("all")}
+                      key={sub}
+                      onClick={() => setSelectedSubcategory(sub)}
                       className={`
-                      w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                      w-full text-left px-3 py-2 rounded-lg transition-colors text-sm truncate
                       ${
-                        selectedSubcategory === "all"
+                        selectedSubcategory === sub
                           ? "bg-primary-100 text-primary-700 font-medium"
                           : "text-gray-600 hover:bg-gray-100"
                       }
                     `}
                     >
-                      Todas
+                      {sub}
                     </button>
-                    {selectedCategoryData.subcategories.map((sub) => (
-                      <button
-                        key={sub}
-                        onClick={() => setSelectedSubcategory(sub)}
-                        className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm truncate
-                        ${
-                          selectedSubcategory === sub
-                            ? "bg-primary-100 text-primary-700 font-medium"
-                            : "text-gray-600 hover:bg-gray-100"
-                        }
-                      `}
-                      >
-                        {sub}
-                      </button>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
             <div>
               <h3 className="font-semibold text-gray-900 mb-3">
@@ -913,6 +920,30 @@ const CatalogPage = () => {
         }}
         onAddToCart={addToCart}
       />
+
+      {/* Checkout Drawer */}
+      <Drawer open={checkoutOpen} onOpenChange={setCheckoutOpen}>
+        <DrawerContent className="h-[90vh]">
+          <DrawerHeader className="border-b">
+            <div className="flex items-center justify-between">
+              <DrawerTitle>Finalizar Pedido</DrawerTitle>
+              <DrawerClose asChild>
+                <Button variant="ghost" size="sm">
+                  <X className="h-4 w-4" />
+                </Button>
+              </DrawerClose>
+            </div>
+          </DrawerHeader>
+
+          <div className="p-4 overflow-y-auto">
+            <CheckoutForm
+              onSubmit={handleCheckout}
+              onBack={() => setCheckoutOpen(false)}
+              totalPrice={getTotalPrice()}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
