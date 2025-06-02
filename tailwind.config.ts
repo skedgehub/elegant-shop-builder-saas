@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -21,8 +20,6 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
-        inter: ["Inter", "system-ui", "sans-serif"],
-        outfit: ["Outfit", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -31,14 +28,14 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#000000",
-          50: "#F8F8F8",
-          100: "#F0F0F0",
-          500: "#000000",
-          600: "#1A1A1A",
-          700: "#333333",
-          900: "#000000",
-          foreground: "#FFFFFF",
+          DEFAULT: "#C0F23E",
+          50: "#F8FED8",
+          100: "#EFFDB2",
+          500: "#C0F23E",
+          600: "#9ED02D",
+          700: "#7EAE1F",
+          900: "#4B740B",
+          foreground: "#202020",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

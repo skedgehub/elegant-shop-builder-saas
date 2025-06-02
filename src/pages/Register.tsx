@@ -14,7 +14,7 @@ const Register = () => {
   const { register, isRegisterLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(1);
-  const [selectedPlan, setSelectedPlan] = useState("pro");
+  const [selectedPlan, setSelectedPlan] = useState("basic");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -95,7 +95,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col font-inter">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex flex-col">
       {/* Header */}
       <header className="p-4">
         <div className="container mx-auto">
@@ -110,10 +110,10 @@ const Register = () => {
             </Button>
             
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-black rounded-lg flex items-center justify-center">
+              <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">C</span>
               </div>
-              <span className="text-lg font-bold text-black">CatalogoPro</span>
+              <span className="text-lg font-bold text-primary-600">CatalogoPro</span>
             </div>
           </div>
         </div>
@@ -121,10 +121,10 @@ const Register = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl">
+        <div className="w-full max-w-2xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black mb-2">Crie sua conta</h1>
-            <p className="text-gray-600">Comece hoje mesmo e transforme seu negócio</p>
+            <h1 className="text-2xl font-bold text-gray-900">Crie sua conta</h1>
+            <p className="text-gray-600 mt-2">Comece hoje mesmo e transforme seu negócio</p>
           </div>
 
           {/* Progress Steps */}
@@ -134,14 +134,14 @@ const Register = () => {
                 <div key={stepNumber} className="flex items-center">
                   <div className={`
                     w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all
-                    ${step >= stepNumber ? 'bg-black text-white shadow-lg' : 'bg-gray-200 text-gray-600'}
+                    ${step >= stepNumber ? 'bg-primary-600 text-white shadow-lg' : 'bg-gray-200 text-gray-600'}
                   `}>
                     {step > stepNumber ? <Check className="h-4 w-4" /> : stepNumber}
                   </div>
                   {stepNumber < 3 && (
                     <div className={`
                       w-16 h-1 mx-2 transition-all
-                      ${step > stepNumber ? 'bg-black' : 'bg-gray-200'}
+                      ${step > stepNumber ? 'bg-primary-600' : 'bg-gray-200'}
                     `} />
                   )}
                 </div>
@@ -149,9 +149,9 @@ const Register = () => {
             </div>
           </div>
 
-          <Card className="shadow-lg">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-black">
+              <CardTitle>
                 {step === 1 && "Dados da Empresa"}
                 {step === 2 && "Escolha seu Plano"}
                 {step === 3 && "Dados do Cartão"}
@@ -266,28 +266,28 @@ const Register = () => {
 
                 {step === 2 && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid md:grid-cols-3 gap-6">
                       {plans.map((plan) => (
                         <div
                           key={plan.id}
                           className={`
-                            relative p-4 rounded-lg border-2 cursor-pointer transition-all
+                            relative p-6 rounded-lg border-2 cursor-pointer transition-all
                             ${selectedPlan === plan.id 
-                              ? 'border-black bg-gray-50' 
+                              ? 'border-primary-600 bg-primary-50' 
                               : 'border-gray-200 hover:border-gray-300'
                             }
                           `}
                           onClick={() => setSelectedPlan(plan.id)}
                         >
                           {plan.popular && (
-                            <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-black">
+                            <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2">
                               Mais Popular
                             </Badge>
                           )}
                           <div className="text-center">
                             <h3 className="font-semibold text-lg">{plan.name}</h3>
                             <div className="mt-2">
-                              <span className="text-2xl font-bold">{plan.price}</span>
+                              <span className="text-3xl font-bold">{plan.price}</span>
                               <span className="text-gray-600">{plan.period}</span>
                             </div>
                           </div>
@@ -374,7 +374,7 @@ const Register = () => {
                       Voltar
                     </Button>
                   )}
-                  <Button type="submit" className={`bg-black hover:bg-gray-800 ${step === 1 ? "w-full" : ""}`} disabled={isRegisterLoading}>
+                  <Button type="submit" className={step === 1 ? "w-full" : ""} disabled={isRegisterLoading}>
                     {step === 3 ? (isRegisterLoading ? "Finalizando..." : "Finalizar Cadastro") : "Continuar"}
                   </Button>
                 </div>
@@ -384,7 +384,7 @@ const Register = () => {
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600">
                     Já tem uma conta?{" "}
-                    <Link to="/login" className="text-black hover:text-gray-700 font-medium">
+                    <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
                       Faça login aqui
                     </Link>
                   </p>

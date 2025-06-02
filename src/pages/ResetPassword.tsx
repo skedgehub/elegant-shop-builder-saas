@@ -19,15 +19,18 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Verifica se há um token de reset na URL
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
     
     if (accessToken && refreshToken) {
+      // Define a sessão com os tokens da URL
       supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
       });
     } else {
+      // Se não há tokens, redireciona para login
       toast({
         title: "Link inválido",
         description: "O link de redefinição de senha é inválido ou expirou",
@@ -88,16 +91,16 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col font-inter">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex flex-col">
       {/* Header */}
       <header className="p-4">
         <div className="container mx-auto">
           <div className="flex items-center justify-center">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-black rounded-lg flex items-center justify-center">
+              <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">C</span>
               </div>
-              <span className="text-lg font-bold text-black">CatalogoPro</span>
+              <span className="text-lg font-bold text-primary-600">CatalogoPro</span>
             </div>
           </div>
         </div>
@@ -107,13 +110,13 @@ const ResetPassword = () => {
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black mb-2">Redefinir Senha</h1>
-            <p className="text-gray-600">Digite sua nova senha</p>
+            <h1 className="text-2xl font-bold text-gray-900">Redefinir Senha</h1>
+            <p className="text-gray-600 mt-2">Digite sua nova senha</p>
           </div>
 
-          <Card className="shadow-lg">
+          <Card className="shadow-xl">
             <CardHeader>
-              <CardTitle className="text-black">Nova Senha</CardTitle>
+              <CardTitle>Nova Senha</CardTitle>
               <CardDescription>
                 Crie uma nova senha para sua conta
               </CardDescription>
@@ -172,7 +175,7 @@ const ResetPassword = () => {
                   <p>A senha deve ter pelo menos 6 caracteres.</p>
                 </div>
 
-                <Button type="submit" className="w-full bg-black hover:bg-gray-800" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Redefinindo..." : "Redefinir Senha"}
                 </Button>
               </form>
