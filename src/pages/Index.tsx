@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,12 +25,10 @@ import {
   Palette,
   Smartphone,
   Menu,
-  ChevronDown,
   ArrowRight,
   Play,
   TrendingUp,
   Users,
-  Heart,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -43,39 +42,33 @@ const Index = () => {
       title: "Subdomínio Personalizado",
       description:
         "Configure seu próprio subdomínio como minhaloja.catalogo.com.br",
-      color: "from-blue-500 to-cyan-500",
     },
     {
       icon: <Palette className="h-6 w-6" />,
       title: "Customização Total",
       description: "Personalize cores, layout e campos dos seus produtos",
-      color: "from-purple-500 to-pink-500",
     },
     {
       icon: <BarChart3 className="h-6 w-6" />,
       title: "Dashboard Completo",
       description: "Visualize vendas, produtos mais acessados e estatísticas",
-      color: "from-green-500 to-emerald-500",
     },
     {
       icon: <Smartphone className="h-6 w-6" />,
       title: "Mobile First",
       description:
         "Design responsivo que funciona perfeitamente em qualquer dispositivo",
-      color: "from-orange-500 to-red-500",
     },
     {
       icon: <Shield className="h-6 w-6" />,
       title: "Segurança Total",
       description: "Seus dados protegidos com criptografia de ponta",
-      color: "from-indigo-500 to-blue-500",
     },
     {
       icon: <Zap className="h-6 w-6" />,
       title: "Performance",
       description:
         "Carregamento ultra-rápido para melhor experiência do cliente",
-      color: "from-yellow-500 to-orange-500",
     },
   ];
 
@@ -93,7 +86,6 @@ const Index = () => {
         "Campos personalizados básicos",
       ],
       popular: false,
-      color: "from-blue-500 to-cyan-500",
     },
     {
       name: "Professional",
@@ -110,7 +102,6 @@ const Index = () => {
         "Backup automático",
       ],
       popular: true,
-      color: "from-purple-500 to-pink-500",
     },
     {
       name: "Enterprise",
@@ -127,7 +118,6 @@ const Index = () => {
         "Consultor dedicado",
       ],
       popular: false,
-      color: "from-green-500 to-emerald-500",
     },
   ];
 
@@ -162,33 +152,33 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-white font-inter">
       {/* Header */}
-      <header className="border-b bg-white/90 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b bg-white sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="h-10 w-10 bg-gradient-to-br from-primary-600 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">C</span>
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center">
+                <span className="text-black font-bold text-lg">C</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-black">
                 CatalogoPro
               </span>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-8">
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
+                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-50 text-black">
                       Funcionalidades
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <div className="grid gap-3 p-6 w-[500px] bg-white shadow-xl rounded-lg border">
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-3">
-                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">
+                            <h4 className="font-medium text-sm text-black uppercase tracking-wide">
                               Recursos Principais
                             </h4>
                             <a
@@ -196,10 +186,10 @@ const Index = () => {
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
                             >
                               <div className="text-sm font-medium leading-none flex items-center">
-                                <BarChart3 className="h-4 w-4 mr-2 text-green-500" />
+                                <BarChart3 className="h-4 w-4 mr-2 text-primary" />
                                 Dashboard Analytics
                               </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              <p className="line-clamp-2 text-xs leading-snug text-gray-600">
                                 Acompanhe suas vendas em tempo real
                               </p>
                             </a>
@@ -208,16 +198,16 @@ const Index = () => {
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
                             >
                               <div className="text-sm font-medium leading-none flex items-center">
-                                <Palette className="h-4 w-4 mr-2 text-purple-500" />
+                                <Palette className="h-4 w-4 mr-2 text-primary" />
                                 Customização
                               </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              <p className="line-clamp-2 text-xs leading-snug text-gray-600">
                                 Personalize sua loja do seu jeito
                               </p>
                             </a>
                           </div>
                           <div className="space-y-3">
-                            <h4 className="font-medium text-sm text-gray-900 uppercase tracking-wide">
+                            <h4 className="font-medium text-sm text-black uppercase tracking-wide">
                               Integração
                             </h4>
                             <a
@@ -225,10 +215,10 @@ const Index = () => {
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
                             >
                               <div className="text-sm font-medium leading-none flex items-center">
-                                <Globe className="h-4 w-4 mr-2 text-blue-500" />
+                                <Globe className="h-4 w-4 mr-2 text-primary" />
                                 Subdomínio Próprio
                               </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              <p className="line-clamp-2 text-xs leading-snug text-gray-600">
                                 Configure seu endereço personalizado
                               </p>
                             </a>
@@ -237,10 +227,10 @@ const Index = () => {
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50"
                             >
                               <div className="text-sm font-medium leading-none flex items-center">
-                                <Smartphone className="h-4 w-4 mr-2 text-orange-500" />
+                                <Smartphone className="h-4 w-4 mr-2 text-primary" />
                                 Mobile Ready
                               </div>
-                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              <p className="line-clamp-2 text-xs leading-snug text-gray-600">
                                 Otimizado para dispositivos móveis
                               </p>
                             </a>
@@ -251,7 +241,7 @@ const Index = () => {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
+                    <NavigationMenuTrigger className="bg-transparent hover:bg-gray-50 text-black">
                       Soluções
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -262,10 +252,10 @@ const Index = () => {
                             className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100"
                           >
                             <div className="text-sm font-medium leading-none flex items-center">
-                              <Users className="h-4 w-4 mr-2 text-blue-500" />
+                              <Users className="h-4 w-4 mr-2 text-primary" />
                               Para Pequenas Empresas
                             </div>
-                            <p className="text-xs leading-snug text-muted-foreground mt-1">
+                            <p className="text-xs leading-snug text-gray-600 mt-1">
                               Soluções acessíveis para começar seu negócio
                               online
                             </p>
@@ -275,10 +265,10 @@ const Index = () => {
                             className="block select-none space-y-1 rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-gray-50 border border-gray-100"
                           >
                             <div className="text-sm font-medium leading-none flex items-center">
-                              <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
+                              <TrendingUp className="h-4 w-4 mr-2 text-primary" />
                               Para Empresas
                             </div>
-                            <p className="text-xs leading-snug text-muted-foreground mt-1">
+                            <p className="text-xs leading-snug text-gray-600 mt-1">
                               Recursos avançados para escalar suas vendas
                             </p>
                           </a>
@@ -291,13 +281,13 @@ const Index = () => {
 
               <a
                 href="#pricing"
-                className="text-foreground text-sm hover:text-primary-600 transition-colors font-medium"
+                className="text-black text-sm hover:text-gray-600 transition-colors font-medium"
               >
                 Preços
               </a>
               <a
                 href="#testimonials"
-                className="text-foreground text-sm hover:text-primary-600 transition-colors font-medium"
+                className="text-black text-sm hover:text-gray-600 transition-colors font-medium"
               >
                 Depoimentos
               </a>
@@ -307,13 +297,13 @@ const Index = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="hover:bg-primary-50 hover:border-primary-300"
+                    className="hover:bg-gray-50 border-gray-300"
                   >
                     Entrar
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm" variant="default">
+                  <Button size="sm" className="bg-primary hover:bg-primary/90 text-black">
                     Começar Grátis
                   </Button>
                 </Link>
@@ -333,23 +323,23 @@ const Index = () => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden mt-4 py-4 border-t bg-white/95 backdrop-blur rounded-lg shadow-lg">
+            <div className="md:hidden mt-4 py-4 border-t bg-white rounded-lg shadow-lg">
               <div className="flex flex-col space-y-4">
                 <a
                   href="#features"
-                  className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2"
+                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
                 >
                   Funcionalidades
                 </a>
                 <a
                   href="#pricing"
-                  className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2"
+                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
                 >
                   Preços
                 </a>
                 <a
                   href="#testimonials"
-                  className="text-gray-600 hover:text-primary-600 transition-colors px-4 py-2"
+                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
                 >
                   Depoimentos
                 </a>
@@ -362,7 +352,7 @@ const Index = () => {
                   <Link to="/register">
                     <Button
                       size="sm"
-                      className="w-full bg-gradient-to-r from-primary-600 to-purple-600"
+                      className="w-full bg-primary hover:bg-primary/90 text-black"
                     >
                       Começar Grátis
                     </Button>
@@ -374,30 +364,21 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section - Melhorada */}
-      <section className="py-24 px-4 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
-          <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-          <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-        </div>
-
-        <div className="container mx-auto text-center relative z-10">
-          <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200 shadow-lg animate-pulse">
+      {/* Hero Section */}
+      <section className="py-24 px-6">
+        <div className="container mx-auto text-center">
+          <Badge className="mb-6 bg-primary/10 text-black border-primary/20">
             🚀 Novo: Campos personalizáveis para produtos
           </Badge>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 animate-fade-in leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold text-black mb-8 leading-tight">
             O Catálogo Online que
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600">
-              {" "}
+            <span className="text-primary block">
               Vende Mais
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto animate-fade-in leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
             Crie sua loja virtual profissional em minutos. Sistema completo com
             subdomínio personalizado, dashboard avançado e total customização.{" "}
             <strong>Aumente suas vendas em até 300%!</strong>
@@ -405,25 +386,25 @@ const Index = () => {
 
           {/* Stats Cards */}
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+            <Card className="bg-white border border-gray-200 shadow-lg">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-green-600 mb-2">
+                <div className="text-3xl font-bold text-primary mb-2">
                   300%
                 </div>
                 <div className="text-sm text-gray-600">Aumento em vendas</div>
               </CardContent>
             </Card>
-            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+            <Card className="bg-white border border-gray-200 shadow-lg">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">
+                <div className="text-3xl font-bold text-black mb-2">
                   10k+
                 </div>
                 <div className="text-sm text-gray-600">Lojas criadas</div>
               </CardContent>
             </Card>
-            <Card className="bg-white/80 backdrop-blur border-0 shadow-xl">
+            <Card className="bg-white border border-gray-200 shadow-lg">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">
+                <div className="text-3xl font-bold text-black mb-2">
                   99.9%
                 </div>
                 <div className="text-sm text-gray-600">Uptime garantido</div>
@@ -431,11 +412,11 @@ const Index = () => {
             </Card>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link to="/register">
               <Button
                 size="lg"
-                className="text-lg px-10 py-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all group"
+                className="text-lg px-10 py-6 bg-primary hover:bg-primary/90 text-black shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all group"
               >
                 Começar Teste Grátis
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -445,7 +426,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="text-lg px-10 py-6 border-2 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 group"
+                className="text-lg px-10 py-6 border-2 border-gray-300 hover:bg-gray-50 group"
               >
                 <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 Ver Demo
@@ -471,13 +452,12 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 px-4 bg-white relative">
+      <section id="features" className="py-24 px-6 bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
               Tudo que você precisa para
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600">
-                {" "}
+              <span className="text-primary block">
                 vender online
               </span>
             </h2>
@@ -489,15 +469,13 @@ const Index = () => {
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden"
+                className="border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden"
               >
-                <CardHeader className="relative">
-                  <div
-                    className={`h-14 w-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}
-                  >
+                <CardHeader>
+                  <div className="h-14 w-14 bg-primary rounded-xl flex items-center justify-center text-black mb-6 shadow-lg group-hover:scale-110 transition-transform">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-xl text-gray-900 group-hover:text-primary-600 transition-colors">
+                  <CardTitle className="text-xl text-black group-hover:text-primary transition-colors">
                     {feature.title}
                   </CardTitle>
                 </CardHeader>
@@ -515,15 +493,13 @@ const Index = () => {
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="py-24 px-4 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative overflow-hidden"
+        className="py-24 px-6 bg-white"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
-        <div className="container mx-auto relative">
+        <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
               Planos que crescem com
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600">
-                {" "}
+              <span className="text-primary block">
                 seu negócio
               </span>
             </h2>
@@ -537,34 +513,32 @@ const Index = () => {
                 key={index}
                 className={`relative overflow-hidden ${
                   plan.popular
-                    ? "border-2 border-purple-500 shadow-2xl scale-105 bg-white"
-                    : "border-gray-200 bg-white/80"
+                    ? "border-2 border-primary shadow-2xl scale-105 bg-white"
+                    : "border border-gray-200 bg-white"
                 } hover:shadow-2xl transition-all duration-300`}
               >
                 {plan.popular && (
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
                 )}
                 {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-black shadow-lg">
                     Mais Popular
                   </Badge>
                 )}
-                <CardHeader className="text-center pb-4 relative">
-                  <div
-                    className={`h-16 w-16 bg-gradient-to-br ${plan.color} rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg`}
-                  >
-                    <span className="text-white font-bold text-xl">
+                <CardHeader className="text-center pb-4">
+                  <div className="h-16 w-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                    <span className="text-black font-bold text-xl">
                       {plan.name[0]}
                     </span>
                   </div>
-                  <CardTitle className="text-2xl text-gray-900">
+                  <CardTitle className="text-2xl text-black">
                     {plan.name}
                   </CardTitle>
                   <CardDescription className="text-gray-600">
                     {plan.description}
                   </CardDescription>
                   <div className="mt-6">
-                    <span className="text-5xl font-bold text-gray-900">
+                    <span className="text-5xl font-bold text-black">
                       {plan.price}
                     </span>
                     <span className="text-gray-600 text-lg">{plan.period}</span>
@@ -574,7 +548,7 @@ const Index = () => {
                   <ul className="space-y-4">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center">
-                        <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                        <Check className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
                         <span className="text-gray-700">{feature}</span>
                       </li>
                     ))}
@@ -582,8 +556,8 @@ const Index = () => {
                   <Button
                     className={`w-full mt-8 ${
                       plan.popular
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg"
-                        : "bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800"
+                        ? "bg-primary hover:bg-primary/90 text-black shadow-lg"
+                        : "bg-black hover:bg-gray-800 text-white"
                     }`}
                   >
                     Começar Agora
@@ -596,13 +570,12 @@ const Index = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 px-4 bg-white">
+      <section id="testimonials" className="py-24 px-6 bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
               O que nossos
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-purple-600">
-                {" "}
+              <span className="text-primary block">
                 clientes dizem
               </span>
             </h2>
@@ -612,14 +585,14 @@ const Index = () => {
             {testimonials.map((testimonial, index) => (
               <Card
                 key={index}
-                className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                className="border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
               >
                 <CardContent className="pt-8">
                   <div className="flex mb-6">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star
                         key={i}
-                        className="h-5 w-5 text-yellow-400 fill-current"
+                        className="h-5 w-5 text-primary fill-current"
                       />
                     ))}
                   </div>
@@ -633,7 +606,7 @@ const Index = () => {
                       className="h-12 w-12 rounded-full mr-4 object-cover"
                     />
                     <div>
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-black">
                         {testimonial.name}
                       </p>
                       <p className="text-gray-600 text-sm">
@@ -649,9 +622,8 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container mx-auto text-center relative">
+      <section className="py-24 px-6 bg-black text-white">
+        <div className="container mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Pronto para começar?
           </h2>
@@ -662,8 +634,7 @@ const Index = () => {
             <Link to="/register">
               <Button
                 size="lg"
-                variant="secondary"
-                className="text-lg px-10 py-6 bg-white text-gray-900 hover:bg-gray-100 shadow-xl"
+                className="text-lg px-10 py-6 bg-primary hover:bg-primary/90 text-black shadow-xl"
               >
                 Começar Teste Grátis
               </Button>
@@ -672,7 +643,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-10 py-6 border-2 border-white text-white hover:bg-white hover:text-primary-600 shadow-xl"
+                className="text-lg px-10 py-6 border-2 border-white text-white hover:bg-white hover:text-black shadow-xl"
               >
                 Acessar Dashboard Demo
               </Button>
@@ -682,13 +653,13 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4">
+      <footer className="bg-black text-white py-16 px-6">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="h-10 w-10 bg-gradient-to-br from-primary-600 to-purple-600 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">C</span>
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center">
+                  <span className="text-black font-bold text-lg">C</span>
                 </div>
                 <span className="text-2xl font-bold">CatalogoPro</span>
               </div>

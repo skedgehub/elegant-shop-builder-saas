@@ -56,15 +56,15 @@ const ForgotPassword = () => {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex flex-col">
+      <div className="min-h-screen bg-white font-inter flex flex-col">
         {/* Header */}
-        <header className="p-4">
+        <header className="p-6 border-b">
           <div className="container mx-auto">
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
                 asChild
-                className="hover:bg-white/20"
+                className="hover:bg-gray-100"
               >
                 <Link to="/login">
                   <ArrowLeft className="h-4 w-4 mr-2" />
@@ -73,24 +73,24 @@ const ForgotPassword = () => {
               </Button>
               
               <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-black font-bold text-sm">C</span>
                 </div>
-                <span className="text-lg font-bold text-primary-600">CatalogoPro</span>
+                <span className="text-lg font-bold text-black">CatalogoPro</span>
               </div>
             </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex-1 flex items-center justify-center p-6">
           <div className="w-full max-w-md">
-            <Card className="shadow-xl">
+            <Card className="border-gray-200 shadow-lg">
               <CardHeader className="text-center">
-                <div className="mx-auto mb-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+                <div className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle>Email enviado!</CardTitle>
+                <CardTitle className="text-black">Email enviado!</CardTitle>
                 <CardDescription>
                   Enviamos um link para redefinir sua senha para <strong>{email}</strong>
                 </CardDescription>
@@ -104,7 +104,7 @@ const ForgotPassword = () => {
                 <Button 
                   onClick={() => setEmailSent(false)}
                   variant="outline" 
-                  className="w-full"
+                  className="w-full border-gray-300 hover:bg-gray-50"
                 >
                   Tentar novamente
                 </Button>
@@ -112,7 +112,7 @@ const ForgotPassword = () => {
                 <div className="text-center">
                   <Link 
                     to="/login" 
-                    className="text-sm text-primary-600 hover:text-primary-700"
+                    className="text-sm text-black hover:text-gray-700 font-medium"
                   >
                     Voltar ao login
                   </Link>
@@ -126,15 +126,15 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex flex-col">
+    <div className="min-h-screen bg-white font-inter flex flex-col">
       {/* Header */}
-      <header className="p-4">
+      <header className="p-6 border-b">
         <div className="container mx-auto">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
               asChild
-              className="hover:bg-white/20"
+              className="hover:bg-gray-100"
             >
               <Link to="/login">
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -143,28 +143,28 @@ const ForgotPassword = () => {
             </Button>
             
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
+              <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-black font-bold text-sm">C</span>
               </div>
-              <span className="text-lg font-bold text-primary-600">CatalogoPro</span>
+              <span className="text-lg font-bold text-black">CatalogoPro</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Esqueceu sua senha?</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-black mb-2">Esqueceu sua senha?</h1>
+            <p className="text-gray-600">
               Digite seu email e enviaremos um link para redefinir sua senha
             </p>
           </div>
 
-          <Card className="shadow-xl">
+          <Card className="border-gray-200 shadow-lg">
             <CardHeader>
-              <CardTitle>Redefinir Senha</CardTitle>
+              <CardTitle className="text-black">Redefinir Senha</CardTitle>
               <CardDescription>
                 Digite o email associado à sua conta
               </CardDescription>
@@ -181,13 +181,17 @@ const ForgotPassword = () => {
                       placeholder="seu@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 border-gray-300 focus:border-primary"
                       required
                     />
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90 text-black" 
+                  disabled={isLoading}
+                >
                   {isLoading ? "Enviando..." : "Enviar link de redefinição"}
                 </Button>
               </form>
@@ -195,7 +199,7 @@ const ForgotPassword = () => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   Lembrou sua senha?{" "}
-                  <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                  <Link to="/login" className="text-black hover:text-gray-700 font-medium">
                     Faça login
                   </Link>
                 </p>

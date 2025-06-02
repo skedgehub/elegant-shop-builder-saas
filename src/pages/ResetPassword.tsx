@@ -91,32 +91,32 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex flex-col">
+    <div className="min-h-screen bg-white font-inter flex flex-col">
       {/* Header */}
-      <header className="p-4">
+      <header className="p-6 border-b">
         <div className="container mx-auto">
           <div className="flex items-center justify-center">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
+              <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-black font-bold text-sm">C</span>
               </div>
-              <span className="text-lg font-bold text-primary-600">CatalogoPro</span>
+              <span className="text-lg font-bold text-black">CatalogoPro</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Redefinir Senha</h1>
-            <p className="text-gray-600 mt-2">Digite sua nova senha</p>
+            <h1 className="text-3xl font-bold text-black mb-2">Redefinir Senha</h1>
+            <p className="text-gray-600">Digite sua nova senha</p>
           </div>
 
-          <Card className="shadow-xl">
+          <Card className="border-gray-200 shadow-lg">
             <CardHeader>
-              <CardTitle>Nova Senha</CardTitle>
+              <CardTitle className="text-black">Nova Senha</CardTitle>
               <CardDescription>
                 Crie uma nova senha para sua conta
               </CardDescription>
@@ -133,7 +133,7 @@ const ResetPassword = () => {
                       placeholder="Sua nova senha"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 border-gray-300 focus:border-primary"
                       required
                       minLength={6}
                     />
@@ -157,7 +157,7 @@ const ResetPassword = () => {
                       placeholder="Confirme sua nova senha"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 border-gray-300 focus:border-primary"
                       required
                       minLength={6}
                     />
@@ -175,7 +175,11 @@ const ResetPassword = () => {
                   <p>A senha deve ter pelo menos 6 caracteres.</p>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90 text-black" 
+                  disabled={isLoading}
+                >
                   {isLoading ? "Redefinindo..." : "Redefinir Senha"}
                 </Button>
               </form>
