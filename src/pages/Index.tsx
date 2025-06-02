@@ -1,6 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -29,12 +31,29 @@ import {
   Play,
   TrendingUp,
   Users,
+  MessageCircle,
+  Phone,
+  Mail,
+  MapPin,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Formulário de contato enviado:", contactForm);
+    // Aqui você implementaria o envio do formulário
+    setContactForm({ name: "", email: "", phone: "", message: "" });
+  };
 
   const features = [
     {
@@ -153,6 +172,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter">
+      {/* Floating Contact Button */}
+      <a
+        href="#contact"
+        className="fixed bottom-6 right-6 z-50 bg-primary hover:bg-primary/90 text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </a>
+
       {/* Header */}
       <header className="border-b bg-white sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -291,6 +318,12 @@ const Index = () => {
               >
                 Depoimentos
               </a>
+              <a
+                href="#contact"
+                className="text-black text-sm hover:text-gray-600 transition-colors font-medium"
+              >
+                Contato
+              </a>
 
               <div className="flex items-center space-x-3 ml-6">
                 <Link to="/login">
@@ -342,6 +375,12 @@ const Index = () => {
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
                 >
                   Depoimentos
+                </a>
+                <a
+                  href="#contact"
+                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                >
+                  Contato
                 </a>
                 <div className="flex flex-col space-y-2 px-4 pt-2 border-t">
                   <Link to="/login">
@@ -472,7 +511,7 @@ const Index = () => {
                 className="border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden"
               >
                 <CardHeader>
-                  <div className="h-14 w-14 bg-primary rounded-xl flex items-center justify-center text-black mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="h-14 w-14 bg-primary rounded-xl mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
                     {feature.icon}
                   </div>
                   <CardTitle className="text-xl text-black group-hover:text-primary transition-colors">
@@ -617,6 +656,152 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-24 px-6 bg-white">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+              Entre em Contato
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Tem dúvidas? Nossa equipe está pronta para ajudar você a começar
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Contact Form */}
+            <Card className="border-gray-200 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-black">Envie uma Mensagem</CardTitle>
+                <CardDescription>
+                  Preencha o formulário e entraremos em contato em breve
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleContactSubmit} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Nome</Label>
+                      <Input
+                        id="name"
+                        placeholder="Seu nome completo"
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="seu@email.com"
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Telefone (opcional)</Label>
+                    <Input
+                      id="phone"
+                      placeholder="(11) 99999-9999"
+                      value={contactForm.phone}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Mensagem</Label>
+                    <Textarea
+                      id="message"
+                      placeholder="Como podemos ajudar você?"
+                      rows={4}
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
+                      required
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-black">
+                    Enviar Mensagem
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-2xl font-bold text-black mb-6">
+                  Outras formas de contato
+                </h3>
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-primary rounded-lg p-3 flex-shrink-0">
+                      <Phone className="h-6 w-6 text-black" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-black">Telefone</h4>
+                      <p className="text-gray-600">(11) 3000-0000</p>
+                      <p className="text-sm text-gray-500">Segunda a sexta, 9h às 18h</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-primary rounded-lg p-3 flex-shrink-0">
+                      <Mail className="h-6 w-6 text-black" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-black">Email</h4>
+                      <p className="text-gray-600">contato@catalogopro.com</p>
+                      <p className="text-sm text-gray-500">Resposta em até 24h</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-primary rounded-lg p-3 flex-shrink-0">
+                      <MapPin className="h-6 w-6 text-black" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-black">Endereço</h4>
+                      <p className="text-gray-600">
+                        Rua das Startups, 123<br />
+                        São Paulo, SP - 01234-567
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Card className="bg-gray-50 border-gray-200">
+                <CardContent className="p-6">
+                  <h4 className="font-semibold text-black mb-3">
+                    Horário de Atendimento
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Segunda a Sexta</span>
+                      <span className="text-black font-medium">9h às 18h</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Sábado</span>
+                      <span className="text-black font-medium">9h às 14h</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Domingo</span>
+                      <span className="text-black font-medium">Fechado</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>

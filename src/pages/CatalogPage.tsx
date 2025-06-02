@@ -56,7 +56,11 @@ const CatalogPage = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
 
-  const { addToCart, getTotalItems } = useCart();
+  const { addToCart, items } = useCart();
+
+  const getTotalItems = () => {
+    return items.reduce((total, item) => total + item.quantity, 0);
+  };
 
   // Transform categories for the filter
   const categoryFilters = [
@@ -69,8 +73,8 @@ const CatalogPage = () => {
     ...categories.map(cat => ({
       id: cat.id,
       name: cat.name,
-      count: cat.count,
-      subcategories: cat.subcategories,
+      count: cat.count || 0,
+      subcategories: cat.subcategories || [],
     }))
   ];
 
@@ -79,7 +83,7 @@ const CatalogPage = () => {
   );
 
   // Filter and search products
-  let filteredProducts = products;
+  let filteredProducts = [...products];
   
   // Apply search
   if (searchTerm) {
@@ -180,11 +184,11 @@ const CatalogPage = () => {
           </Badge>
         )}
 
-        <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <div className="absolute top-2 right-2 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 shadow-md bg-white/90"
+            className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
             onClick={(e) => {
               e.stopPropagation();
               addToCart(product);
@@ -195,7 +199,7 @@ const CatalogPage = () => {
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 shadow-md bg-white/90"
+            className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
             onClick={(e) => e.stopPropagation()}
           >
             <Heart className="h-4 w-4" />
@@ -209,7 +213,7 @@ const CatalogPage = () => {
             {product.name}
           </h3>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {product.description}
+            {product.description || "Sem descrição"}
           </p>
         </div>
 
@@ -257,7 +261,7 @@ const CatalogPage = () => {
               .map(([key, value]) => (
                 <div key={key} className="truncate">
                   <span className="text-gray-500 capitalize">{key}:</span>
-                  <span className="ml-1 font-medium">{value}</span>
+                  <span className="ml-1 font-medium">{String(value)}</span>
                 </div>
               ))}
           </div>
@@ -298,19 +302,19 @@ const CatalogPage = () => {
             )}
           </div>
 
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 space-y-2 min-w-0">
             <div className="flex items-start justify-between">
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-gray-900 line-clamp-1">
                   {product.name}
                 </h3>
                 <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-                  {product.description}
+                  {product.description || "Sem descrição"}
                 </p>
               </div>
               {product.badge && (
                 <Badge
-                  className={`ml-2 ${
+                  className={`ml-2 flex-shrink-0 ${
                     product.badge === "Oferta" ||
                     product.badge === "Promoção" ||
                     product.badge === "Liquidação"
@@ -382,7 +386,7 @@ const CatalogPage = () => {
                   .map(([key, value]) => (
                     <div key={key} className="truncate">
                       <span className="text-gray-500 capitalize">{key}:</span>
-                      <span className="ml-1 font-medium">{value}</span>
+                      <span className="ml-1 font-medium">{String(value)}</span>
                     </div>
                   ))}
               </div>
@@ -423,9 +427,9 @@ const CatalogPage = () => {
                     </span>
                   </div>
                 )}
-                <div>
+                <div className="hidden sm:block">
                   <h1 className="font-bold text-gray-900">{company.name}</h1>
-                  <p className="text-xs text-gray-600 hidden sm:block">
+                  <p className="text-xs text-gray-600">
                     Produtos selecionados com qualidade
                   </p>
                 </div>
@@ -477,7 +481,7 @@ const CatalogPage = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="flex gap-6">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-64">
+          <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm p-4 space-y-6 sticky top-24">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Categorias</h3>
@@ -498,8 +502,8 @@ const CatalogPage = () => {
                         }
                       `}
                     >
-                      <span>{category.name}</span>
-                      <Badge variant="secondary" className="text-xs">
+                      <span className="truncate">{category.name}</span>
+                      <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
                         {category.count}
                       </Badge>
                     </button>
@@ -532,7 +536,7 @@ const CatalogPage = () => {
                           key={sub}
                           onClick={() => setSelectedSubcategory(sub)}
                           className={`
-                          w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                          w-full text-left px-3 py-2 rounded-lg transition-colors text-sm truncate
                           ${
                             selectedSubcategory === sub
                               ? "bg-primary-100 text-primary-700 font-medium"
@@ -582,8 +586,8 @@ const CatalogPage = () => {
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 space-y-6">
-            <div className="flex items-center justify-between">
+          <main className="flex-1 min-w-0 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center space-x-4">
                 <p className="text-gray-600">
                   {filteredProducts.length} produtos encontrados
@@ -636,7 +640,7 @@ const CatalogPage = () => {
 
             {/* Products */}
             {viewMode === "grid" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -681,8 +685,8 @@ const CatalogPage = () => {
       {/* Footer */}
       <footer className="bg-white border-t mt-12">
         <div className="container mx-auto px-4 py-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 {company.logo_url ? (
                   <img
@@ -705,15 +709,15 @@ const CatalogPage = () => {
               </p>
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex items-center space-x-2">
-                  <MapPin className="h-4 w-4" />
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
                   <span>Rua das Flores, 123 - Centro - São Paulo/SP</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Phone className="h-4 w-4" />
+                  <Phone className="h-4 w-4 flex-shrink-0" />
                   <span>(11) 99999-9999</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4" />
+                  <Mail className="h-4 w-4 flex-shrink-0" />
                   <span>contato@{company.subdomain}.com</span>
                 </div>
               </div>
@@ -808,8 +812,8 @@ const CatalogPage = () => {
                       }
                     `}
                   >
-                    <span>{category.name}</span>
-                    <Badge variant="secondary" className="text-xs">
+                    <span className="truncate">{category.name}</span>
+                    <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
                       {category.count}
                     </Badge>
                   </button>
@@ -842,7 +846,7 @@ const CatalogPage = () => {
                         key={sub}
                         onClick={() => setSelectedSubcategory(sub)}
                         className={`
-                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm
+                        w-full text-left px-3 py-2 rounded-lg transition-colors text-sm truncate
                         ${
                           selectedSubcategory === sub
                             ? "bg-primary-100 text-primary-700 font-medium"
@@ -907,6 +911,7 @@ const CatalogPage = () => {
           setProductModalOpen(false);
           setSelectedProduct(null);
         }}
+        onAddToCart={addToCart}
       />
     </div>
   );

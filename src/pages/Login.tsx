@@ -21,41 +21,41 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex flex-col">
+    <div className="min-h-screen bg-white font-inter flex flex-col">
       {/* Header */}
-      <header className="p-4">
+      <header className="p-6 border-b">
         <div className="container mx-auto">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
               onClick={() => navigate("/")}
-              className="hover:bg-white/20"
+              className="hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar ao início
             </Button>
             
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
+              <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-black font-bold text-sm">C</span>
               </div>
-              <span className="text-lg font-bold text-primary-600">CatalogoPro</span>
+              <span className="text-lg font-bold text-black">CatalogoPro</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Bem-vindo de volta!</h1>
-            <p className="text-gray-600 mt-2">Entre na sua conta para continuar</p>
+            <h1 className="text-3xl font-bold text-black mb-2">Bem-vindo de volta!</h1>
+            <p className="text-gray-600">Entre na sua conta para continuar</p>
           </div>
 
-          <Card className="shadow-xl">
+          <Card className="border-gray-200 shadow-lg">
             <CardHeader>
-              <CardTitle>Fazer Login</CardTitle>
+              <CardTitle className="text-black">Fazer Login</CardTitle>
               <CardDescription>
                 Digite suas credenciais para acessar sua conta
               </CardDescription>
@@ -72,7 +72,7 @@ const Login = () => {
                       placeholder="seu@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 border-gray-300 focus:border-primary"
                       required
                     />
                   </div>
@@ -88,7 +88,7 @@ const Login = () => {
                       placeholder="Sua senha"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 pr-10"
+                      className="pl-10 pr-10 border-gray-300 focus:border-primary"
                       required
                     />
                     <button
@@ -104,14 +104,18 @@ const Login = () => {
                 <div className="flex items-center justify-between">
                   <label className="flex items-center space-x-2 text-sm">
                     <input type="checkbox" className="rounded border-gray-300" />
-                    <span>Lembrar de mim</span>
+                    <span className="text-gray-600">Lembrar de mim</span>
                   </label>
-                  <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700">
+                  <Link to="/forgot-password" className="text-sm text-black hover:text-gray-700 font-medium">
                     Esqueceu a senha?
                   </Link>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoginLoading}>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90 text-black" 
+                  disabled={isLoginLoading}
+                >
                   {isLoginLoading ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
@@ -119,7 +123,7 @@ const Login = () => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   Não tem uma conta?{" "}
-                  <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+                  <Link to="/register" className="text-black hover:text-gray-700 font-medium">
                     Cadastre-se aqui
                   </Link>
                 </p>
