@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -10,6 +9,7 @@ import CartDrawer from "@/components/CartDrawer";
 import ProductDetailsModal from "@/components/ProductDetailsModal";
 import CheckoutForm from "@/components/CheckoutForm";
 import { useCatalogData, CatalogProduct } from "@/hooks/useCatalogData";
+import { useOrders } from "@/hooks/useOrders";
 import {
   Search,
   Filter,
@@ -27,6 +27,10 @@ import {
   ChevronDown,
   SlidersHorizontal,
   Package,
+  Store,
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   Drawer,
@@ -46,6 +50,7 @@ import {
 const CatalogPage = () => {
   const { subdomain } = useParams<{ subdomain: string }>();
   const { company, categories, products, isLoading, searchProducts } = useCatalogData(subdomain);
+  const { createOrder } = useOrders();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -80,7 +85,7 @@ const CatalogPage = () => {
     ...categories.map(cat => ({
       id: cat.id,
       name: cat.name,
-      count: cat.count || 0,
+      count: products.filter(p => p.category_id === cat.id).length,
       subcategories: cat.subcategories || [],
     }))
   ];
@@ -141,165 +146,283 @@ const CatalogPage = () => {
     setProductModalOpen(true);
   };
 
-  const handleCheckout = (orderData: any) => {
-    // Simulate order creation
-    const orderId = Math.random().toString(36).substr(2, 9);
-    
-    console.log('Pedido criado:', {
-      id: orderId,
-      items: items,
-      total: getTotalPrice(),
-      customer: orderData
-    });
+  const handleCheckout = async (orderData: any) => {
+    try {
+      const orderItems = items.map(item => ({
+        product_id: item.id,
+        product_name: item.name,
+        quantity: item.quantity,
+        price: item.promotional_price || item.price,
+        total: (item.promotional_price || item.price) * item.quantity
+      }));
 
-    // Clear cart and close checkout
-    clearCart();
-    setCheckoutOpen(false);
-    setCartOpen(false);
+      const createOrderData = {
+        customer_name: orderData.name,
+        customer_email: orderData.email,
+        customer_phone: orderData.phone,
+        customer_address: orderData.address,
+        items: orderItems,
+        total_amount: getTotalPrice(),
+        notes: orderData.notes || ""
+      };
 
-    // Show success message (you could replace with a proper toast)
-    alert(`Pedido #${orderId} criado com sucesso! Entraremos em contato em breve.`);
+      createOrder(createOrderData);
+      
+      // Clear cart and close checkout
+      clearCart();
+      setCheckoutOpen(false);
+      setCartOpen(false);
+      
+    } catch (error) {
+      console.error('Erro ao criar pedido:', error);
+      alert('Erro ao processar pedido. Tente novamente.');
+    }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center light">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
+          <p className="text-gray-600">Carregando catálogo...</p>
+        </div>
       </div>
     );
   }
 
   if (!company) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Loja não encontrada</h1>
-          <p className="text-gray-600">O subdomínio informado não existe.</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center light">
+        <div className="max-w-md mx-auto text-center p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+              <Store className="h-10 w-10 text-red-600" />
+            </div>
+            
+            <div className="space-y-3">
+              <h1 className="text-2xl font-bold text-gray-900">
+                Loja não encontrada
+              </h1>
+              <p className="text-gray-600 leading-relaxed">
+                O subdomínio <span className="font-mono bg-gray-100 px-2 py-1 rounded">{subdomain}</span> não está associado a nenhuma loja ativa.
+              </p>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-amber-800">
+                  <p className="font-medium mb-1">Possíveis causas:</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• O subdomínio foi digitado incorretamente</li>
+                    <li>• A loja foi desativada temporariamente</li>
+                    <li>• O domínio ainda não foi configurado</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm text-gray-500">
+                Verifique o endereço e tente novamente ou entre em contato com o suporte.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button 
+                  onClick={() => window.location.reload()} 
+                  className="flex-1"
+                  size="sm"
+                >
+                  Tentar Novamente
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.history.back()}
+                  className="flex-1"
+                  size="sm"
+                >
+                  Voltar
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  const ProductCard = ({ product }: { product: CatalogProduct }) => (
-    <Card
-      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer bg-white h-full flex flex-col"
-      onClick={() => openProductDetails(product)}
-    >
-      <div className="aspect-square relative overflow-hidden bg-gray-100">
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-            <Package className="h-12 w-12 text-gray-400" />
-          </div>
-        )}
+  const ProductCard = ({ product }: { product: CatalogProduct }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const images = product.image ? [product.image] : [];
+    
+    const nextImage = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    };
+    
+    const prevImage = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
 
-        {product.badge && (
-          <Badge
-            className={`absolute top-2 left-2 z-10 ${
-              product.badge === "Oferta" ||
-              product.badge === "Promoção" ||
-              product.badge === "Liquidação"
-                ? "bg-red-500"
-                : product.badge === "Novo"
-                ? "bg-green-500"
-                : "bg-blue-500"
-            }`}
-          >
-            {product.badge}
-          </Badge>
-        )}
-
-        <div className="absolute top-2 right-2 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <Button
-            size="sm"
-            variant="secondary"
-            className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
-            onClick={(e) => {
-              e.stopPropagation();
-              addToCart(product);
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Heart className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors text-sm">
-            {product.name}
-          </h3>
-          {product.description && (
-            <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-              {product.description}
-            </p>
+    return (
+      <Card
+        className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer bg-white h-full flex flex-col"
+        onClick={() => openProductDetails(product)}
+      >
+        <div className="aspect-square relative overflow-hidden bg-gray-100">
+          {images.length > 0 ? (
+            <>
+              <img
+                src={images[currentImageIndex]}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              {images.length > 1 && (
+                <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
+                    onClick={prevImage}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
+                    onClick={nextImage}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <Package className="h-12 w-12 text-gray-400" />
+            </div>
           )}
-        </div>
 
-        {product.rating && (
-          <div className="flex items-center space-x-1">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3 w-3 ${
-                    i < Math.floor(product.rating || 0)
-                      ? "text-yellow-400 fill-current"
-                      : "text-gray-300"
+          {product.badge && (
+            <Badge
+              className={`absolute top-2 left-2 z-10 ${
+                product.badge === "Oferta" ||
+                product.badge === "Promoção" ||
+                product.badge === "Liquidação"
+                  ? "bg-red-500"
+                  : product.badge === "Novo"
+                  ? "bg-green-500"
+                  : "bg-blue-500"
+              }`}
+            >
+              {product.badge}
+            </Badge>
+          )}
+
+          <div className="absolute top-2 right-2 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(product);
+              }}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-8 w-8 p-0 shadow-md bg-white/90 hover:bg-white"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Heart className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {images.length > 1 && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+              {images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                   }`}
                 />
               ))}
             </div>
-            <span className="text-xs text-gray-600">
-              {product.rating?.toFixed(1)} ({product.reviews || 0})
-            </span>
-          </div>
-        )}
-
-        <div className="space-y-2">
-          {product.promotional_price ? (
-            <div className="flex items-center space-x-2">
-              <span className="text-lg font-bold text-green-600">
-                R$ {product.promotional_price.toFixed(2)}
-              </span>
-              <span className="text-sm text-gray-500 line-through">
-                R$ {product.price.toFixed(2)}
-              </span>
-            </div>
-          ) : (
-            <span className="text-lg font-bold text-gray-900">
-              R$ {product.price.toFixed(2)}
-            </span>
           )}
         </div>
 
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(product);
-          }}
-          className="w-full mt-auto"
-          size="sm"
-        >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Adicionar
-        </Button>
-      </CardContent>
-    </Card>
-  );
+        <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
+          <div className="flex-1 space-y-2">
+            <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors text-sm leading-tight">
+              {product.name}
+            </h3>
+            {product.description && (
+              <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                {product.description}
+              </p>
+            )}
+          </div>
+
+          {product.rating && (
+            <div className="flex items-center space-x-1">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-3 w-3 ${
+                      i < Math.floor(product.rating || 0)
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-gray-600">
+                {product.rating?.toFixed(1)} ({product.reviews || 0})
+              </span>
+            </div>
+          )}
+
+          <div className="space-y-3">
+            <div className="space-y-1">
+              {product.promotional_price ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg font-bold text-green-600">
+                    R$ {product.promotional_price.toFixed(2)}
+                  </span>
+                  <span className="text-sm text-gray-500 line-through">
+                    R$ {product.price.toFixed(2)}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-lg font-bold text-gray-900">
+                  R$ {product.price.toFixed(2)}
+                </span>
+              )}
+            </div>
+
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(product);
+              }}
+              className="w-full"
+              size="sm"
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Adicionar
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const ProductListItem = ({ product }: { product: CatalogProduct }) => (
     <Card
