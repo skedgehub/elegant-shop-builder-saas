@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -31,6 +32,9 @@ import {
   AlertTriangle,
   ChevronLeft,
   ChevronRight,
+  Home,
+  Zap,
+  Shield,
 } from "lucide-react";
 import {
   Drawer,
@@ -191,7 +195,7 @@ const CatalogPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center light">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
           <p className="text-gray-600">Carregando catálogo...</p>
@@ -202,63 +206,106 @@ const CatalogPage = () => {
 
   if (!company) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center light">
-        <div className="max-w-md mx-auto text-center p-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-              <Store className="h-10 w-10 text-red-600" />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="max-w-2xl mx-auto text-center p-8">
+          <div className="bg-white rounded-3xl shadow-2xl p-12 space-y-8 border border-gray-100">
+            {/* Icon with gradient background */}
+            <div className="relative mx-auto w-32 h-32">
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-full opacity-10"></div>
+              <div className="relative w-full h-full bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
+                <Store className="h-16 w-16 text-red-600" />
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Loja não encontrada
-              </h1>
-              <p className="text-gray-600 leading-relaxed">
-                O subdomínio{" "}
-                <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-                  {subdomain}
-                </span>{" "}
-                não está associado a nenhuma loja ativa.
-              </p>
-            </div>
+            {/* Main content */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold text-gray-900">
+                  Catálogo não encontrado
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  O catálogo{" "}
+                  <span className="font-semibold text-gray-900 bg-gray-100 px-3 py-1 rounded-lg font-mono">
+                    {subdomain}
+                  </span>{" "}
+                  não está disponível ou foi desativado.
+                </p>
+              </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <div className="flex items-start space-x-3">
-                <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-amber-800">
-                  <p className="font-medium mb-1">Possíveis causas:</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• O subdomínio foi digitado incorretamente</li>
-                    <li>• A loja foi desativada temporariamente</li>
-                    <li>• O domínio ainda não foi configurado</li>
-                  </ul>
+              {/* Features grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-6">
+                <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Search className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-1">Verificar URL</h3>
+                  <p className="text-sm text-gray-600">Confirme se o endereço está correto</p>
+                </div>
+
+                <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Shield className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-1">Status da Loja</h3>
+                  <p className="text-sm text-gray-600">A loja pode estar em manutenção</p>
+                </div>
+
+                <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Zap className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-1">Suporte</h3>
+                  <p className="text-sm text-gray-600">Entre em contato para ajuda</p>
+                </div>
+              </div>
+
+              {/* Alert box */}
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+                <div className="flex items-start space-x-4">
+                  <AlertTriangle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-medium text-amber-900 mb-2">Possíveis causas:</p>
+                    <ul className="space-y-1 text-amber-800">
+                      <li>• O subdomínio foi digitado incorretamente</li>
+                      <li>• A loja foi desativada temporariamente</li>
+                      <li>• O catálogo ainda não foi configurado</li>
+                      <li>• Problemas de conectividade temporários</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <p className="text-sm text-gray-500">
-                Verifique o endereço e tente novamente ou entre em contato com o
-                suporte.
-              </p>
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-6">
+              <Button
+                onClick={() => window.location.reload()}
+                className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg"
+                size="lg"
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Tentar Novamente
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => window.history.back()}
+                className="flex-1 h-12 border-2 border-gray-300 hover:border-gray-400"
+                size="lg"
+              >
+                <ChevronLeft className="h-5 w-5 mr-2" />
+                Voltar
+              </Button>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Button
-                  onClick={() => window.location.reload()}
-                  className="flex-1"
-                  size="sm"
-                >
-                  Tentar Novamente
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => window.history.back()}
-                  className="flex-1"
-                  size="sm"
-                >
-                  Voltar
-                </Button>
-              </div>
+            {/* Footer info */}
+            <div className="pt-6 border-t border-gray-100">
+              <p className="text-sm text-gray-500">
+                Se o problema persistir, entre em contato com o{" "}
+                <span className="font-medium text-blue-600 cursor-pointer hover:underline">
+                  suporte técnico
+                </span>
+                .
+              </p>
             </div>
           </div>
         </div>
@@ -547,7 +594,7 @@ const CatalogPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 light">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-40">
         <div className="container mx-auto px-4">
