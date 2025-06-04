@@ -4,7 +4,7 @@ import { orderService, CreateOrderData } from '@/services/orderService';
 import { toast } from '@/hooks/use-toast';
 
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   promotionalPrice?: number;
@@ -16,8 +16,8 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addToCart: (product: any) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -53,19 +53,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         id: product.id,
         name: product.name,
         price: product.price,
-        promotionalPrice: product.promotionalPrice,
+        promotionalPrice: product.promotional_price,
         image: product.image,
         quantity: 1,
-        customFields: product.customFields || {}
+        customFields: product.custom_fields || {}
       }];
     });
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (id: string) => {
     setItems(prevItems => prevItems.filter(item => item.id !== id));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(id);
       return;

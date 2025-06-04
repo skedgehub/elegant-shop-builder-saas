@@ -169,7 +169,9 @@ export const useCatalogData = (companySubdomain?: string) => {
     // Mantendo compatibilidade com código anterior
     catalogData: companyQuery.data ? {
       store_name: companyQuery.data.name,
-      store_description: companyQuery.data.settings?.description || "Catálogo de produtos",
+      store_description: typeof companyQuery.data.settings === 'object' && companyQuery.data.settings && 'description' in companyQuery.data.settings 
+        ? String(companyQuery.data.settings.description) 
+        : "Catálogo de produtos",
       categories: categoriesQuery.data || [],
       products: productsQuery.data || []
     } : null,

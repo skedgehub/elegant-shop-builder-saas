@@ -34,7 +34,7 @@ import ProductDetailsModal from "@/components/ProductDetailsModal";
 const CatalogPage = () => {
   const { subdomain } = useParams<{ subdomain: string }>();
   const { company, categories, products, isLoading } = useCatalogData(subdomain);
-  const { items: cartItems, addToCart, updateQuantity: updateCartQuantity, removeFromCart, checkout: handleCheckout } = useCart();
+  const { items: cartItems, addToCart, updateQuantity: updateCartQuantity, removeFromCart, createOrder } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid");
@@ -237,9 +237,15 @@ const CatalogPage = () => {
 
   const catalogData = {
     store_name: company.name,
-    store_description: company.settings?.description || "Catálogo de produtos",
+    store_description: typeof company.settings === 'object' && company.settings && 'description' in company.settings 
+      ? String(company.settings.description) 
+      : "Catálogo de produtos",
     categories,
     products
+  };
+
+  const handleCheckout = async (customerData: any) => {
+    return await createOrder(customerData, company.id);
   };
 
   const ProductCard = ({ product }: { product: CatalogProduct }) => {
