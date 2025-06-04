@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useCatalogData, CatalogProduct } from "@/hooks/useCatalogData";
@@ -32,63 +33,70 @@ import ProductDetailsModal from "@/components/ProductDetailsModal";
 
 const CatalogPage = () => {
   const { subdomain } = useParams<{ subdomain: string }>();
-  const { catalogData, isLoading } = useCatalogData(subdomain);
-  const { cartItems, addToCart, updateCartQuantity, removeFromCart, handleCheckout } = useCart();
+  const { company, categories, products, isLoading } = useCatalogData(subdomain);
+  const { items: cartItems, addToCart, updateQuantity: updateCartQuantity, removeFromCart, checkout: handleCheckout } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
-  const [categories, setCategories] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>([]);
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-  // Force light theme for catalog
+  // Force light theme for catalog only
   useEffect(() => {
     document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
+    
+    // Cleanup function to restore theme when leaving catalog
+    return () => {
+      const savedTheme = localStorage.getItem('vite-ui-theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+      } else if (savedTheme === 'system') {
+        document.documentElement.classList.remove('light');
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.classList.add(systemTheme);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    if (catalogData) {
-      setCategories(catalogData.categories || []);
-    }
-  }, [catalogData]);
-
-  useEffect(() => {
-    if (catalogData) {
-      let products = catalogData.products || [];
+    if (products) {
+      let filteredList = products;
 
       if (selectedCategory) {
-        products = products.filter((product) => product.category === selectedCategory);
+        filteredList = filteredList.filter((product) => product.category === selectedCategory);
       }
 
       if (selectedSubcategory) {
-        products = products.filter((product) => product.subcategory === selectedSubcategory);
+        filteredList = filteredList.filter((product) => product.subcategory === selectedSubcategory);
       }
 
       if (priceRange.min !== "") {
-        products = products.filter(
+        filteredList = filteredList.filter(
           (product) => (product.promotional_price || product.price) >= parseFloat(priceRange.min)
         );
       }
 
       if (priceRange.max !== "") {
-        products = products.filter(
+        filteredList = filteredList.filter(
           (product) => (product.promotional_price || product.price) <= parseFloat(priceRange.max)
         );
       }
 
       if (searchTerm) {
-        products = products.filter((product) =>
+        filteredList = filteredList.filter((product) =>
           product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
 
-      setFilteredProducts(products);
+      setFilteredProducts(filteredList);
     }
-  }, [catalogData, selectedCategory, selectedSubcategory, priceRange, searchTerm]);
+  }, [products, selectedCategory, selectedSubcategory, priceRange, searchTerm]);
 
   if (isLoading) {
     return (
@@ -103,7 +111,7 @@ const CatalogPage = () => {
     );
   }
 
-  if (!catalogData) {
+  if (!company) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="text-center max-w-2xl mx-auto">
@@ -206,7 +214,7 @@ const CatalogPage = () => {
         </div>
 
         {/* CSS for animations */}
-        <style jsx>{`
+        <style>{`
           @keyframes blob {
             0% { transform: translate(0px, 0px) scale(1); }
             33% { transform: translate(30px, -50px) scale(1.1); }
@@ -226,6 +234,13 @@ const CatalogPage = () => {
       </div>
     );
   }
+
+  const catalogData = {
+    store_name: company.name,
+    store_description: company.settings?.description || "Catálogo de produtos",
+    categories,
+    products
+  };
 
   const ProductCard = ({ product }: { product: CatalogProduct }) => {
     const price = product.promotional_price || product.price;
@@ -411,21 +426,21 @@ const CatalogPage = () => {
                 {/* Subcategories */}
                 {selectedCategory === category.name && category.subcategories && category.subcategories.length > 0 && (
                   <div className="ml-4 mt-2 space-y-1">
-                    {category.subcategories.map((sub: any, index: number) => (
+                    {category.subcategories.map((sub: string, index: number) => (
                       <button
                         key={index}
                         onClick={() => {
                           setSelectedSubcategory(
-                            selectedSubcategory === sub.name ? "" : sub.name
+                            selectedSubcategory === sub ? "" : sub
                           );
                         }}
                         className={`block w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
-                          selectedSubcategory === sub.name
+                          selectedSubcategory === sub
                             ? "bg-primary/20 text-primary"
                             : "text-gray-600 hover:bg-gray-50"
                         }`}
                       >
-                        {sub.name}
+                        {sub}
                       </button>
                     ))}
                   </div>

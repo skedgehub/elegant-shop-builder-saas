@@ -26,7 +26,14 @@ const ThemeToggle = () => {
   }
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    
+    // Aplicar tema apenas se estivermos em uma rota admin
+    if (isPrivateRoute) {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(newTheme);
+    }
   };
 
   return (

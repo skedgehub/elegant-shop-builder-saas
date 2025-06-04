@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 
 type Theme = "dark" | "light" | "system"
 
@@ -33,20 +34,40 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement
+    const currentPath = window.location.pathname
 
-    root.classList.remove("light", "dark")
+    // Verificar se está em uma rota admin
+    const isAdminRoute = currentPath.startsWith('/admin') || 
+                        currentPath.startsWith('/profile') ||
+                        currentPath.startsWith('/orders') ||
+                        currentPath.startsWith('/products') ||
+                        currentPath.startsWith('/categories') ||
+                        currentPath.startsWith('/reports') ||
+                        currentPath.startsWith('/subscribers') ||
+                        currentPath.startsWith('/appearance') ||
+                        currentPath.startsWith('/catalog-config') ||
+                        currentPath.startsWith('/system-config')
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
+    // Só aplicar tema se for rota admin
+    if (isAdminRoute) {
+      root.classList.remove("light", "dark")
 
-      root.classList.add(systemTheme)
-      return
+      if (theme === "system") {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light"
+
+        root.classList.add(systemTheme)
+        return
+      }
+
+      root.classList.add(theme)
+    } else {
+      // Forçar light theme para outras páginas (catálogo, home, etc)
+      root.classList.remove("dark")
+      root.classList.add("light")
     }
-
-    root.classList.add(theme)
   }, [theme])
 
   const value = {

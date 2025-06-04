@@ -166,5 +166,12 @@ export const useCatalogData = (companySubdomain?: string) => {
     isLoading: companyQuery.isLoading || categoriesQuery.isLoading || productsQuery.isLoading,
     error: companyQuery.error || categoriesQuery.error || productsQuery.error,
     searchProducts,
+    // Mantendo compatibilidade com código anterior
+    catalogData: companyQuery.data ? {
+      store_name: companyQuery.data.name,
+      store_description: companyQuery.data.settings?.description || "Catálogo de produtos",
+      categories: categoriesQuery.data || [],
+      products: productsQuery.data || []
+    } : null,
   };
 };
