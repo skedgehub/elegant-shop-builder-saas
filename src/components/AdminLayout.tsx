@@ -50,7 +50,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <AdminSidebar
                 isCollapsed={false}
                 onToggleCollapse={() => {}}
-                onNavigate={() => setIsMobileMenuOpen(false)}
               />
             </SheetContent>
           </Sheet>
@@ -72,26 +71,28 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           "flex-1 flex flex-col transition-all duration-300",
           !isMobile && (isCollapsed ? "lg:pl-16" : "lg:pl-64")
         )}>
-          {/* Header - Fixed */}
+          {/* Header - Fixed and Responsive */}
           <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4">
-              <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+              <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
                 {/* Mobile Menu Button */}
                 {isMobile && (
                   <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                     <SheetTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <Menu className="h-5 w-5" />
+                      <Button variant="ghost" size="sm" className="p-2">
+                        <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
                       </Button>
                     </SheetTrigger>
                   </Sheet>
                 )}
-                <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-                  Painel Administrativo
-                </h1>
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-sm sm:text-lg lg:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                    Painel Administrativo
+                  </h1>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
                 <div className="hidden sm:block">
                   <NotificationDropdown />
                 </div>
@@ -99,22 +100,23 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
-                      <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
-                      <span className="hidden sm:inline">{user?.email}</span>
+                    <Button variant="ghost" size="sm" className="text-xs sm:text-sm max-w-[120px] sm:max-w-none">
+                      <User className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 sm:mr-2 flex-shrink-0" />
+                      <span className="hidden sm:inline truncate">{user?.email}</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel className="text-sm">Minha Conta</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => navigate("/admin/profile")}
+                      className="text-sm"
                     >
                       <User className="h-4 w-4 mr-2" />
                       Perfil
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut}>
+                    <DropdownMenuItem onClick={handleSignOut} className="text-sm">
                       <LogOut className="h-4 w-4 mr-2" />
                       Sair
                     </DropdownMenuItem>
@@ -124,8 +126,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             </div>
           </header>
 
-          {/* Page content - Scrollable */}
-          <main className="flex-1 overflow-auto">{children}</main>
+          {/* Page content - Scrollable and Responsive */}
+          <main className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6">{children}</main>
         </div>
       </div>
     </div>

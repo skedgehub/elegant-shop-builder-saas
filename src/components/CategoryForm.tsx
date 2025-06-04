@@ -62,36 +62,38 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
   };
 
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle>
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader className="px-4 sm:px-6">
+        <CardTitle className="text-lg sm:text-xl">
           {mode === "edit" ? "Editar Categoria" : "Nova Categoria"}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <CardContent className="px-4 sm:px-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Informações Básicas */}
             <div className="space-y-4">
               <div>
-                <Label htmlFor="name">Nome da Categoria *</Label>
+                <Label htmlFor="name" className="text-sm font-medium">Nome da Categoria *</Label>
                 <Input
                   id="name"
                   {...register("name", { required: "Nome é obrigatório" })}
                   placeholder="Digite o nome da categoria"
+                  className="mt-1"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name.message as string}</p>
+                  <p className="text-sm text-red-600 mt-1">{errors.name.message as string}</p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="description">Descrição</Label>
+                <Label htmlFor="description" className="text-sm font-medium">Descrição</Label>
                 <Textarea
                   id="description"
                   {...register("description")}
                   placeholder="Descreva a categoria"
                   rows={3}
+                  className="mt-1 resize-none"
                 />
               </div>
             </div>
@@ -112,13 +114,14 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
 
           {/* Subcategorias */}
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <Label>Subcategorias</Label>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
+              <Label className="text-sm font-medium">Subcategorias</Label>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => append({ name: "" })}
+                className="w-full sm:w-auto"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar Subcategoria
@@ -127,7 +130,7 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
 
             <div className="space-y-3">
               {fields.map((field, index) => (
-                <div key={field.id} className="flex items-center gap-2">
+                <div key={field.id} className="flex flex-col sm:flex-row gap-2">
                   <Input
                     {...register(`subcategories.${index}.name`)}
                     placeholder="Nome da subcategoria"
@@ -139,25 +142,29 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
                     size="sm"
                     onClick={() => remove(index)}
                     disabled={fields.length === 1}
+                    className="w-full sm:w-auto"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4 mr-2 sm:mr-0" />
+                    <span className="sm:hidden">Remover</span>
                   </Button>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex justify-end space-x-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => onSuccess ? onSuccess() : navigate("/admin/categories")}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
             <Button
               type="submit"
               disabled={isCreating || isUpdating}
+              className="w-full sm:w-auto"
             >
               {isCreating || isUpdating ? "Salvando..." : (mode === "edit" ? "Atualizar" : "Criar Categoria")}
             </Button>

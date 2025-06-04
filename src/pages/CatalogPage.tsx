@@ -20,8 +20,14 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  AlertCircle,
+  RefreshCw,
+  MapPin,
+  Clock,
+  Phone,
+  Mail,
 } from "lucide-react";
-import { CartDrawer } from "@/components/CartDrawer";
+import CartDrawer from "@/components/CartDrawer";
 import ProductDetailsModal from "@/components/ProductDetailsModal";
 
 const CatalogPage = () => {
@@ -38,6 +44,11 @@ const CatalogPage = () => {
   const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>([]);
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  // Force light theme for catalog
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   useEffect(() => {
     if (catalogData) {
@@ -83,7 +94,10 @@ const CatalogPage = () => {
     return (
       <div className="min-h-screen bg-white">
         <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando catálogo...</p>
+          </div>
         </div>
       </div>
     );
@@ -91,43 +105,131 @@ const CatalogPage = () => {
 
   if (!catalogData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <div className="text-center max-w-md mx-auto">
-          <div className="w-32 h-32 mx-auto mb-8 bg-gray-200 rounded-full flex items-center justify-center">
-            <Store className="w-16 h-16 text-gray-400" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="text-center max-w-2xl mx-auto">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+            <div className="absolute top-40 left-40 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Catálogo não encontrado
-          </h1>
-          <p className="text-gray-600 mb-8 text-lg">
-            O catálogo que você está procurando não foi encontrado ou não está disponível no momento.
-          </p>
-          <div className="space-y-4">
-            <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-              <h3 className="font-semibold text-gray-900 mb-2">Possíveis motivos:</h3>
-              <ul className="text-left text-gray-600 space-y-1 text-sm">
-                <li>• O link pode estar incorreto</li>
-                <li>• O catálogo pode ter sido removido</li>
-                <li>• Pode haver uma manutenção temporária</li>
-              </ul>
+
+          {/* Main Content */}
+          <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 sm:p-12 border border-white/20">
+            {/* Icon */}
+            <div className="relative mb-8">
+              <div className="w-32 h-32 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center shadow-inner">
+                <Store className="w-16 h-16 text-gray-400" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                <AlertCircle className="w-5 h-5 text-white" />
+              </div>
             </div>
-            <Button 
-              onClick={() => window.location.href = '/'} 
-              className="w-full"
-              size="lg"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar ao Início
-            </Button>
+
+            {/* Title and Description */}
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              Catálogo Não Encontrado
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Ops! O catálogo que você está procurando não foi encontrado ou não está disponível no momento.
+            </p>
+
+            {/* Info Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
+                  <AlertCircle className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Possíveis Causas</h3>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Link incorreto ou expirado</li>
+                  <li>• Catálogo temporariamente indisponível</li>
+                  <li>• Manutenção em andamento</li>
+                </ul>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+                <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mb-4">
+                  <RefreshCw className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">O que fazer?</h3>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Verificar o link novamente</li>
+                  <li>• Tentar mais tarde</li>
+                  <li>• Contatar o responsável</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Contact Info */}
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 mb-8 border border-gray-200">
+              <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+                <Phone className="w-5 h-5 mr-2 text-gray-600" />
+                Precisa de Ajuda?
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Se você acredita que isso é um erro, entre em contato conosco:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 text-sm">
+                <div className="flex items-center text-gray-600">
+                  <Mail className="w-4 h-4 mr-2" />
+                  suporte@exemplo.com
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <Clock className="w-4 h-4 mr-2" />
+                  24/7 Atendimento
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                onClick={() => window.location.reload()} 
+                variant="outline"
+                size="lg"
+                className="bg-white/50 backdrop-blur-sm border-2 border-gray-300 hover:bg-white/80 transition-all duration-200"
+              >
+                <RefreshCw className="w-5 h-5 mr-2" />
+                Tentar Novamente
+              </Button>
+              <Button 
+                onClick={() => window.location.href = '/'} 
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200 transform hover:scale-105"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Voltar ao Início
+              </Button>
+            </div>
           </div>
         </div>
+
+        {/* CSS for animations */}
+        <style jsx>{`
+          @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+          }
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+          .animation-delay-4000 {
+            animation-delay: 4s;
+          }
+        `}</style>
       </div>
     );
   }
 
   const ProductCard = ({ product }: { product: CatalogProduct }) => {
     const price = product.promotional_price || product.price;
-    const images = product.images || (product.image ? [product.image] : []);
+    const images = product.image ? [product.image] : [];
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const nextImage = () => {
@@ -309,7 +411,7 @@ const CatalogPage = () => {
                 {/* Subcategories */}
                 {selectedCategory === category.name && category.subcategories && category.subcategories.length > 0 && (
                   <div className="ml-4 mt-2 space-y-1">
-                    {category.subcategories.map((sub, index) => (
+                    {category.subcategories.map((sub: any, index: number) => (
                       <button
                         key={index}
                         onClick={() => {
