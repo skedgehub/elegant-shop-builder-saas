@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -760,10 +761,11 @@ const CatalogPage = () => {
                             : "text-gray-600 hover:bg-gray-100"
                         }
                       `}
-                    >
-                      {sub}
-                    </button>
-                  ))}
+                      >
+                        {sub}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
