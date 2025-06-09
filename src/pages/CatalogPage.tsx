@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -206,81 +205,97 @@ const CatalogPage = () => {
 
   if (!company) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="max-w-2xl mx-auto text-center p-8">
-          <div className="bg-white rounded-3xl shadow-2xl p-12 space-y-8 border border-gray-100">
-            {/* Icon with gradient background */}
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20 flex items-center justify-center p-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="bg-card rounded-3xl shadow-2xl border border-border/20 p-8 md:p-12 space-y-8 backdrop-blur-sm">
+            {/* Icon with modern gradient background */}
             <div className="relative mx-auto w-32 h-32">
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-full opacity-10"></div>
-              <div className="relative w-full h-full bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
-                <Store className="h-16 w-16 text-red-600" />
+              <div className="absolute inset-0 bg-gradient-to-br from-destructive/20 to-destructive/30 rounded-full blur-xl"></div>
+              <div className="relative w-full h-full bg-gradient-to-br from-destructive/10 to-destructive/20 rounded-full flex items-center justify-center border border-destructive/20">
+                <Store className="h-16 w-16 text-destructive/80" />
               </div>
             </div>
 
             {/* Main content */}
             <div className="space-y-6">
               <div className="space-y-4">
-                <h1 className="text-4xl font-bold text-gray-900">
+                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                   Catálogo não encontrado
                 </h1>
-                <p className="text-xl text-gray-600 leading-relaxed">
+                <p className="text-xl text-muted-foreground leading-relaxed max-w-lg mx-auto">
                   O catálogo{" "}
-                  <span className="font-semibold text-gray-900 bg-gray-100 px-3 py-1 rounded-lg font-mono">
+                  <span className="font-semibold text-foreground bg-muted px-3 py-1 rounded-lg font-mono text-lg">
                     {subdomain}
                   </span>{" "}
                   não está disponível ou foi desativado.
                 </p>
               </div>
 
-              {/* Features grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-6">
-                <div className="text-center p-4 bg-gray-50 rounded-xl">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Search className="h-6 w-6 text-blue-600" />
+              {/* Modern features grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-8">
+                <div className="group text-center p-6 bg-muted/50 rounded-2xl border border-border/40 hover:border-border/60 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Search className="h-7 w-7 text-primary-foreground" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-1">Verificar URL</h3>
-                  <p className="text-sm text-gray-600">Confirme se o endereço está correto</p>
+                  <h3 className="font-semibold text-foreground mb-2 text-lg">Verificar URL</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">Confirme se o endereço está correto</p>
                 </div>
 
-                <div className="text-center p-4 bg-gray-50 rounded-xl">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Shield className="h-6 w-6 text-green-600" />
+                <div className="group text-center p-6 bg-muted/50 rounded-2xl border border-border/40 hover:border-border/60 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Shield className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-1">Status da Loja</h3>
-                  <p className="text-sm text-gray-600">A loja pode estar em manutenção</p>
+                  <h3 className="font-semibold text-foreground mb-2 text-lg">Status da Loja</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">A loja pode estar em manutenção</p>
                 </div>
 
-                <div className="text-center p-4 bg-gray-50 rounded-xl">
-                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Zap className="h-6 w-6 text-purple-600" />
+                <div className="group text-center p-6 bg-muted/50 rounded-2xl border border-border/40 hover:border-border/60 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                  <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-1">Suporte</h3>
-                  <p className="text-sm text-gray-600">Entre em contato para ajuda</p>
+                  <h3 className="font-semibold text-foreground mb-2 text-lg">Suporte</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">Entre em contato para ajuda</p>
                 </div>
               </div>
 
-              {/* Alert box */}
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+              {/* Modern alert box */}
+              <div className="bg-gradient-to-r from-amber-50 via-amber-50/80 to-yellow-50 dark:from-amber-950/20 dark:via-amber-950/10 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-6">
                 <div className="flex items-start space-x-4">
-                  <AlertTriangle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm">
-                    <p className="font-medium text-amber-900 mb-2">Possíveis causas:</p>
-                    <ul className="space-y-1 text-amber-800">
-                      <li>• O subdomínio foi digitado incorretamente</li>
-                      <li>• A loja foi desativada temporariamente</li>
-                      <li>• O catálogo ainda não foi configurado</li>
-                      <li>• Problemas de conectividade temporários</li>
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-xl flex items-center justify-center">
+                      <AlertTriangle className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-3 text-lg">Possíveis causas:</h3>
+                    <ul className="space-y-2 text-amber-800 dark:text-amber-200">
+                      <li className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-amber-600 dark:bg-amber-400 rounded-full"></div>
+                        <span>O subdomínio foi digitado incorretamente</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-amber-600 dark:bg-amber-400 rounded-full"></div>
+                        <span>A loja foi desativada temporariamente</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-amber-600 dark:bg-amber-400 rounded-full"></div>
+                        <span>O catálogo ainda não foi configurado</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-amber-600 dark:bg-amber-400 rounded-full"></div>
+                        <span>Problemas de conectividade temporários</span>
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Action buttons */}
+            {/* Modern action buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Button
                 onClick={() => window.location.reload()}
-                className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg"
+                className="flex-1 h-12 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
                 size="lg"
               >
                 <Search className="h-5 w-5 mr-2" />
@@ -289,7 +304,7 @@ const CatalogPage = () => {
               <Button
                 variant="outline"
                 onClick={() => window.history.back()}
-                className="flex-1 h-12 border-2 border-gray-300 hover:border-gray-400"
+                className="flex-1 h-12 border-2 hover:bg-muted/80 transition-all duration-300 hover:-translate-y-0.5"
                 size="lg"
               >
                 <ChevronLeft className="h-5 w-5 mr-2" />
@@ -297,17 +312,21 @@ const CatalogPage = () => {
               </Button>
             </div>
 
-            {/* Footer info */}
-            <div className="pt-6 border-t border-gray-100">
-              <p className="text-sm text-gray-500">
+            {/* Modern footer info */}
+            <div className="pt-8 border-t border-border/50">
+              <p className="text-sm text-muted-foreground">
                 Se o problema persistir, entre em contato com o{" "}
-                <span className="font-medium text-blue-600 cursor-pointer hover:underline">
+                <span className="font-medium text-primary cursor-pointer hover:underline transition-colors">
                   suporte técnico
                 </span>
                 .
               </p>
             </div>
           </div>
+
+          {/* Floating elements for visual appeal */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -z-10"></div>
         </div>
       </div>
     );
@@ -741,11 +760,10 @@ const CatalogPage = () => {
                             : "text-gray-600 hover:bg-gray-100"
                         }
                       `}
-                      >
-                        {sub}
-                      </button>
-                    ))}
-                  </div>
+                    >
+                      {sub}
+                    </button>
+                  ))}
                 </div>
               )}
 
