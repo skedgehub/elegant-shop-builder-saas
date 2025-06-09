@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ShoppingBag } from "lucide-react";
+import { Search, ShoppingBag, Package2, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import OrderCard from "@/components/OrderCard";
 
 // Mock data para demonstração
@@ -79,48 +80,119 @@ const ClientOrders = () => {
     // Implementar lógica de cancelamento
   };
 
+  const getOrderStats = () => {
+    const total = mockOrders.length;
+    const active = mockOrders.filter(order => !["delivered", "cancelled"].includes(order.status)).length;
+    const delivered = mockOrders.filter(order => order.status === "delivered").length;
+    
+    return { total, active, delivered };
+  };
+
+  const stats = getOrderStats();
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Meus Pedidos</h1>
-        <p className="text-gray-600 mt-2">
+    <div className="space-y-8">
+      {/* Header Section */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Meus Pedidos</h1>
+        <p className="text-muted-foreground">
           Acompanhe o status dos seus pedidos e histórico de compras
         </p>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="border-l-4 border-l-primary">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total de Pedidos</p>
+                <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+              </div>
+              <Package2 className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-l-4 border-l-blue-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Em Andamento</p>
+                <p className="text-2xl font-bold text-foreground">{stats.active}</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-blue-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-l-4 border-l-green-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Entregues</p>
+                <p className="text-2xl font-bold text-foreground">{stats.delivered}</p>
+              </div>
+              <ShoppingBag className="h-8 w-8 text-green-500" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Buscar por número do pedido ou produto..."
-          className="pl-10"
+          placeholder="Buscar pedidos..."
+          className="pl-10 bg-background border-border"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="all">Todos</TabsTrigger>
-          <TabsTrigger value="active">Em Andamento</TabsTrigger>
-          <TabsTrigger value="delivered">Entregues</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full max-w-md grid-cols-3 bg-muted">
+          <TabsTrigger value="all" className="data-[state=active]:bg-background">
+            Todos
+            <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+              {stats.total}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="active" className="data-[state=active]:bg-background">
+            Ativos
+            <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+              {stats.active}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="delivered" className="data-[state=active]:bg-background">
+            Entregues
+            <Badge variant="secondary" className="ml-2 h-5 px-2 text-xs">
+              {stats.delivered}
+            </Badge>
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value={activeTab} className="mt-6">
+        <TabsContent value={activeTab} className="space-y-4">
           {filteredOrders.length === 0 ? (
             <Card>
-              <CardContent className="text-center py-12">
-                <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Nenhum pedido encontrado
-                </h3>
-                <p className="text-gray-600">
-                  {searchTerm 
-                    ? "Tente buscar com outros termos" 
-                    : "Você ainda não fez nenhum pedido"
-                  }
-                </p>
+              <CardContent className="text-center py-16">
+                <div className="space-y-4">
+                  <div className="mx-auto h-24 w-24 rounded-full bg-muted flex items-center justify-center">
+                    <ShoppingBag className="h-12 w-12 text-muted-foreground" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Nenhum pedido encontrado
+                    </h3>
+                    <p className="text-muted-foreground max-w-sm mx-auto">
+                      {searchTerm 
+                        ? "Tente buscar com outros termos" 
+                        : "Você ainda não fez nenhum pedido"
+                      }
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ) : (
