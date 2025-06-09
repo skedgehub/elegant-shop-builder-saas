@@ -27,6 +27,10 @@ import AdminLayout from "./components/AdminLayout";
 import Index from "./pages/Index";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from "./pages/Profile";
+import ClientAuth from "@/pages/ClientAuth";
+import ClientLayout from "@/components/ClientLayout";
+import ClientOrders from "@/pages/ClientOrders";
+import ClientProfile from "@/pages/ClientProfile";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +48,13 @@ function App() {
               <Route path="/plans" element={<PlanSelection />} />
 
               <Route path="/catalog/:subdomain" element={<CatalogPage />} />
+
+              {/* Client Portal Routes */}
+              <Route path="/client/auth" element={<ClientAuth />} />
+              <Route path="/client" element={<ClientLayout />}>
+                <Route path="orders" element={<ClientOrders />} />
+                <Route path="profile" element={<ClientProfile />} />
+              </Route>
 
               <Route
                 path="/admin"
