@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,12 @@ import {
   ShoppingCart,
   Package,
   Heart,
+  ShoppingBag,
+  CreditCard,
+  Gift,
+  Sparkles,
+  Coins,
+  Tag,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -173,9 +180,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter overflow-x-hidden relative">
-      {/* Animated Background Elements */}
+      {/* Enhanced Animated Background Elements */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        {/* Shopping icons floating animation */}
+        {/* Shopping icons floating animation - More variety */}
         <div className="absolute top-20 left-10 w-8 h-8 text-primary/10 animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}>
           <ShoppingCart className="w-full h-full" />
         </div>
@@ -192,15 +199,56 @@ const Index = () => {
           <TrendingUp className="w-full h-full" />
         </div>
         
-        {/* Subtle sparkle effects */}
+        {/* Additional shopping icons for more life */}
+        <div className="absolute top-60 left-1/5 w-6 h-6 text-primary/10 animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '3.8s' }}>
+          <ShoppingBag className="w-full h-full" />
+        </div>
+        <div className="absolute top-80 right-1/5 w-5 h-5 text-primary/10 animate-bounce" style={{ animationDelay: '2.3s', animationDuration: '4.2s' }}>
+          <CreditCard className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-60 left-1/6 w-7 h-7 text-primary/10 animate-bounce" style={{ animationDelay: '3.7s', animationDuration: '3.3s' }}>
+          <Gift className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-80 right-1/4 w-6 h-6 text-primary/10 animate-bounce" style={{ animationDelay: '0.8s', animationDuration: '4.8s' }}>
+          <Coins className="w-full h-full" />
+        </div>
+        <div className="absolute top-1/3 left-1/2 w-5 h-5 text-primary/10 animate-bounce" style={{ animationDelay: '4.5s', animationDuration: '3.7s' }}>
+          <Tag className="w-full h-full" />
+        </div>
+        
+        {/* Enhanced sparkle effects with more variety */}
         <div className="absolute top-1/4 left-1/5 w-2 h-2 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '0s' }}></div>
         <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
         <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '4s' }}></div>
         <div className="absolute bottom-1/3 right-1/5 w-2 h-2 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '6s' }}></div>
+        <div className="absolute top-1/6 left-1/2 w-1 h-1 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-1/5 right-1/2 w-1.5 h-1.5 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-2/3 left-1/4 w-2 h-2 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '5s' }}></div>
+        <div className="absolute top-1/2 right-1/6 w-1 h-1 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '7s' }}></div>
         
-        {/* Glowing orbs */}
+        {/* Floating sparkles with different colors */}
+        <div className="absolute top-1/8 left-1/8 w-8 h-8 text-yellow-400/15 animate-pulse" style={{ animationDelay: '1s', animationDuration: '2.5s' }}>
+          <Sparkles className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-1/8 right-1/8 w-6 h-6 text-blue-400/15 animate-pulse" style={{ animationDelay: '3s', animationDuration: '3.5s' }}>
+          <Sparkles className="w-full h-full" />
+        </div>
+        <div className="absolute top-1/2 left-1/8 w-7 h-7 text-purple-400/15 animate-pulse" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
+          <Sparkles className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-1/2 right-1/8 w-5 h-5 text-pink-400/15 animate-pulse" style={{ animationDelay: '2.5s', animationDuration: '3s' }}>
+          <Sparkles className="w-full h-full" />
+        </div>
+        
+        {/* Enhanced glowing orbs with varied timing */}
         <div className="absolute top-1/6 left-1/6 w-32 h-32 bg-gradient-to-r from-primary/5 to-blue-400/5 rounded-full blur-xl animate-pulse" style={{ animationDuration: '4s' }}></div>
         <div className="absolute bottom-1/6 right-1/6 w-40 h-40 bg-gradient-to-r from-purple-400/5 to-primary/5 rounded-full blur-xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/12 w-28 h-28 bg-gradient-to-r from-yellow-400/4 to-orange-400/4 rounded-full blur-xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }}></div>
+        <div className="absolute bottom-1/3 right-1/12 w-36 h-36 bg-gradient-to-r from-green-400/4 to-blue-400/4 rounded-full blur-xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '3s' }}></div>
+        
+        {/* Moving gradient lines */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/10 to-transparent animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }}></div>
       </div>
 
       {/* Floating Contact Button */}
@@ -459,7 +507,7 @@ const Index = () => {
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in text-center" style={{ animationDelay: '0.4s' }}>
             Crie sua loja virtual profissional em minutos. Sistema completo com
             subdomínio personalizado, dashboard avançado e total customização.{" "}
             <strong>Aumente suas vendas em até 300%!</strong>
@@ -514,7 +562,7 @@ const Index = () => {
 
           {/* Social Proof */}
           <div className="mt-16 flex flex-col items-center animate-fade-in" style={{ animationDelay: '1.1s' }}>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-gray-500 mb-4 text-center">
               Confiado por empresas de todos os tamanhos
             </p>
             <div className="flex items-center space-x-8 opacity-60">
@@ -538,13 +586,13 @@ const Index = () => {
       <section id="features" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 text-center">
               Tudo que você precisa para
               <span className="text-primary block">
                 vender online
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center">
               Recursos profissionais para criar a loja dos seus sonhos
             </p>
           </div>
@@ -567,7 +615,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed text-center">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -587,7 +635,7 @@ const Index = () => {
         
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 text-center">
               Planos que crescem com
               <span className="text-primary block">
                 seu negócio
@@ -667,7 +715,7 @@ const Index = () => {
       <section id="testimonials" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 text-center">
               O que nossos
               <span className="text-primary block">
                 clientes dizem
