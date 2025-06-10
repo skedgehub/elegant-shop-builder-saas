@@ -168,7 +168,37 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-inter overflow-x-hidden">
+    <div className="min-h-screen bg-white font-inter overflow-x-hidden relative">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* Shopping icons floating animation */}
+        <div className="absolute top-20 left-10 w-8 h-8 text-primary/10 animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}>
+          <ShoppingCart className="w-full h-full" />
+        </div>
+        <div className="absolute top-40 right-20 w-6 h-6 text-primary/10 animate-bounce" style={{ animationDelay: '1s', animationDuration: '4s' }}>
+          <Package className="w-full h-full" />
+        </div>
+        <div className="absolute top-96 left-1/4 w-7 h-7 text-primary/10 animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}>
+          <Star className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-96 right-1/3 w-5 h-5 text-primary/10 animate-bounce" style={{ animationDelay: '3s', animationDuration: '3.5s' }}>
+          <Heart className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-40 left-1/3 w-6 h-6 text-primary/10 animate-bounce" style={{ animationDelay: '4s', animationDuration: '4.5s' }}>
+          <TrendingUp className="w-full h-full" />
+        </div>
+        
+        {/* Subtle sparkle effects */}
+        <div className="absolute top-1/4 left-1/5 w-2 h-2 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '0s' }}></div>
+        <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute bottom-1/3 right-1/5 w-2 h-2 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '6s' }}></div>
+        
+        {/* Glowing orbs */}
+        <div className="absolute top-1/6 left-1/6 w-32 h-32 bg-gradient-to-r from-primary/5 to-blue-400/5 rounded-full blur-xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+        <div className="absolute bottom-1/6 right-1/6 w-40 h-40 bg-gradient-to-r from-purple-400/5 to-primary/5 rounded-full blur-xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }}></div>
+      </div>
+
       {/* Floating Contact Button */}
       <a
         href="#contact"
@@ -401,7 +431,7 @@ const Index = () => {
       </header>
 
       {/* Hero Section with parallax */}
-      <section className="py-24 px-6 relative overflow-hidden">
+      <section className="py-24 px-6 relative overflow-hidden z-10">
         {/* Background effects */}
         <div 
           className="absolute inset-0 opacity-5"
@@ -501,7 +531,7 @@ const Index = () => {
       </section>
 
       {/* Features Section with scroll animations */}
-      <section id="features" className="py-24 px-6 bg-gray-50 relative">
+      <section id="features" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
@@ -528,7 +558,7 @@ const Index = () => {
                   <div className="h-14 w-14 bg-primary rounded-xl mx-auto mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 flex items-center justify-center text-black">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-xl text-black group-hover:text-primary transition-colors">
+                  <CardTitle className="text-xl text-black group-hover:text-primary transition-colors text-center">
                     {feature.title}
                   </CardTitle>
                 </CardHeader>
@@ -544,7 +574,7 @@ const Index = () => {
       </section>
 
       {/* Pricing Section with glassmorphism */}
-      <section id="pricing" className="py-24 px-6 bg-white relative overflow-hidden">
+      <section id="pricing" className="py-24 px-6 bg-white relative overflow-hidden z-10">
         {/* Background decorations */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
@@ -559,7 +589,7 @@ const Index = () => {
                 seu negócio
               </span>
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 text-center">
               Escolha o plano ideal para sua empresa
             </p>
           </div>
@@ -581,7 +611,7 @@ const Index = () => {
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-yellow-400"></div>
                 )}
                 {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-black shadow-lg">
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-black shadow-lg z-20">
                     Mais Popular
                   </Badge>
                 )}
@@ -591,13 +621,13 @@ const Index = () => {
                       {plan.name[0]}
                     </span>
                   </div>
-                  <CardTitle className="text-2xl text-black">
+                  <CardTitle className="text-2xl text-black text-center">
                     {plan.name}
                   </CardTitle>
-                  <CardDescription className="text-gray-600">
+                  <CardDescription className="text-gray-600 text-center">
                     {plan.description}
                   </CardDescription>
-                  <div className="mt-6">
+                  <div className="mt-6 text-center">
                     <span className="text-5xl font-bold text-black">
                       {plan.price}
                     </span>
@@ -630,7 +660,7 @@ const Index = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 px-6 bg-gray-50">
+      <section id="testimonials" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
@@ -639,7 +669,7 @@ const Index = () => {
                 clientes dizem
               </span>
             </h2>
-            <p className="text-xl text-gray-600">Histórias reais de sucesso</p>
+            <p className="text-xl text-gray-600 text-center">Histórias reais de sucesso</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
@@ -651,8 +681,8 @@ const Index = () => {
                   transform: `perspective(1000px) rotateX(5deg)`
                 }}
               >
-                <CardContent className="pt-8">
-                  <div className="flex mb-6">
+                <CardContent className="pt-8 text-center">
+                  <div className="flex justify-center mb-6">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star
                         key={i}
@@ -661,16 +691,16 @@ const Index = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-8 italic text-lg leading-relaxed">
+                  <p className="text-gray-700 mb-8 italic text-lg leading-relaxed text-center">
                     "{testimonial.content}"
                   </p>
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-center">
                     <img
                       src={testimonial.avatar}
                       alt={testimonial.name}
                       className="h-12 w-12 rounded-full mr-4 object-cover hover:scale-110 transition-transform duration-300"
                     />
-                    <div>
+                    <div className="text-center">
                       <p className="font-semibold text-black">
                         {testimonial.name}
                       </p>
@@ -687,7 +717,7 @@ const Index = () => {
       </section>
 
       {/* Contact Section with glassmorphism */}
-      <section id="contact" className="py-24 px-6 bg-white relative overflow-hidden">
+      <section id="contact" className="py-24 px-6 bg-white relative overflow-hidden z-10">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-1/4 left-10 w-72 h-72 bg-primary rounded-full blur-3xl"></div>
           <div className="absolute bottom-1/4 right-10 w-72 h-72 bg-purple-400 rounded-full blur-3xl"></div>
@@ -698,7 +728,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
               Entre em Contato
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center">
               Tem dúvidas? Nossa equipe está pronta para ajudar você a começar
             </p>
           </div>
@@ -842,7 +872,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section with 3D effect */}
-      <section className="py-24 px-6 bg-black text-white relative overflow-hidden">
+      <section className="py-24 px-6 bg-black text-white relative overflow-hidden z-10">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-1/3 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
@@ -878,7 +908,7 @@ const Index = () => {
       </section>
 
       {/* Footer with glassmorphism */}
-      <footer className="bg-black/90 backdrop-blur-lg text-white py-16 px-6">
+      <footer className="bg-black/90 backdrop-blur-lg text-white py-16 px-6 relative z-10">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
