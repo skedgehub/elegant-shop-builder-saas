@@ -1,5 +1,3 @@
-
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -522,7 +520,7 @@ const Index = () => {
             ].map((stat, index) => (
               <Card 
                 key={index}
-                className="bg-white/80 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-500 animate-fade-in"
+                className="bg-white/80 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden"
                 style={{ 
                   animationDelay: `${0.6 + index * 0.1}s`,
                   transform: `perspective(1000px) rotateX(5deg)`
