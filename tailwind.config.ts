@@ -22,8 +22,6 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         inter: ["Inter", "system-ui", "sans-serif"],
-        dm: ["DM Sans", "system-ui", "sans-serif"],
-        playfair: ["Playfair Display", "serif"],
         outfit: ["Outfit", "system-ui", "sans-serif"],
       },
       fontWeight: {
@@ -89,8 +87,6 @@ export default {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "gradient-subtle": "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-        "gradient-premium": "linear-gradient(135deg, #C0F23E 0%, #9ED02D 100%)",
       },
       keyframes: {
         "accordion-down": {
@@ -117,22 +113,12 @@ export default {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(0)" },
         },
-        "float": {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        "glow": {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "0.8" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.6s ease-out",
         "slide-in": "slide-in 0.3s ease-out",
-        "float": "float 6s ease-in-out infinite",
-        "glow": "glow 4s ease-in-out infinite",
       },
     },
   },
