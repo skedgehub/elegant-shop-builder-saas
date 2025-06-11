@@ -905,7 +905,7 @@ const Index = () => {
         </a>
       </div>
 
-      <style>{`
+      <style jsx>{`
         @keyframes scroll {
           0% {
             transform: translateX(0);
@@ -936,4 +936,4 @@ const Index = () => {
 
 export default Index;
 
-</initial_code>
+</edits_to_apply>
