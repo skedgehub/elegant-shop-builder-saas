@@ -266,9 +266,9 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 animate-fade-in">
               <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center transform hover:rotate-12 transition-transform duration-300">
-                <span className="text-black font-bold text-lg">C</span>
+                <span className="text-black font-extra-black text-lg">C</span>
               </div>
-              <span className="text-2xl font-bold text-black">CatalogoPro</span>
+              <span className="text-2xl font-extra-black text-black">CatalogoPro</span>
             </div>
 
             {/* Desktop Navigation */}
@@ -498,7 +498,7 @@ const Index = () => {
             🚀 Novo: Campos personalizáveis para produtos
           </Badge>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-black mb-8 leading-tight animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-extra-black text-black mb-8 leading-tight animate-fade-in">
             O Catálogo Online que
             <span className="text-primary block animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Vende Mais
@@ -584,9 +584,9 @@ const Index = () => {
       <section id="features" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6 text-center">
               Tudo que você precisa para
-              <span className="text-primary block">
+              <span className="text-primary block font-extra-black">
                 vender online
               </span>
             </h2>
@@ -633,9 +633,9 @@ const Index = () => {
         
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6 text-center">
               Planos que crescem com
-              <span className="text-primary block">
+              <span className="text-primary block font-extra-black">
                 seu negócio
               </span>
             </h2>
@@ -713,9 +713,9 @@ const Index = () => {
       <section id="testimonials" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6 text-center">
               O que nossos
-              <span className="text-primary block">
+              <span className="text-primary block font-extra-black">
                 clientes dizem
               </span>
             </h2>
@@ -775,7 +775,7 @@ const Index = () => {
         
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6">
               Entre em Contato
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center">
@@ -929,7 +929,7 @@ const Index = () => {
         </div>
         
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-extra-black mb-6 animate-fade-in">
             Pronto para começar?
           </h2>
           <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -964,9 +964,9 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center hover:rotate-12 transition-transform duration-300">
-                  <span className="text-black font-bold text-lg">C</span>
+                  <span className="text-black font-extra-black text-lg">C</span>
                 </div>
-                <span className="text-2xl font-bold">CatalogoPro</span>
+                <span className="text-2xl font-extra-black">CatalogoPro</span>
               </div>
               <p className="text-gray-400 leading-relaxed">
                 O sistema de catálogo mais completo e moderno do Brasil
@@ -1052,3 +1052,5 @@ const Index = () => {
 };
 
 export default Index;
+
+</edits_to_apply>
