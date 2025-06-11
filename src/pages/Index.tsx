@@ -50,6 +50,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import PromotionalModal from "@/components/PromotionalModal";
 
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -60,6 +61,7 @@ const Index = () => {
     message: ""
   });
   const [scrollY, setScrollY] = useState(0);
+  const [showPromotionalModal, setShowPromotionalModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -85,11 +87,17 @@ const Index = () => {
       });
     });
 
+    // Show promotional modal after 10 seconds
+    const promotionalTimer = setTimeout(() => {
+      setShowPromotionalModal(true);
+    }, 10000);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       links.forEach(link => {
         link.removeEventListener('click', () => {});
       });
+      clearTimeout(promotionalTimer);
     };
   }, []);
 
@@ -904,6 +912,12 @@ const Index = () => {
           </Button>
         </a>
       </div>
+
+      {/* Promotional Modal */}
+      <PromotionalModal 
+        isOpen={showPromotionalModal}
+        onClose={() => setShowPromotionalModal(false)}
+      />
 
       <style jsx>{`
         @keyframes scroll {
