@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -498,9 +499,9 @@ const Index = () => {
             🚀 Novo: Campos personalizáveis para produtos
           </Badge>
 
-          <h1 className="text-5xl md:text-7xl font-extra-black text-black mb-8 leading-tight animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-inter font-black text-black mb-8 leading-tight animate-fade-in">
             O Catálogo Online que
-            <span className="text-primary block animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <span className="text-primary block animate-fade-in font-inter font-black" style={{ animationDelay: '0.2s' }}>
               Vende Mais
             </span>
           </h1>
@@ -584,9 +585,9 @@ const Index = () => {
       <section id="features" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-inter font-black text-black mb-6 text-center">
               Tudo que você precisa para
-              <span className="text-primary block font-extra-black">
+              <span className="text-primary block font-inter font-black">
                 vender online
               </span>
             </h2>
@@ -633,9 +634,9 @@ const Index = () => {
         
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-inter font-black text-black mb-6 text-center">
               Planos que crescem com
-              <span className="text-primary block font-extra-black">
+              <span className="text-primary block font-inter font-black">
                 seu negócio
               </span>
             </h2>
@@ -713,9 +714,9 @@ const Index = () => {
       <section id="testimonials" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-inter font-black text-black mb-6 text-center">
               O que nossos
-              <span className="text-primary block font-extra-black">
+              <span className="text-primary block font-inter font-black">
                 clientes dizem
               </span>
             </h2>
@@ -775,7 +776,7 @@ const Index = () => {
         
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extra-black text-black mb-6">
+            <h2 className="text-4xl md:text-5xl font-inter font-black text-black mb-6">
               Entre em Contato
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center">
@@ -929,7 +930,7 @@ const Index = () => {
         </div>
         
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-extra-black mb-6 animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-inter font-black mb-6 animate-fade-in">
             Pronto para começar?
           </h2>
           <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -1052,5 +1053,3 @@ const Index = () => {
 };
 
 export default Index;
-
-</edits_to_apply>
