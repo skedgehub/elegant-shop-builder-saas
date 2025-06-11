@@ -1,5 +1,5 @@
-
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from "@/integrations/supabase/client";
+import { $api } from "@/lib/api";
 
 export interface LoginData {
   email: string;
@@ -44,16 +44,18 @@ export const authService = {
     });
 
     if (error) throw new Error(error.message);
-    if (!authData.user) throw new Error('Login failed');
+    if (!authData.user) throw new Error("Login failed");
 
     // Get user profile with company info
     const { data: profile } = await supabase
-      .from('profiles')
-      .select(`
+      .from("profiles")
+      .select(
+        `
         *,
         companies (*)
-      `)
-      .eq('id', authData.user.id)
+      `
+      )
+      .eq("id", authData.user.id)
       .single();
 
     const user: User = {
@@ -65,9 +67,9 @@ export const authService = {
       role: profile?.role,
     };
 
-    return { 
-      user, 
-      token: authData.session?.access_token || '' 
+    return {
+      user,
+      token: authData.session?.access_token || "",
     };
   },
 
@@ -92,18 +94,18 @@ export const authService = {
     });
 
     if (error) throw new Error(error.message);
-    if (!authData.user) throw new Error('Registration failed');
+    if (!authData.user) throw new Error("Registration failed");
 
     const user: User = {
       id: authData.user.id,
       email: authData.user.email!,
       name: data.name,
-      role: data.subdomain ? 'admin' : 'user',
+      role: data.subdomain ? "admin" : "user",
     };
 
-    return { 
-      user, 
-      token: authData.session?.access_token || '' 
+    return {
+      user,
+      token: authData.session?.access_token || "",
     };
   },
 
@@ -113,17 +115,21 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<User | null> {
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+
     if (!authUser) return null;
 
     const { data: profile } = await supabase
-      .from('profiles')
-      .select(`
+      .from("profiles")
+      .select(
+        `
         *,
         companies (*)
-      `)
-      .eq('id', authUser.id)
+      `
+      )
+      .eq("id", authUser.id)
       .single();
 
     return {
@@ -138,26 +144,29 @@ export const authService = {
 
   async getCompany(companyId: string): Promise<Company | null> {
     const { data, error } = await supabase
-      .from('companies')
-      .select('*')
-      .eq('id', companyId)
+      .from("companies")
+      .select("*")
+      .eq("id", companyId)
       .single();
 
     if (error || !data) return null;
     return data as Company;
   },
 
-  async updateCompany(companyId: string, updates: Partial<Company>): Promise<Company> {
+  async updateCompany(
+    companyId: string,
+    updates: Partial<Company>
+  ): Promise<Company> {
     const { data, error } = await supabase
-      .from('companies')
+      .from("companies")
       .update(updates)
-      .eq('id', companyId)
+      .eq("id", companyId)
       .select()
       .single();
 
     if (error) throw new Error(error.message);
-    if (!data) throw new Error('Failed to update company');
-    
+    if (!data) throw new Error("Failed to update company");
+
     return data as Company;
-  }
+  },
 };
