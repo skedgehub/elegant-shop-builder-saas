@@ -1,22 +1,27 @@
-
 import AdminLayout from "@/components/AdminLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  Palette, 
-  Layout, 
+import {
+  Palette,
+  Layout,
   Globe,
   Save,
   Eye,
   Upload,
   Type,
   Image,
-  Smartphone
+  Smartphone,
 } from "lucide-react";
 
 const CatalogConfig = () => {
@@ -26,8 +31,12 @@ const CatalogConfig = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Configuração do Catálogo</h1>
-            <p className="text-gray-600">Personalize a aparência e funcionamento do seu catálogo</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Configuração do Catálogo
+            </h1>
+            <p className="text-gray-600">
+              Personalize a aparência e funcionamento do seu catálogo
+            </p>
           </div>
           <div className="flex space-x-3 mt-4 sm:mt-0">
             <Button variant="outline">
@@ -55,7 +64,10 @@ const CatalogConfig = () => {
               <Globe className="h-4 w-4" />
               <span className="hidden sm:inline">Domínio</span>
             </TabsTrigger>
-            <TabsTrigger value="content" className="flex items-center space-x-2">
+            <TabsTrigger
+              value="content"
+              className="flex items-center space-x-2"
+            >
               <Type className="h-4 w-4" />
               <span className="hidden sm:inline">Conteúdo</span>
             </TabsTrigger>
@@ -80,8 +92,8 @@ const CatalogConfig = () => {
                     <div>
                       <Label htmlFor="primary-color">Cor Primária</Label>
                       <div className="flex items-center space-x-3 mt-2">
-                        <input 
-                          type="color" 
+                        <input
+                          type="color"
                           id="primary-color"
                           defaultValue="#2563eb"
                           className="w-12 h-10 rounded border"
@@ -92,8 +104,8 @@ const CatalogConfig = () => {
                     <div>
                       <Label htmlFor="secondary-color">Cor Secundária</Label>
                       <div className="flex items-center space-x-3 mt-2">
-                        <input 
-                          type="color" 
+                        <input
+                          type="color"
                           id="secondary-color"
                           defaultValue="#64748b"
                           className="w-12 h-10 rounded border"
@@ -102,13 +114,13 @@ const CatalogConfig = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="accent-color">Cor de Destaque</Label>
                       <div className="flex items-center space-x-3 mt-2">
-                        <input 
-                          type="color" 
+                        <input
+                          type="color"
                           id="accent-color"
                           defaultValue="#f59e0b"
                           className="w-12 h-10 rounded border"
@@ -119,8 +131,8 @@ const CatalogConfig = () => {
                     <div>
                       <Label htmlFor="text-color">Cor do Texto</Label>
                       <div className="flex items-center space-x-3 mt-2">
-                        <input 
-                          type="color" 
+                        <input
+                          type="color"
                           id="text-color"
                           defaultValue="#1f2937"
                           className="w-12 h-10 rounded border"
@@ -144,16 +156,22 @@ const CatalogConfig = () => {
                     <Label htmlFor="logo">Logotipo Principal</Label>
                     <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
                       <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">Clique para fazer upload ou arraste sua logo</p>
-                      <p className="text-xs text-gray-500 mt-1">PNG, JPG até 2MB</p>
+                      <p className="text-sm text-gray-600">
+                        Clique para fazer upload ou arraste sua logo
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        PNG, JPG até 2MB
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="favicon">Favicon</Label>
                     <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
                       <Image className="h-6 w-6 text-gray-400 mx-auto mb-1" />
-                      <p className="text-xs text-gray-600">Upload favicon (32x32px)</p>
+                      <p className="text-xs text-gray-600">
+                        Upload favicon (32x32px)
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -208,31 +226,43 @@ const CatalogConfig = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="show-header">Mostrar Cabeçalho</Label>
-                      <p className="text-sm text-gray-600">Exibir logo e navegação no topo</p>
+                      <p className="text-sm text-gray-600">
+                        Exibir logo e navegação no topo
+                      </p>
                     </div>
                     <Switch id="show-header" defaultChecked />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="show-banner">Mostrar Banner Principal</Label>
-                      <p className="text-sm text-gray-600">Banner promocional na página inicial</p>
+                      <Label htmlFor="show-banner">
+                        Mostrar Banner Principal
+                      </Label>
+                      <p className="text-sm text-gray-600">
+                        Banner promocional na página inicial
+                      </p>
                     </div>
                     <Switch id="show-banner" defaultChecked />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="show-categories">Mostrar Menu de Categorias</Label>
-                      <p className="text-sm text-gray-600">Menu lateral com categorias</p>
+                      <Label htmlFor="show-categories">
+                        Mostrar Menu de Categorias
+                      </Label>
+                      <p className="text-sm text-gray-600">
+                        Menu lateral com categorias
+                      </p>
                     </div>
                     <Switch id="show-categories" defaultChecked />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="show-search">Mostrar Busca</Label>
-                      <p className="text-sm text-gray-600">Barra de pesquisa de produtos</p>
+                      <p className="text-sm text-gray-600">
+                        Barra de pesquisa de produtos
+                      </p>
                     </div>
                     <Switch id="show-search" defaultChecked />
                   </div>
@@ -251,32 +281,40 @@ const CatalogConfig = () => {
                     <Label>Produtos por Linha (Desktop)</Label>
                     <select className="w-full mt-2 p-2 border rounded-md">
                       <option value="3">3 produtos</option>
-                      <option value="4" selected>4 produtos</option>
+                      <option value="4" selected>
+                        4 produtos
+                      </option>
                       <option value="5">5 produtos</option>
                       <option value="6">6 produtos</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <Label>Produtos por Linha (Mobile)</Label>
                     <select className="w-full mt-2 p-2 border rounded-md">
                       <option value="1">1 produto</option>
-                      <option value="2" selected>2 produtos</option>
+                      <option value="2" selected>
+                        2 produtos
+                      </option>
                     </select>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="show-prices">Mostrar Preços</Label>
-                      <p className="text-sm text-gray-600">Exibir preços nos produtos</p>
+                      <p className="text-sm text-gray-600">
+                        Exibir preços nos produtos
+                      </p>
                     </div>
                     <Switch id="show-prices" defaultChecked />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="show-promo">Destacar Promoções</Label>
-                      <p className="text-sm text-gray-600">Mostrar selo de promoção</p>
+                      <p className="text-sm text-gray-600">
+                        Mostrar selo de promoção
+                      </p>
                     </div>
                     <Switch id="show-promo" defaultChecked />
                   </div>
@@ -298,33 +336,36 @@ const CatalogConfig = () => {
                 <div>
                   <Label htmlFor="subdomain">Subdomínio</Label>
                   <div className="flex items-center space-x-2 mt-2">
-                    <Input 
+                    <Input
                       id="subdomain"
                       placeholder="minhaloja"
                       className="flex-1"
                     />
-                    <span className="text-gray-600">.catalogo.com.br</span>
+                    <span className="text-gray-600">.wibbo.com.br</span>
                   </div>
                   <p className="text-sm text-gray-600 mt-1">
-                    Seu catálogo ficará disponível em: minhaloja.catalogo.com.br
+                    Seu catálogo ficará disponível em: minhaloja.wibbo.com.br
                   </p>
                 </div>
-                
+
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-900 mb-2">Status do Domínio</h4>
+                  <h4 className="font-medium text-blue-900 mb-2">
+                    Status do Domínio
+                  </h4>
                   <div className="flex items-center space-x-2">
                     <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-blue-800">Ativo e funcionando</span>
+                    <span className="text-sm text-blue-800">
+                      Ativo e funcionando
+                    </span>
                   </div>
                 </div>
-                
+
                 <div>
-                  <h4 className="font-medium mb-2">Domínio Personalizado (Premium)</h4>
+                  <h4 className="font-medium mb-2">
+                    Domínio Personalizado (Premium)
+                  </h4>
                   <div className="flex items-center space-x-2">
-                    <Input 
-                      placeholder="www.minhaloja.com.br"
-                      disabled
-                    />
+                    <Input placeholder="www.minhaloja.com.br" disabled />
                     <Button variant="outline" disabled>
                       Configurar
                     </Button>
@@ -350,26 +391,28 @@ const CatalogConfig = () => {
                 <CardContent className="space-y-4">
                   <div>
                     <Label htmlFor="store-name">Nome da Loja</Label>
-                    <Input 
+                    <Input
                       id="store-name"
                       defaultValue="Minha Loja"
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="store-description">Descrição da Loja</Label>
-                    <Textarea 
+                    <Textarea
                       id="store-description"
                       placeholder="Descreva sua loja em poucas palavras..."
                       className="mt-2"
                       rows={3}
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="welcome-message">Mensagem de Boas-vindas</Label>
-                    <Textarea 
+                    <Label htmlFor="welcome-message">
+                      Mensagem de Boas-vindas
+                    </Label>
+                    <Textarea
                       id="welcome-message"
                       placeholder="Bem-vindos à nossa loja!"
                       className="mt-2"
@@ -389,37 +432,41 @@ const CatalogConfig = () => {
                 <CardContent className="space-y-4">
                   <div>
                     <Label htmlFor="phone">Telefone/WhatsApp</Label>
-                    <Input 
+                    <Input
                       id="phone"
                       placeholder="(11) 99999-9999"
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="email">E-mail</Label>
-                    <Input 
+                    <Input
                       id="email"
                       type="email"
                       placeholder="contato@minhaloja.com"
                       className="mt-2"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="address">Endereço</Label>
-                    <Textarea 
+                    <Textarea
                       id="address"
                       placeholder="Rua das Flores, 123 - Centro - São Paulo/SP"
                       className="mt-2"
                       rows={2}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="show-contact">Mostrar Informações de Contato</Label>
-                      <p className="text-sm text-gray-600">Exibir contato no rodapé</p>
+                      <Label htmlFor="show-contact">
+                        Mostrar Informações de Contato
+                      </Label>
+                      <p className="text-sm text-gray-600">
+                        Exibir contato no rodapé
+                      </p>
                     </div>
                     <Switch id="show-contact" defaultChecked />
                   </div>
@@ -441,31 +488,41 @@ const CatalogConfig = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="mobile-optimized">Otimização Mobile</Label>
-                    <p className="text-sm text-gray-600">Layout responsivo automático</p>
+                    <p className="text-sm text-gray-600">
+                      Layout responsivo automático
+                    </p>
                   </div>
                   <Switch id="mobile-optimized" defaultChecked />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="touch-friendly">Botões Touch-Friendly</Label>
-                    <p className="text-sm text-gray-600">Botões maiores para mobile</p>
+                    <Label htmlFor="touch-friendly">
+                      Botões Touch-Friendly
+                    </Label>
+                    <p className="text-sm text-gray-600">
+                      Botões maiores para mobile
+                    </p>
                   </div>
                   <Switch id="touch-friendly" defaultChecked />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="mobile-menu">Menu Mobile Compacto</Label>
-                    <p className="text-sm text-gray-600">Menu hamburger em telas pequenas</p>
+                    <p className="text-sm text-gray-600">
+                      Menu hamburger em telas pequenas
+                    </p>
                   </div>
                   <Switch id="mobile-menu" defaultChecked />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="swipe-gallery">Galeria com Swipe</Label>
-                    <p className="text-sm text-gray-600">Deslizar entre imagens dos produtos</p>
+                    <p className="text-sm text-gray-600">
+                      Deslizar entre imagens dos produtos
+                    </p>
                   </div>
                   <Switch id="swipe-gallery" defaultChecked />
                 </div>

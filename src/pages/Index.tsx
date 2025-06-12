@@ -147,7 +147,7 @@ const Index = () => {
       name: "Eduardo Monteiro",
       company: "Fundador, TechCorp",
       content:
-        "Com a CatalogoPro, nossa operação digital se transformou completamente. Crescemos 4x em vendas nos primeiros dois meses.",
+        "Com a Wibbo, nossa operação digital se transformou completamente. Crescemos 4x em vendas nos primeiros dois meses.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
@@ -174,7 +174,7 @@ const Index = () => {
       name: "Ana Costa",
       company: "Fundadora, FoodDelivery",
       content:
-        "A CatalogoPro não é apenas uma ferramenta, é uma vantagem competitiva. Resultados que falam por si.",
+        "A Wibbo não é apenas uma ferramenta, é uma vantagem competitiva. Resultados que falam por si.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face",
@@ -304,10 +304,10 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-sm">C</span>
+                <span className="text-black font-bold text-sm">W</span>
               </div>
               <span className="text-xl font-semibold text-black tracking-tight">
-                CatalogoPro
+                Wibbo
               </span>
             </div>
 
@@ -858,7 +858,7 @@ const Index = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-black">Email</h4>
-                      <p className="text-gray-600">contato@catalogopro.com</p>
+                      <p className="text-gray-600">contato@wibbo.com</p>
                       <p className="text-sm text-gray-500">
                         Resposta em até 24h
                       </p>
@@ -907,7 +907,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base px-8 py-6 border-white text-white hover:bg-white hover:text-black"
+                className="text-base px-8 py-6 text-black"
               >
                 Explorar Demonstração Privada
               </Button>
@@ -923,10 +923,10 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-black font-bold text-sm">C</span>
+                  <span className="text-black font-bold text-sm">W</span>
                 </div>
                 <span className="text-xl font-semibold text-black tracking-tight">
-                  CatalogoPro
+                  Wibbo
                 </span>
               </div>
               <p className="text-gray-600 leading-relaxed font-light">
@@ -1023,7 +1023,7 @@ const Index = () => {
           </div>
           <div className="border-t border-gray-100 mt-16 pt-8 text-center text-gray-500">
             <p className="font-light">
-              &copy; 2024 CatalogoPro. Todos os direitos reservados.
+              &copy; 2024 Wibbo. Todos os direitos reservados.
             </p>
           </div>
         </div>

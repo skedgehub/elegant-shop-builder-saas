@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -53,8 +52,15 @@ import {
 
 const CatalogPage = () => {
   const { subdomain } = useParams<{ subdomain: string }>();
-  const { company, categories, products, isLoading, searchProducts, error, catalogData } =
-    useCatalogData(subdomain);
+  const {
+    company,
+    categories,
+    products,
+    isLoading,
+    searchProducts,
+    error,
+    catalogData,
+  } = useCatalogData(subdomain);
   const { createOrder } = useOrders();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -215,12 +221,11 @@ const CatalogPage = () => {
             Catálogo não encontrado
           </h1>
           <p className="text-gray-600 mb-6">
-            Não foi possível encontrar este catálogo. Verifique o endereço ou entre em contato conosco.
+            Não foi possível encontrar este catálogo. Verifique o endereço ou
+            entre em contato conosco.
           </p>
           <Button asChild>
-            <Link to="/">
-              Voltar ao início
-            </Link>
+            <Link to="/">Voltar ao início</Link>
           </Button>
         </div>
       </div>
@@ -906,7 +911,7 @@ const CatalogPage = () => {
           <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
             <p>
               &copy; 2024 {company.name}. Todos os direitos reservados. Powered
-              by CatalogoPro.
+              by Wibbo.
             </p>
           </div>
         </div>

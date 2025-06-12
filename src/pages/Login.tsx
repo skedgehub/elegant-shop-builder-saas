@@ -1,9 +1,14 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,9 +20,9 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email, password });
+    await login({ body: { email, password } });
   };
 
   return (
@@ -34,12 +39,12 @@ const Login = () => {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar ao início
             </Button>
-            
+
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-sm">C</span>
+                <span className="text-black font-bold text-sm">W</span>
               </div>
-              <span className="text-lg font-bold text-black">CatalogoPro</span>
+              <span className="text-lg font-bold text-black">Wibbo</span>
             </div>
           </div>
         </div>
@@ -49,7 +54,9 @@ const Login = () => {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black mb-2">Bem-vindo de volta!</h1>
+            <h1 className="text-3xl font-bold text-black mb-2">
+              Bem-vindo de volta!
+            </h1>
             <p className="text-gray-600">Entre na sua conta para continuar</p>
           </div>
 
@@ -96,24 +103,34 @@ const Login = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <label className="flex items-center space-x-2 text-sm">
-                    <input type="checkbox" className="rounded border-gray-300" />
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300"
+                    />
                     <span className="text-gray-600">Lembrar de mim</span>
                   </label>
-                  <Link to="/forgot-password" className="text-sm text-black hover:text-gray-700 font-medium">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-black hover:text-gray-700 font-medium"
+                  >
                     Esqueceu a senha?
                   </Link>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-primary hover:bg-primary/90 text-black" 
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90 text-black"
                   disabled={isLoginLoading}
                 >
                   {isLoginLoading ? "Entrando..." : "Entrar"}
@@ -123,7 +140,10 @@ const Login = () => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   Não tem uma conta?{" "}
-                  <Link to="/register" className="text-black hover:text-gray-700 font-medium">
+                  <Link
+                    to="/register"
+                    className="text-black hover:text-gray-700 font-medium"
+                  >
                     Cadastre-se aqui
                   </Link>
                 </p>

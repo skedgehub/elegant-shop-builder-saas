@@ -1,9 +1,14 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,9 +25,9 @@ const ResetPassword = () => {
 
   useEffect(() => {
     // Verifica se há um token de reset na URL
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    
+    const accessToken = searchParams.get("access_token");
+    const refreshToken = searchParams.get("refresh_token");
+
     if (accessToken && refreshToken) {
       // Define a sessão com os tokens da URL
       supabase.auth.setSession({
@@ -42,7 +47,7 @@ const ResetPassword = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       toast({
         title: "Erro",
@@ -65,7 +70,7 @@ const ResetPassword = () => {
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password: password,
       });
 
       if (error) {
@@ -76,7 +81,7 @@ const ResetPassword = () => {
         title: "Senha redefinida!",
         description: "Sua senha foi alterada com sucesso",
       });
-      
+
       navigate("/login");
     } catch (error: any) {
       console.error("Error updating password:", error);
@@ -98,9 +103,9 @@ const ResetPassword = () => {
           <div className="flex items-center justify-center">
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-sm">C</span>
+                <span className="text-black font-bold text-sm">W</span>
               </div>
-              <span className="text-lg font-bold text-black">CatalogoPro</span>
+              <span className="text-lg font-bold text-black">Wibbo</span>
             </div>
           </div>
         </div>
@@ -110,7 +115,9 @@ const ResetPassword = () => {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black mb-2">Redefinir Senha</h1>
+            <h1 className="text-3xl font-bold text-black mb-2">
+              Redefinir Senha
+            </h1>
             <p className="text-gray-600">Digite sua nova senha</p>
           </div>
 
@@ -142,7 +149,11 @@ const ResetPassword = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -163,10 +174,16 @@ const ResetPassword = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -175,9 +192,9 @@ const ResetPassword = () => {
                   <p>A senha deve ter pelo menos 6 caracteres.</p>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-primary hover:bg-primary/90 text-black" 
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90 text-black"
                   disabled={isLoading}
                 >
                   {isLoading ? "Redefinindo..." : "Redefinir Senha"}

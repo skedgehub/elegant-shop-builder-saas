@@ -1,9 +1,14 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Mail, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +21,7 @@ const ForgotPassword = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email) {
       toast({
         title: "Erro",
@@ -61,22 +66,18 @@ const ForgotPassword = () => {
         <header className="p-6 border-b">
           <div className="container mx-auto">
             <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                asChild
-                className="hover:bg-gray-100"
-              >
+              <Button variant="ghost" asChild className="hover:bg-gray-100">
                 <Link to="/login">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Voltar ao login
                 </Link>
               </Button>
-              
+
               <div className="flex items-center space-x-2">
                 <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-black font-bold text-sm">C</span>
+                  <span className="text-black font-bold text-sm">W</span>
                 </div>
-                <span className="text-lg font-bold text-black">CatalogoPro</span>
+                <span className="text-lg font-bold text-black">Wibbo</span>
               </div>
             </div>
           </div>
@@ -92,26 +93,32 @@ const ForgotPassword = () => {
                 </div>
                 <CardTitle className="text-black">Email enviado!</CardTitle>
                 <CardDescription>
-                  Enviamos um link para redefinir sua senha para <strong>{email}</strong>
+                  Enviamos um link para redefinir sua senha para{" "}
+                  <strong>{email}</strong>
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center text-sm text-gray-600">
-                  <p>Verifique sua caixa de entrada e clique no link para redefinir sua senha.</p>
-                  <p className="mt-2">Não recebeu o email? Verifique sua pasta de spam.</p>
+                  <p>
+                    Verifique sua caixa de entrada e clique no link para
+                    redefinir sua senha.
+                  </p>
+                  <p className="mt-2">
+                    Não recebeu o email? Verifique sua pasta de spam.
+                  </p>
                 </div>
-                
-                <Button 
+
+                <Button
                   onClick={() => setEmailSent(false)}
-                  variant="outline" 
+                  variant="outline"
                   className="w-full border-gray-300 hover:bg-gray-50"
                 >
                   Tentar novamente
                 </Button>
-                
+
                 <div className="text-center">
-                  <Link 
-                    to="/login" 
+                  <Link
+                    to="/login"
                     className="text-sm text-black hover:text-gray-700 font-medium"
                   >
                     Voltar ao login
@@ -131,22 +138,18 @@ const ForgotPassword = () => {
       <header className="p-6 border-b">
         <div className="container mx-auto">
           <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              asChild
-              className="hover:bg-gray-100"
-            >
+            <Button variant="ghost" asChild className="hover:bg-gray-100">
               <Link to="/login">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Voltar ao login
               </Link>
             </Button>
-            
+
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-sm">C</span>
+                <span className="text-black font-bold text-sm">W</span>
               </div>
-              <span className="text-lg font-bold text-black">CatalogoPro</span>
+              <span className="text-lg font-bold text-black">Wibbo</span>
             </div>
           </div>
         </div>
@@ -156,7 +159,9 @@ const ForgotPassword = () => {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black mb-2">Esqueceu sua senha?</h1>
+            <h1 className="text-3xl font-bold text-black mb-2">
+              Esqueceu sua senha?
+            </h1>
             <p className="text-gray-600">
               Digite seu email e enviaremos um link para redefinir sua senha
             </p>
@@ -187,9 +192,9 @@ const ForgotPassword = () => {
                   </div>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-primary hover:bg-primary/90 text-black" 
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90 text-black"
                   disabled={isLoading}
                 >
                   {isLoading ? "Enviando..." : "Enviar link de redefinição"}
@@ -199,7 +204,10 @@ const ForgotPassword = () => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   Lembrou sua senha?{" "}
-                  <Link to="/login" className="text-black hover:text-gray-700 font-medium">
+                  <Link
+                    to="/login"
+                    className="text-black hover:text-gray-700 font-medium"
+                  >
                     Faça login
                   </Link>
                 </p>
