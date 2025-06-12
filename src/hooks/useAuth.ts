@@ -13,9 +13,8 @@ export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading } = $api.useQuery("get", "/api/v1/user/me", {
     queryKey: ["user"],
-    queryFn: authService.getCurrentUser,
     retry: false,
   });
 

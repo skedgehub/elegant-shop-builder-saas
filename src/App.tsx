@@ -31,6 +31,8 @@ import ClientAuth from "@/pages/ClientAuth";
 import ClientLayout from "@/components/ClientLayout";
 import ClientOrders from "@/pages/ClientOrders";
 import ClientProfile from "@/pages/ClientProfile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +46,8 @@ function App() {
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               <Route path="/plans" element={<PlanSelection />} />
 

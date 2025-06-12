@@ -4,6 +4,7 @@ import type { paths } from "../services/api";
 
 const fetchClient = createFetchClient<paths>({
   baseUrl: "http://localhost:5000",
+  credentials: "include",
 });
 
 export const $api = createClient(fetchClient);
