@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ImageUpload from "@/components/ImageUpload";
 import { Plus, Trash2 } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
@@ -21,14 +26,27 @@ interface ProductFormProps {
   mode?: "create" | "edit";
 }
 
-const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormProps) => {
+const ProductForm = ({
+  initialData,
+  onSuccess,
+  mode = "create",
+}: ProductFormProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { createProduct, updateProduct, isCreating, isUpdating } = useProducts(user?.company_id);
+  const { createProduct, updateProduct, isCreating, isUpdating } = useProducts(
+    user?.company_id
+  );
   const { categories } = useCategories(user?.company_id);
   const [imageUrl, setImageUrl] = useState(initialData?.image || "");
 
-  const { register, control, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
@@ -39,16 +57,18 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
       stock: initialData?.stock || "",
       badge: initialData?.badge || "",
       custom_fields: initialData?.custom_fields || [{ key: "", value: "" }],
-    }
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "custom_fields"
+    name: "custom_fields",
   });
 
   const selectedCategoryId = watch("category_id");
-  const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
+  const selectedCategory = categories.find(
+    (cat) => cat.id === selectedCategoryId
+  );
   const subcategories = selectedCategory?.subcategories || [];
 
   const onSubmit = (data: any) => {
@@ -56,14 +76,18 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
       name: data.name,
       description: data.description,
       price: parseFloat(data.price),
-      promotional_price: data.promotional_price ? parseFloat(data.promotional_price) : null,
+      promotional_price: data.promotional_price
+        ? parseFloat(data.promotional_price)
+        : null,
       category: data.category_id,
       subcategory: data.subcategory,
       image: imageUrl,
       badge: data.badge,
       stock: parseInt(data.stock),
       customFields: data.custom_fields
-        .filter((field: any) => field.key.trim() !== "" && field.value.trim() !== "")
+        .filter(
+          (field: any) => field.key.trim() !== "" && field.value.trim() !== ""
+        )
         .reduce((acc: any, field: any) => {
           acc[field.key] = field.value;
           return acc;
@@ -73,7 +97,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
     if (mode === "edit" && initialData) {
       updateProduct({
         id: initialData.id,
-        data: productData
+        data: productData,
       });
     } else {
       createProduct(productData);
@@ -87,7 +111,7 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
   };
 
   return (
-    <Card className="max-w-4xl mx-auto">
+    <Card className="mx-auto">
       <CardHeader>
         <CardTitle>
           {mode === "edit" ? "Editar Produto" : "Novo Produto"}
@@ -106,7 +130,9 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                   placeholder="Digite o nome do produto"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600">{String(errors.name.message)}</p>
+                  <p className="text-sm text-red-600">
+                    {String(errors.name.message)}
+                  </p>
                 )}
               </div>
 
@@ -131,7 +157,9 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                     placeholder="0,00"
                   />
                   {errors.price && (
-                    <p className="text-sm text-red-600">{String(errors.price.message)}</p>
+                    <p className="text-sm text-red-600">
+                      {String(errors.price.message)}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -149,7 +177,10 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="category_id">Categoria *</Label>
-                  <Select onValueChange={(value) => setValue("category_id", value)} defaultValue={initialData?.category_id}>
+                  <Select
+                    onValueChange={(value) => setValue("category_id", value)}
+                    defaultValue={initialData?.category_id}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma categoria" />
                     </SelectTrigger>
@@ -162,19 +193,24 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                     </SelectContent>
                   </Select>
                   {errors.category_id && (
-                    <p className="text-sm text-red-600">{String(errors.category_id.message)}</p>
+                    <p className="text-sm text-red-600">
+                      {String(errors.category_id.message)}
+                    </p>
                   )}
                 </div>
                 <div>
                   <Label htmlFor="subcategory">Subcategoria</Label>
-                  <Select onValueChange={(value) => setValue("subcategory", value)} defaultValue={initialData?.subcategory}>
+                  <Select
+                    onValueChange={(value) => setValue("subcategory", value)}
+                    defaultValue={initialData?.subcategory}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma subcategoria" />
                     </SelectTrigger>
                     <SelectContent>
-                      {subcategories.map((sub: any, index: number) => (
-                        <SelectItem key={index} value={sub.name}>
-                          {sub.name}
+                      {subcategories.map((sub: string, index: number) => (
+                        <SelectItem key={index} value={sub}>
+                          {sub}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -188,11 +224,15 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
                   <Input
                     id="stock"
                     type="number"
-                    {...register("stock", { required: "Estoque é obrigatório" })}
+                    {...register("stock", {
+                      required: "Estoque é obrigatório",
+                    })}
                     placeholder="0"
                   />
                   {errors.stock && (
-                    <p className="text-sm text-red-600">{String(errors.stock.message)}</p>
+                    <p className="text-sm text-red-600">
+                      {String(errors.stock.message)}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -225,7 +265,10 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
             <div className="flex items-center justify-between mb-4">
               <div>
                 <Label>Informações Adicionais (Metadados)</Label>
-                <p className="text-sm text-gray-600">Adicione informações extra sobre o produto como tamanho, cor, material, etc.</p>
+                <p className="text-sm text-gray-600">
+                  Adicione informações extra sobre o produto como tamanho, cor,
+                  material, etc.
+                </p>
               </div>
               <Button
                 type="button"
@@ -277,15 +320,18 @@ const ProductForm = ({ initialData, onSuccess, mode = "create" }: ProductFormPro
             <Button
               type="button"
               variant="outline"
-              onClick={() => onSuccess ? onSuccess() : navigate("/admin/products")}
+              onClick={() =>
+                onSuccess ? onSuccess() : navigate("/admin/products")
+              }
             >
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              disabled={isCreating || isUpdating}
-            >
-              {isCreating || isUpdating ? "Salvando..." : (mode === "edit" ? "Atualizar" : "Criar Produto")}
+            <Button type="submit" disabled={isCreating || isUpdating}>
+              {isCreating || isUpdating
+                ? "Salvando..."
+                : mode === "edit"
+                ? "Atualizar"
+                : "Criar Produto"}
             </Button>
           </div>
         </form>

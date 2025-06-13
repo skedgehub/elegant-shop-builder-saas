@@ -1,29 +1,24 @@
-
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { categoryService, CreateCategoryData } from '@/services/categoryService';
-import { toast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  categoryService,
+  CreateCategoryData,
+} from "@/services/categoryService";
+import { toast } from "@/hooks/use-toast";
+import { $api } from "@/lib/api";
 
 export const useCategories = (companyId?: string) => {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
-  const categoriesQuery = useQuery({
-    queryKey: ['categories', companyId],
-    queryFn: () => categoryService.getCategories(companyId),
-  });
+  const categoriesQuery = $api.useQuery("get", "/api/v1/categories");
 
-  const createCategoryMutation = useMutation({
-    mutationFn: (data: CreateCategoryData) => {
-      if (!user?.company_id) throw new Error('Company ID is required');
-      return categoryService.createCategory(data, user.company_id);
-    },
+  const createCategoryMutation = $api.useMutation("post", "/api/v1/category", {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast({
+        variant: "default",
         title: "Categoria criada!",
-        description: "A categoria foi adicionada com sucesso.",
+        description: "A categoria foi criada com sucesso.",
       });
+      categoriesQuery.refetch();
     },
     onError: (error: Error) => {
       toast({
@@ -35,10 +30,15 @@ export const useCategories = (companyId?: string) => {
   });
 
   const updateCategoryMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<CreateCategoryData> }) =>
-      categoryService.updateCategory(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<CreateCategoryData>;
+    }) => categoryService.updateCategory(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast({
         title: "Categoria atualizada!",
         description: "As alterações foram salvas.",
@@ -56,7 +56,7 @@ export const useCategories = (companyId?: string) => {
   const deleteCategoryMutation = useMutation({
     mutationFn: categoryService.deleteCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast({
         title: "Categoria excluída!",
         description: "A categoria foi removida com sucesso.",
@@ -75,7 +75,7 @@ export const useCategories = (companyId?: string) => {
     categories: categoriesQuery.data || [],
     isLoading: categoriesQuery.isLoading,
     error: categoriesQuery.error,
-    createCategory: createCategoryMutation.mutate,
+    createCategory: createCategoryMutation.mutateAsync,
     updateCategory: updateCategoryMutation.mutate,
     deleteCategory: deleteCategoryMutation.mutate,
     isCreating: createCategoryMutation.isPending,
@@ -86,7 +86,7 @@ export const useCategories = (companyId?: string) => {
 
 export const useCategory = (id: string) => {
   return useQuery({
-    queryKey: ['category', id],
+    queryKey: ["category", id],
     queryFn: () => categoryService.getCategory(id),
     enabled: !!id,
   });

@@ -241,7 +241,7 @@ const Categories = () => {
                                     >
                                       <FolderOpen className="h-4 w-4 text-gray-400" />
                                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                                        {sub.name}
+                                        {sub}
                                       </span>
                                     </div>
                                   )

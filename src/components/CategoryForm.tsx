@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -19,39 +18,52 @@ interface CategoryFormProps {
   mode?: "create" | "edit";
 }
 
-const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormProps) => {
+const CategoryForm = ({
+  initialData,
+  onSuccess,
+  mode = "create",
+}: CategoryFormProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { createCategory, updateCategory, isCreating, isUpdating } = useCategories(user?.company_id);
+  const { createCategory, updateCategory, isCreating, isUpdating } =
+    useCategories(user?.company_id);
+
   const [imageUrl, setImageUrl] = useState(initialData?.image || "");
 
-  const { register, control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
-      subcategories: initialData?.subcategories || [{ name: "" }],
-    }
+      subcategories: initialData?.subcategories || [""], // agora é um array de string
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "subcategories"
+    name: "subcategories",
   });
 
   const onSubmit = (data: any) => {
     const categoryData = {
       ...data,
       image: imageUrl,
-      subcategories: data.subcategories.filter((sub: any) => sub.name.trim() !== ""),
+      subcategories: data.subcategories.filter(
+        (sub: string) => sub.trim() !== ""
+      ),
     };
 
     if (mode === "edit" && initialData) {
       updateCategory({
         id: initialData.id,
-        data: categoryData
+        data: categoryData,
       });
     } else {
-      createCategory(categoryData);
+      createCategory({ body: categoryData });
     }
 
     if (onSuccess) {
@@ -62,19 +74,24 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader className="px-4 sm:px-6">
+    <Card className="w-full">
+      <CardHeader>
         <CardTitle className="text-lg sm:text-xl">
           {mode === "edit" ? "Editar Categoria" : "Nova Categoria"}
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-4 sm:px-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+      <CardContent>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 sm:space-y-6"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Informações Básicas */}
             <div className="space-y-4">
               <div>
-                <Label htmlFor="name" className="text-sm font-medium">Nome da Categoria *</Label>
+                <Label htmlFor="name" className="text-sm font-medium">
+                  Nome da Categoria *
+                </Label>
                 <Input
                   id="name"
                   {...register("name", { required: "Nome é obrigatório" })}
@@ -82,12 +99,16 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
                   className="mt-1"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600 mt-1">{errors.name.message as string}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.name.message as string}
+                  </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="description" className="text-sm font-medium">Descrição</Label>
+                <Label htmlFor="description" className="text-sm font-medium">
+                  Descrição
+                </Label>
                 <Textarea
                   id="description"
                   {...register("description")}
@@ -120,7 +141,7 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => append({ name: "" })}
+                onClick={() => append("")}
                 className="w-full sm:w-auto"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -132,7 +153,9 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
               {fields.map((field, index) => (
                 <div key={field.id} className="flex flex-col sm:flex-row gap-2">
                   <Input
-                    {...register(`subcategories.${index}.name`)}
+                    {...register(`subcategories.${index}`, {
+                      required: "Subcategoria não pode ser vazia",
+                    })}
                     placeholder="Nome da subcategoria"
                     className="flex-1"
                   />
@@ -156,7 +179,9 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
             <Button
               type="button"
               variant="outline"
-              onClick={() => onSuccess ? onSuccess() : navigate("/admin/categories")}
+              onClick={() =>
+                onSuccess ? onSuccess() : navigate("/admin/categories")
+              }
               className="w-full sm:w-auto"
             >
               Cancelar
@@ -166,7 +191,11 @@ const CategoryForm = ({ initialData, onSuccess, mode = "create" }: CategoryFormP
               disabled={isCreating || isUpdating}
               className="w-full sm:w-auto"
             >
-              {isCreating || isUpdating ? "Salvando..." : (mode === "edit" ? "Atualizar" : "Criar Categoria")}
+              {isCreating || isUpdating
+                ? "Salvando..."
+                : mode === "edit"
+                ? "Atualizar"
+                : "Criar Categoria"}
             </Button>
           </div>
         </form>
