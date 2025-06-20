@@ -25,25 +25,37 @@ import {
   Crown,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+export const SignUpInputDto = z.object({
+  displayName: z.string({ required_error: "Nome é obrigatório" }).min(3),
+  email: z.string().email(),
+  phone: z.string(),
+  password: z.string(),
+  confirmPassword: z.string(),
+  provider: z.string().default("email"),
+  company: z.object({
+    fantasyName: z.string(),
+    legalName: z.string(),
+    cnpj: z.string(),
+    email: z.string(),
+    phone: z.string(),
+    subdomain: z.string(),
+    customDomain: z.string().optional().nullable(),
+  }),
+  planId: z.string(),
+});
+
+export type ISignUpInputDto = z.infer<typeof SignUpInputDto>;
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, isRegisterLoading } = useAuth();
+  const { register: RegisterCompany, isRegisterLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState("pro");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    subdomain: "",
-    companyName: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-    cardName: "",
-  });
 
   const plans = [
     {
@@ -95,24 +107,18 @@ const Register = () => {
     },
   ];
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const { register, setValue, handleSubmit } = useForm<ISignUpInputDto>({
+    resolver: zodResolver(SignUpInputDto),
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmite = (data: ISignUpInputDto) => {
     if (step === 1) {
       setStep(2);
     } else if (step === 2) {
       setStep(3);
     } else {
-      register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        subdomain: formData.subdomain,
-        companyName: formData.companyName,
-        selectedPlan: selectedPlan,
+      RegisterCompany({
+        body: data,
       });
     }
   };
@@ -204,32 +210,50 @@ const Register = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmite)} className="space-y-6">
                 {step === 1 && (
                   <div className="space-y-4">
+                    {/* Nome da Empresa (Nome Fantasia) */}
                     <div className="space-y-2">
                       <Label htmlFor="companyName">Nome da Empresa</Label>
                       <Input
                         id="companyName"
-                        placeholder="Minha Empresa LTDA"
-                        value={formData.companyName}
-                        onChange={(e) =>
-                          handleInputChange("companyName", e.target.value)
-                        }
+                        placeholder="Minha Empresa"
+                        {...register("company.fantasyName")}
                         required
                       />
                     </div>
 
+                    {/* Razão Social */}
+                    <div className="space-y-2">
+                      <Label htmlFor="legalName">Razão Social</Label>
+                      <Input
+                        id="legalName"
+                        placeholder="Minha Empresa LTDA"
+                        {...register("company.legalName")}
+                        required
+                      />
+                    </div>
+
+                    {/* CNPJ */}
+                    <div className="space-y-2">
+                      <Label htmlFor="cnpj">CNPJ</Label>
+                      <Input
+                        id="cnpj"
+                        placeholder="00.000.000/0001-00"
+                        {...register("company.cnpj")}
+                        required
+                      />
+                    </div>
+
+                    {/* Subdomínio */}
                     <div className="space-y-2">
                       <Label htmlFor="subdomain">Subdomínio</Label>
                       <div className="flex">
                         <Input
                           id="subdomain"
                           placeholder="minhaempresa"
-                          value={formData.subdomain}
-                          onChange={(e) =>
-                            handleInputChange("subdomain", e.target.value)
-                          }
+                          {...register("company.subdomain")}
                           className="rounded-r-none"
                           required
                         />
@@ -239,41 +263,72 @@ const Register = () => {
                       </div>
                     </div>
 
+                    {/* Email da Empresa */}
                     <div className="space-y-2">
-                      <Label htmlFor="name">Nome do Responsável</Label>
+                      <Label htmlFor="companyEmail">Email da Empresa</Label>
+                      <Input
+                        id="companyEmail"
+                        type="email"
+                        placeholder="contato@empresa.com"
+                        {...register("company.email")}
+                        required
+                      />
+                    </div>
+
+                    {/* Telefone da Empresa */}
+                    <div className="space-y-2">
+                      <Label htmlFor="companyPhone">Telefone da Empresa</Label>
+                      <Input
+                        id="companyPhone"
+                        placeholder="(11) 99999-9999"
+                        {...register("company.phone")}
+                        required
+                      />
+                    </div>
+
+                    {/* Nome do Responsável */}
+                    <div className="space-y-2">
+                      <Label htmlFor="displayName">Nome do Responsável</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
-                          id="name"
+                          id="displayName"
                           placeholder="Seu nome completo"
-                          value={formData.name}
-                          onChange={(e) =>
-                            handleInputChange("name", e.target.value)
-                          }
+                          {...register("displayName")}
                           className="pl-10"
                           required
                         />
                       </div>
                     </div>
 
+                    {/* Email do Responsável */}
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email">Email do Responsável</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
                           id="email"
                           type="email"
                           placeholder="seu@email.com"
-                          value={formData.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
+                          {...register("email")}
                           className="pl-10"
                           required
                         />
                       </div>
                     </div>
 
+                    {/* Telefone do Responsável */}
+                    <div className="space-y-2">
+                      <Label htmlFor="userPhone">Telefone do Responsável</Label>
+                      <Input
+                        id="userPhone"
+                        placeholder="(11) 98888-8888"
+                        {...register("phone")}
+                        required
+                      />
+                    </div>
+
+                    {/* Senha e Confirmar Senha */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="password">Senha</Label>
@@ -283,10 +338,7 @@ const Register = () => {
                             id="password"
                             type={showPassword ? "text" : "password"}
                             placeholder="Sua senha"
-                            value={formData.password}
-                            onChange={(e) =>
-                              handleInputChange("password", e.target.value)
-                            }
+                            {...register("password")}
                             className="pl-10 pr-10"
                             required
                           />
@@ -310,10 +362,7 @@ const Register = () => {
                           id="confirmPassword"
                           type="password"
                           placeholder="Confirme sua senha"
-                          value={formData.confirmPassword}
-                          onChange={(e) =>
-                            handleInputChange("confirmPassword", e.target.value)
-                          }
+                          {...register("confirmPassword")}
                           required
                         />
                       </div>
@@ -337,7 +386,10 @@ const Register = () => {
                                   : "border-gray-200 hover:border-gray-300"
                               }
                             `}
-                            onClick={() => setSelectedPlan(plan.id)}
+                            onClick={() => {
+                              setSelectedPlan(plan.id);
+                              setValue("planId", plan.id);
+                            }}
                           >
                             {plan.popular && (
                               <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-black">
@@ -389,10 +441,6 @@ const Register = () => {
                       <Input
                         id="cardName"
                         placeholder="Nome como aparece no cartão"
-                        value={formData.cardName}
-                        onChange={(e) =>
-                          handleInputChange("cardName", e.target.value)
-                        }
                         required
                       />
                     </div>
@@ -404,10 +452,6 @@ const Register = () => {
                         <Input
                           id="cardNumber"
                           placeholder="1234 5678 9012 3456"
-                          value={formData.cardNumber}
-                          onChange={(e) =>
-                            handleInputChange("cardNumber", e.target.value)
-                          }
                           className="pl-10"
                           required
                         />
@@ -417,28 +461,12 @@ const Register = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="expiryDate">Validade</Label>
-                        <Input
-                          id="expiryDate"
-                          placeholder="MM/AA"
-                          value={formData.expiryDate}
-                          onChange={(e) =>
-                            handleInputChange("expiryDate", e.target.value)
-                          }
-                          required
-                        />
+                        <Input id="expiryDate" placeholder="MM/AA" required />
                       </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="cvv">CVV</Label>
-                        <Input
-                          id="cvv"
-                          placeholder="123"
-                          value={formData.cvv}
-                          onChange={(e) =>
-                            handleInputChange("cvv", e.target.value)
-                          }
-                          required
-                        />
+                        <Input id="cvv" placeholder="123" required />
                       </div>
                     </div>
 

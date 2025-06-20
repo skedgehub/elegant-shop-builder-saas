@@ -1,10 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  authService,
-  LoginData,
-  RegisterData,
-  User,
-} from "@/services/authService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authService } from "@/services/authService";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { $api } from "@/lib/api";
@@ -33,7 +28,7 @@ export const useAuth = () => {
       },
       onError(error, variables, context) {
         toast({
-          title: "Erro no cadastro",
+          title: "Erro no login",
           description: JSON.stringify(error),
           variant: "destructive",
         });
@@ -43,11 +38,11 @@ export const useAuth = () => {
 
   const registerMutation = $api.useMutation(
     "post",
-    "/api/v1/auth/company/sign-in",
+    "/api/v1/auth/company/sign-up",
     {
       onSuccess(data, variables, context) {
         toast({
-          title: "Login realizado!",
+          title: "Cadastro realizado!",
           description: `Bem-vindo!`,
         });
 

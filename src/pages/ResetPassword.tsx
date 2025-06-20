@@ -83,7 +83,7 @@ const ResetPassword = () => {
       });
 
       navigate("/login");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error updating password:", error);
       toast({
         title: "Erro ao redefinir senha",
