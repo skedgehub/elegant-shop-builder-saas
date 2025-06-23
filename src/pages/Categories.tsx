@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -12,59 +12,30 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Plus,
   Search,
   Edit,
   Trash2,
   FolderOpen,
-  ImageIcon,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import CategoryForm from "@/components/CategoryForm";
 import { useCategories } from "@/hooks/useCategories";
-import { useAuth } from "@/hooks/useAuth";
+import { paths } from "@/services/api";
 
 const Categories = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { categories, isLoading, deleteCategory } = useCategories(
-    user?.company_id
-  );
+  const { categories, isLoading, deleteCategory } = useCategories();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [showEditDialog, setShowEditDialog] = useState(false);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
 
-  const filteredCategories = categories.filter(
+  const filteredCategories = categories?.filter(
     (category) =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (category.description &&
         category.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  const handleEdit = (category: any) => {
-    setSelectedCategory(category);
-    setShowEditDialog(true);
-  };
-
-  const handleCloseEdit = () => {
-    setShowEditDialog(false);
-    setSelectedCategory(null);
-  };
 
   const toggleExpanded = (categoryId: string) => {
     setExpandedRows((prev) =>
@@ -149,15 +120,7 @@ const Categories = () => {
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                            {category.image ? (
-                              <img
-                                src={category.image}
-                                alt={category.name}
-                                className="h-10 w-10 object-cover rounded-lg"
-                              />
-                            ) : (
-                              <FolderOpen className="h-5 w-5 text-gray-400" />
-                            )}
+                            <FolderOpen className="h-5 w-5 text-gray-400" />
                           </div>
                           <div className="flex items-center space-x-2">
                             {category.subcategories &&
@@ -200,11 +163,7 @@ const Categories = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(category)}
-                          >
+                          <Button variant="ghost" size="sm">
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
@@ -234,14 +193,17 @@ const Categories = () => {
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                                 {category.subcategories.map(
-                                  (sub: any, index: number) => (
+                                  (
+                                    sub: paths["/api/v1/categories"]["get"]["responses"]["200"]["content"]["application/json"][0]["subcategories"][0],
+                                    index: number
+                                  ) => (
                                     <div
                                       key={index}
                                       className="flex items-center space-x-2 p-2 bg-white dark:bg-gray-700 rounded border"
                                     >
                                       <FolderOpen className="h-4 w-4 text-gray-400" />
                                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                                        {sub}
+                                        {sub.name}
                                       </span>
                                     </div>
                                   )
@@ -258,25 +220,6 @@ const Categories = () => {
           )}
         </CardContent>
       </Card>
-
-      {/* Edit Category Dialog */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-auto">
-          <DialogHeader>
-            <DialogTitle>Editar Categoria</DialogTitle>
-            <DialogDescription>
-              Edite as informações da categoria
-            </DialogDescription>
-          </DialogHeader>
-          {selectedCategory && (
-            <CategoryForm
-              initialData={selectedCategory}
-              onSuccess={handleCloseEdit}
-              mode="edit"
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

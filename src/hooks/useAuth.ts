@@ -59,16 +59,17 @@ export const useAuth = () => {
     }
   );
 
-  const logoutMutation = useMutation({
-    mutationFn: authService.logout,
-    onSuccess: () => {
-      queryClient.setQueryData(["user"], null);
-      queryClient.clear();
-      toast({
-        title: "Logout realizado",
-        description: "Até logo!",
-      });
+  const logoutMutation = $api.useMutation("post", "/api/v1/auth/logout", {
+    onSuccess() {
+      queryClient.removeQueries();
       navigate("/");
+    },
+    onError(error) {
+      toast({
+        title: "Erro no logout",
+        description: JSON.stringify(error),
+        variant: "destructive",
+      });
     },
   });
 

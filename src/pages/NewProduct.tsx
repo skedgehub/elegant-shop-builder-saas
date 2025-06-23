@@ -36,7 +36,7 @@ const NewProduct = () => {
             Adicione um novo produto ao seu catálogo
           </p>
         </div>
-        <ProductForm mode="create" />
+        <ProductForm />
       </div>
     </>
   );

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Form } from "@/components/ui/form";
 import {
   Eye,
   EyeOff,
@@ -28,27 +29,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-export const SignUpInputDto = z.object({
-  displayName: z.string({ required_error: "Nome é obrigatório" }).min(3),
-  email: z.string().email(),
-  phone: z.string(),
-  password: z.string(),
-  confirmPassword: z.string(),
-  provider: z.string().default("email"),
-  company: z.object({
-    fantasyName: z.string(),
-    legalName: z.string(),
-    cnpj: z.string(),
-    email: z.string(),
-    phone: z.string(),
-    subdomain: z.string(),
-    customDomain: z.string().optional().nullable(),
-  }),
-  planId: z.string(),
-});
-
-export type ISignUpInputDto = z.infer<typeof SignUpInputDto>;
+import { ISignUpInputDto, SignUpInputDto } from "@/types/auth";
+import { InputField } from "@/components/InputField";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -107,13 +89,35 @@ const Register = () => {
     },
   ];
 
-  const { register, setValue, handleSubmit } = useForm<ISignUpInputDto>({
+  const form = useForm<ISignUpInputDto>({
     resolver: zodResolver(SignUpInputDto),
+    defaultValues: {
+      provider: "email",
+      planId: selectedPlan,
+    },
   });
 
-  const onSubmite = (data: ISignUpInputDto) => {
+  const { register, setValue, handleSubmit, trigger } = form;
+
+  const onSubmite = async (data: ISignUpInputDto) => {
     if (step === 1) {
-      setStep(2);
+      const isValid = await trigger([
+        "company.fantasyName",
+        "company.legalName",
+        "company.cnpj",
+        "company.subdomain",
+        "company.email",
+        "company.phone",
+        "displayName",
+        "email",
+        "phone",
+        "password",
+        "confirmPassword",
+      ]);
+
+      if (isValid) {
+        setStep(2);
+      }
     } else if (step === 2) {
       setStep(3);
     } else {
@@ -210,175 +214,115 @@ const Register = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmite)} className="space-y-6">
-                {step === 1 && (
-                  <div className="space-y-4">
-                    {/* Nome da Empresa (Nome Fantasia) */}
-                    <div className="space-y-2">
-                      <Label htmlFor="companyName">Nome da Empresa</Label>
-                      <Input
-                        id="companyName"
+              <Form {...form}>
+                <form onSubmit={handleSubmit(onSubmite)} className="space-y-6">
+                  {step === 1 && (
+                    <div className="space-y-4">
+                      <InputField
+                        control={form.control}
+                        name="company.fantasyName"
+                        label="Nome da Empresa"
                         placeholder="Minha Empresa"
-                        {...register("company.fantasyName")}
-                        required
                       />
-                    </div>
 
-                    {/* Razão Social */}
-                    <div className="space-y-2">
-                      <Label htmlFor="legalName">Razão Social</Label>
-                      <Input
-                        id="legalName"
+                      <InputField
+                        control={form.control}
+                        name="company.legalName"
+                        label="Razão Social"
                         placeholder="Minha Empresa LTDA"
-                        {...register("company.legalName")}
-                        required
                       />
-                    </div>
 
-                    {/* CNPJ */}
-                    <div className="space-y-2">
-                      <Label htmlFor="cnpj">CNPJ</Label>
-                      <Input
-                        id="cnpj"
+                      <InputField
+                        control={form.control}
+                        name="company.cnpj"
+                        label="CNPJ"
                         placeholder="00.000.000/0001-00"
-                        {...register("company.cnpj")}
-                        required
                       />
-                    </div>
 
-                    {/* Subdomínio */}
-                    <div className="space-y-2">
-                      <Label htmlFor="subdomain">Subdomínio</Label>
-                      <div className="flex">
-                        <Input
-                          id="subdomain"
-                          placeholder="minhaempresa"
-                          {...register("company.subdomain")}
-                          className="rounded-r-none"
-                          required
-                        />
-                        <div className="bg-gray-100 border border-l-0 px-3 py-2 text-sm text-gray-600 rounded-r-md">
-                          .catalogo.com.br
-                        </div>
-                      </div>
-                    </div>
+                      <InputField
+                        control={form.control}
+                        name="company.subdomain"
+                        label="Subdomínio"
+                        placeholder="minhaempresa"
+                        endComponent=".catalogo.com.br"
+                      />
 
-                    {/* Email da Empresa */}
-                    <div className="space-y-2">
-                      <Label htmlFor="companyEmail">Email da Empresa</Label>
-                      <Input
-                        id="companyEmail"
+                      <InputField
+                        control={form.control}
+                        name="company.email"
+                        label="Email da Empresa"
                         type="email"
                         placeholder="contato@empresa.com"
-                        {...register("company.email")}
-                        required
                       />
-                    </div>
 
-                    {/* Telefone da Empresa */}
-                    <div className="space-y-2">
-                      <Label htmlFor="companyPhone">Telefone da Empresa</Label>
-                      <Input
-                        id="companyPhone"
+                      <InputField
+                        control={form.control}
+                        name="company.phone"
+                        label="Telefone da Empresa"
                         placeholder="(11) 99999-9999"
-                        {...register("company.phone")}
-                        required
                       />
-                    </div>
 
-                    {/* Nome do Responsável */}
-                    <div className="space-y-2">
-                      <Label htmlFor="displayName">Nome do Responsável</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                        <Input
-                          id="displayName"
-                          placeholder="Seu nome completo"
-                          {...register("displayName")}
-                          className="pl-10"
-                          required
-                        />
-                      </div>
-                    </div>
+                      <InputField
+                        control={form.control}
+                        name="displayName"
+                        label="Nome do Responsável"
+                        placeholder="Seu nome completo"
+                        endComponent={<User size={18} />}
+                      />
 
-                    {/* Email do Responsável */}
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email do Responsável</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="seu@email.com"
-                          {...register("email")}
-                          className="pl-10"
-                          required
-                        />
-                      </div>
-                    </div>
+                      <InputField
+                        control={form.control}
+                        name="email"
+                        label="Email do Responsável"
+                        type="email"
+                        placeholder="seu@email.com"
+                        endComponent={<Mail size={18} />}
+                      />
 
-                    {/* Telefone do Responsável */}
-                    <div className="space-y-2">
-                      <Label htmlFor="userPhone">Telefone do Responsável</Label>
-                      <Input
-                        id="userPhone"
+                      <InputField
+                        control={form.control}
+                        name="phone"
+                        label="Telefone do Responsável"
                         placeholder="(11) 98888-8888"
-                        {...register("phone")}
-                        required
                       />
-                    </div>
 
-                    {/* Senha e Confirmar Senha */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="password">Senha</Label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                          <Input
-                            id="password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Sua senha"
-                            {...register("password")}
-                            className="pl-10 pr-10"
-                            required
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
+                      <div className="grid grid-cols-2 gap-4">
+                        <InputField
+                          control={form.control}
+                          name="password"
+                          label="Senha"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Sua senha"
+                          endComponent={
+                            showPassword ? (
+                              <EyeOff size={18} />
                             ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </button>
-                        </div>
-                      </div>
+                              <Eye size={18} />
+                            )
+                          }
+                          onTrailingIconClick={() => setShowPassword((v) => !v)}
+                        />
 
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirmar Senha</Label>
-                        <Input
-                          id="confirmPassword"
+                        <InputField
+                          control={form.control}
+                          name="confirmPassword"
+                          label="Confirmar Senha"
                           type="password"
                           placeholder="Confirme sua senha"
-                          {...register("confirmPassword")}
-                          required
                         />
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {step === 2 && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-3 gap-4">
-                      {plans.map((plan) => {
-                        const IconComponent = plan.icon;
-                        return (
-                          <div
-                            key={plan.id}
-                            className={`
+                  {step === 2 && (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-3 gap-4">
+                        {plans.map((plan) => {
+                          const IconComponent = plan.icon;
+                          return (
+                            <div
+                              key={plan.id}
+                              className={`
                               relative p-4 rounded-lg border-2 cursor-pointer transition-all
                               ${
                                 selectedPlan === plan.id
@@ -386,128 +330,131 @@ const Register = () => {
                                   : "border-gray-200 hover:border-gray-300"
                               }
                             `}
-                            onClick={() => {
-                              setSelectedPlan(plan.id);
-                              setValue("planId", plan.id);
-                            }}
-                          >
-                            {plan.popular && (
-                              <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-black">
-                                Mais Popular
-                              </Badge>
-                            )}
-                            <div className="text-center">
-                              <div
-                                className={`w-12 h-12 ${plan.color} rounded-lg flex items-center justify-center mx-auto mb-3`}
-                              >
-                                <IconComponent className="h-6 w-6 text-white" />
-                              </div>
-                              <h3 className="font-semibold text-lg text-black">
-                                {plan.name}
-                              </h3>
-                              <div className="mt-2">
-                                <span className="text-2xl font-bold text-black">
-                                  {plan.price}
-                                </span>
-                                <span className="text-gray-600">
-                                  {plan.period}
-                                </span>
-                              </div>
-                            </div>
-                            <ul className="mt-4 space-y-2">
-                              {plan.features.map((feature, index) => (
-                                <li
-                                  key={index}
-                                  className="flex items-center text-sm"
+                              onClick={() => {
+                                setSelectedPlan(plan.id);
+                                setValue("planId", plan.id);
+                              }}
+                            >
+                              {plan.popular && (
+                                <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary text-black">
+                                  Mais Popular
+                                </Badge>
+                              )}
+                              <div className="text-center">
+                                <div
+                                  className={`w-12 h-12 ${plan.color} rounded-lg flex items-center justify-center mx-auto mb-3`}
                                 >
-                                  <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
-                                  <span className="text-gray-700">
-                                    {feature}
+                                  <IconComponent className="h-6 w-6 text-white" />
+                                </div>
+                                <h3 className="font-semibold text-lg text-black">
+                                  {plan.name}
+                                </h3>
+                                <div className="mt-2">
+                                  <span className="text-2xl font-bold text-black">
+                                    {plan.price}
                                   </span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })}
+                                  <span className="text-gray-600">
+                                    {plan.period}
+                                  </span>
+                                </div>
+                              </div>
+                              <ul className="mt-4 space-y-2">
+                                {plan.features.map((feature, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-center text-sm"
+                                  >
+                                    <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+                                    <span className="text-gray-700">
+                                      {feature}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {step === 3 && (
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="cardName">Nome no Cartão</Label>
-                      <Input
-                        id="cardName"
-                        placeholder="Nome como aparece no cartão"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="cardNumber">Número do Cartão</Label>
-                      <div className="relative">
-                        <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  {step === 3 && (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="cardName">Nome no Cartão</Label>
                         <Input
-                          id="cardNumber"
-                          placeholder="1234 5678 9012 3456"
-                          className="pl-10"
+                          id="cardName"
+                          placeholder="Nome como aparece no cartão"
                           required
                         />
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="expiryDate">Validade</Label>
-                        <Input id="expiryDate" placeholder="MM/AA" required />
-                      </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="cvv">CVV</Label>
-                        <Input id="cvv" placeholder="123" required />
+                        <Label htmlFor="cardNumber">Número do Cartão</Label>
+                        <div className="relative">
+                          <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            id="cardNumber"
+                            placeholder="1234 5678 9012 3456"
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="expiryDate">Validade</Label>
+                          <Input id="expiryDate" placeholder="MM/AA" required />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="cvv">CVV</Label>
+                          <Input id="cvv" placeholder="123" required />
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">
+                            Plano selecionado:
+                          </span>
+                          <span className="font-bold">
+                            {plans.find((p) => p.id === selectedPlan)?.name} -{" "}
+                            {plans.find((p) => p.id === selectedPlan)?.price}
+                            /mês
+                          </span>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">Plano selecionado:</span>
-                        <span className="font-bold">
-                          {plans.find((p) => p.id === selectedPlan)?.name} -{" "}
-                          {plans.find((p) => p.id === selectedPlan)?.price}/mês
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-between">
-                  {step > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setStep(step - 1)}
-                    >
-                      Voltar
-                    </Button>
                   )}
-                  <Button
-                    type="submit"
-                    className={`${
-                      step === 1 ? "w-full" : ""
-                    } bg-primary hover:bg-primary/90 text-black`}
-                    disabled={isRegisterLoading}
-                  >
-                    {step === 3
-                      ? isRegisterLoading
-                        ? "Finalizando..."
-                        : "Finalizar Cadastro"
-                      : "Continuar"}
-                  </Button>
-                </div>
-              </form>
 
+                  <div className="flex justify-between">
+                    {step > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep(step - 1)}
+                      >
+                        Voltar
+                      </Button>
+                    )}
+                    <Button
+                      type="submit"
+                      className={`${
+                        step === 1 ? "w-full" : ""
+                      } bg-primary hover:bg-primary/90 text-black`}
+                      disabled={isRegisterLoading}
+                    >
+                      {step === 3
+                        ? isRegisterLoading
+                          ? "Finalizando..."
+                          : "Finalizar Cadastro"
+                        : "Continuar"}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
               {step === 1 && (
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600">

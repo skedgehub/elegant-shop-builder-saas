@@ -109,7 +109,20 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            description: string | null;
+                            isActive: boolean;
+                            companyId: string | null;
+                            subcategories: {
+                                id: string;
+                                name: string;
+                                isActive: boolean;
+                            }[];
+                        }[];
+                    };
                 };
             };
         };
@@ -861,6 +874,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/user/me": {
         parameters: {
             query?: never;
@@ -888,6 +934,130 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/product": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description Nome do produto */
+                        name: string;
+                        /** @description Descrição opcional do produto */
+                        description: string | null;
+                        /** @description Produto está ativo? */
+                        isActive: boolean;
+                        /** @description Preço do produto (em string para manter precisão) */
+                        price: string;
+                        /** @description ID da categoria */
+                        categoryId: string;
+                        /** @description Preço promocional (opcional) */
+                        promotionalPrice: string | null;
+                        /** @description Quantidade em estoque (opcional) */
+                        stock: number | null;
+                        /** @description ID da subcategoria (opcional) */
+                        subcategoryId: string | null;
+                        /** @description ID do selo de destaque (opcional) */
+                        badgeId?: string | null;
+                        /** @description Lista de imagens do produto */
+                        images?: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            description: string | null;
+                            isActive: boolean;
+                            companyId: string | null;
+                            price: string;
+                            promotionalPrice: string | null;
+                            stock: number | null;
+                            categoryId: string;
+                            subcategoryId: string | null;
+                            badgeId: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            deletedAt: string | null;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/file/signed-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        filename: string;
+                        contentType: string;
+                        /** @enum {string} */
+                        ACL: "private" | "public-read" | "public-read-write" | "authenticated-read" | "aws-exec-read" | "bucket-owner-read" | "bucket-owner-full-control";
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            url: string;
+                        };
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;

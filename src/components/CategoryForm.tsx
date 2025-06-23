@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,40 +5,36 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import ImageUpload from "@/components/ImageUpload";
 import { Plus, Trash2 } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
-import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import {
+  CreateCategoryInputBodyDto,
+  ICreateCategoryInputBodyDto,
+} from "@/types/category";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "@/lib/utils";
 
 interface CategoryFormProps {
-  initialData?: any;
+  initialData?: ICreateCategoryInputBodyDto;
   onSuccess?: () => void;
   mode?: "create" | "edit";
 }
 
-const CategoryForm = ({
-  initialData,
-  onSuccess,
-  mode = "create",
-}: CategoryFormProps) => {
+const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { createCategory, updateCategory, isCreating, isUpdating } =
-    useCategories(user?.company_id);
-
-  const [imageUrl, setImageUrl] = useState(initialData?.image || "");
+  const { createCategory, isCreating, isUpdating } = useCategories();
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<ICreateCategoryInputBodyDto>({
+    resolver: zodResolver(CreateCategoryInputBodyDto),
+    mode: "onChange",
     defaultValues: {
-      name: initialData?.name || "",
-      description: initialData?.description || "",
-      subcategories: initialData?.subcategories || [""], // agora é um array de string
+      subcategories: [""],
     },
   });
 
@@ -48,153 +43,118 @@ const CategoryForm = ({
     name: "subcategories",
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: ICreateCategoryInputBodyDto) => {
     const categoryData = {
       ...data,
-      image: imageUrl,
-      subcategories: data.subcategories.filter(
-        (sub: string) => sub.trim() !== ""
-      ),
+      subcategories: data?.subcategories?.filter((sub) => sub.trim() !== ""),
     };
 
-    if (mode === "edit" && initialData) {
-      updateCategory({
-        id: initialData.id,
-        data: categoryData,
-      });
-    } else {
-      createCategory({ body: categoryData });
-    }
-
-    if (onSuccess) {
-      onSuccess();
-    } else {
-      navigate("/admin/categories");
-    }
+    createCategory({ body: categoryData });
   };
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-lg sm:text-xl">
-          {mode === "edit" ? "Editar Categoria" : "Nova Categoria"}
+        <CardTitle className="text-xl font-semibold">
+          {mode === "edit" ? "Editar Categoria" : "Criar Nova Categoria"}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 sm:space-y-6"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-            {/* Informações Básicas */}
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name" className="text-sm font-medium">
-                  Nome da Categoria *
-                </Label>
-                <Input
-                  id="name"
-                  {...register("name", { required: "Nome é obrigatório" })}
-                  placeholder="Digite o nome da categoria"
-                  className="mt-1"
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-600 mt-1">
-                    {errors.name.message as string}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="description" className="text-sm font-medium">
-                  Descrição
-                </Label>
-                <Textarea
-                  id="description"
-                  {...register("description")}
-                  placeholder="Descreva a categoria"
-                  rows={3}
-                  className="mt-1 resize-none"
-                />
-              </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Seção: Informações da Categoria */}
+          <section className="space-y-4">
+            <div>
+              <Label htmlFor="name">Nome da Categoria *</Label>
+              <Input
+                id="name"
+                placeholder="Ex: Eletrônicos, Roupas, Serviços"
+                {...register("name")}
+                className={cn(errors.name && "border-red-500")}
+              />
+              {errors.name && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
-            {/* Imagem */}
             <div>
-              <ImageUpload
-                value={imageUrl}
-                onChange={setImageUrl}
-                onRemove={() => setImageUrl("")}
-                label="Imagem da Categoria"
-                bucket="categories"
+              <Label htmlFor="description">Descrição</Label>
+              <Textarea
+                id="description"
+                placeholder="Ex: Categoria voltada para eletrônicos em geral"
+                rows={4}
+                {...register("description")}
               />
             </div>
-          </div>
+          </section>
 
           <Separator />
 
-          {/* Subcategorias */}
-          <div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
+          {/* Seção: Subcategorias */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
               <Label className="text-sm font-medium">Subcategorias</Label>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => append("")}
-                className="w-full sm:w-auto"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 Adicionar Subcategoria
               </Button>
             </div>
 
             <div className="space-y-3">
               {fields.map((field, index) => (
-                <div key={field.id} className="flex flex-col sm:flex-row gap-2">
+                <div key={field.id} className="flex gap-2">
                   <Input
-                    {...register(`subcategories.${index}`, {
-                      required: "Subcategoria não pode ser vazia",
-                    })}
                     placeholder="Nome da subcategoria"
-                    className="flex-1"
+                    {...register(`subcategories.${index}`)}
+                    className={cn(
+                      "flex-1",
+                      errors.subcategories?.[index] && "border-red-500"
+                    )}
                   />
                   <Button
                     type="button"
+                    size="icon"
                     variant="ghost"
-                    size="sm"
                     onClick={() => remove(index)}
                     disabled={fields.length === 1}
-                    className="w-full sm:w-auto"
                   >
-                    <Trash2 className="h-4 w-4 mr-2 sm:mr-0" />
-                    <span className="sm:hidden">Remover</span>
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               ))}
+              {errors.subcategories &&
+                typeof errors.subcategories === "object" && (
+                  <p className="text-sm text-red-600">
+                    {errors.subcategories.message as string}
+                  </p>
+                )}
             </div>
-          </div>
+          </section>
 
-          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
+          <Separator />
+
+          {/* Ações */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() =>
                 onSuccess ? onSuccess() : navigate("/admin/categories")
               }
-              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              disabled={isCreating || isUpdating}
-              className="w-full sm:w-auto"
-            >
+            <Button type="submit" disabled={isCreating || isUpdating}>
               {isCreating || isUpdating
                 ? "Salvando..."
                 : mode === "edit"
-                ? "Atualizar"
+                ? "Atualizar Categoria"
                 : "Criar Categoria"}
             </Button>
           </div>

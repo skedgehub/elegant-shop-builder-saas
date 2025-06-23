@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,330 +13,628 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ImageUpload from "@/components/ImageUpload";
-import { Plus, Trash2 } from "lucide-react";
-import { useProducts } from "@/hooks/useProducts";
-import { useCategories } from "@/hooks/useCategories";
-import { useAuth } from "@/hooks/useAuth";
+import { Badge } from "@/components/ui/badge";
+import { X, Upload, Plus, Trash2, Save, Calendar, Package } from "lucide-react";
+import "swiper/css";
 import { useNavigate } from "react-router-dom";
+import { useProducts } from "@/hooks/useProducts";
+import { useFiles } from "@/hooks/useFiles";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CreateProductInputDto } from "@/types/product";
+import { InputField } from "./InputField";
+import { Form } from "./ui/form";
+
+// Field types for custom fields
+const FIELD_TYPES = [
+  { value: "text", label: "Text" },
+  { value: "select", label: "Select" },
+  { value: "description", label: "Description" },
+];
 
 interface ProductFormProps {
   initialData?: any;
   onSuccess?: () => void;
-  mode?: "create" | "edit";
 }
 
-const ProductForm = ({
-  initialData,
-  onSuccess,
-  mode = "create",
-}: ProductFormProps) => {
+const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { createProduct, updateProduct, isCreating, isUpdating } = useProducts(
-    user?.company_id
-  );
-  const { categories } = useCategories(user?.company_id);
-  const [imageUrl, setImageUrl] = useState(initialData?.image || "");
+  const { isCreating, isUpdating, createProduct, updateProduct } =
+    useProducts();
+  const { getUrlUpload, uploadFile } = useFiles();
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
+  const [uploadProgress, setUploadProgress] = useState({});
+  const [uploadedImages, setUploadedImages] = useState(
+    initialData?.images || []
+  );
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [customFieldValues, setCustomFieldValues] = useState({});
+
+  const form = useForm({
+    resolver: zodResolver(CreateProductInputDto),
     defaultValues: {
-      name: initialData?.name || "",
-      description: initialData?.description || "",
-      price: initialData?.price || "",
-      promotional_price: initialData?.promotional_price || "",
-      category_id: initialData?.category_id || "",
-      subcategory: initialData?.subcategory || "",
-      stock: initialData?.stock || "",
-      badge: initialData?.badge || "",
-      custom_fields: initialData?.custom_fields || [{ key: "", value: "" }],
+      ...initialData,
+      images: initialData?.images || [],
+      customFields: initialData?.customFields || [],
+      isActive: initialData?.isActive ?? true,
     },
   });
 
+  const { control, handleSubmit, setValue, watch } = form;
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "custom_fields",
+    name: "customFields",
   });
 
-  const selectedCategoryId = watch("category_id");
-  const selectedCategory = categories.find(
-    (cat) => cat.id === selectedCategoryId
-  );
-  const subcategories = selectedCategory?.subcategories || [];
+  // Handle custom field value changes
+  const handleCustomFieldChange = (index, field, value) => {
+    setCustomFieldValues((prev) => ({
+      ...prev,
+      [`${index}-${field}`]: value,
+    }));
+  };
 
-  const onSubmit = (data: any) => {
-    const productData = {
-      name: data.name,
-      description: data.description,
-      price: parseFloat(data.price),
-      promotional_price: data.promotional_price
-        ? parseFloat(data.promotional_price)
-        : null,
-      category: data.category_id,
-      subcategory: data.subcategory,
-      image: imageUrl,
-      badge: data.badge,
-      stock: parseInt(data.stock),
-      customFields: data.custom_fields
-        .filter(
-          (field: any) => field.key.trim() !== "" && field.value.trim() !== ""
-        )
-        .reduce((acc: any, field: any) => {
-          acc[field.key] = field.value;
-          return acc;
-        }, {}),
-    };
+  // Add new custom field
+  const addCustomField = () => {
+    append({
+      key: "",
+      value: "",
+      type: "text",
+      options: [], // For select fields
+    });
+  };
 
-    if (mode === "edit" && initialData) {
-      updateProduct({
-        id: initialData.id,
-        data: productData,
-      });
-    } else {
-      createProduct(productData);
+  const handleImageUpload = async (files) => {
+    if (!files) return;
+
+    const previewList = [];
+    const newImageUrls = [];
+
+    for (const file of Array.from(files)) {
+      const previewUrl = URL.createObjectURL(file);
+      previewList.push(previewUrl);
+      newImageUrls.push(previewUrl); // Mock URL
     }
 
-    if (onSuccess) {
-      onSuccess();
-    } else {
-      navigate("/admin/products");
-    }
+    setImagePreviews((prev) => [...prev, ...previewList]);
+    const updatedUploaded = [...uploadedImages, ...newImageUrls];
+    setUploadedImages(updatedUploaded);
+    setValue("images", updatedUploaded);
+  };
+
+  const removeImage = (index) => {
+    const newUploaded = [...uploadedImages];
+    newUploaded.splice(index, 1);
+    setUploadedImages(newUploaded);
+    setValue("images", newUploaded);
+
+    const newPreviews = [...imagePreviews];
+    newPreviews.splice(index, 1);
+    setImagePreviews(newPreviews);
+  };
+
+  const onSubmit = (data) => {
+    const mutation = createProduct;
+    mutation({ body: data });
   };
 
   return (
-    <Card className="mx-auto">
-      <CardHeader>
-        <CardTitle>
-          {mode === "edit" ? "Editar Produto" : "Novo Produto"}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Informações Básicas */}
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Nome do Produto *</Label>
-                <Input
-                  id="name"
-                  {...register("name", { required: "Nome é obrigatório" })}
-                  placeholder="Digite o nome do produto"
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-600">
-                    {String(errors.name.message)}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="description">Descrição</Label>
-                <Textarea
-                  id="description"
-                  {...register("description")}
-                  placeholder="Descreva o produto"
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="price">Preço *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    {...register("price", { required: "Preço é obrigatório" })}
-                    placeholder="0,00"
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <Form {...form}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Main Information */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Name and Description */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <Package className="w-5 h-5" />
+                    Name and Description
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <InputField
+                    control={control}
+                    label="Product Name"
+                    name="name"
+                    placeholder="Premium Half Sleeve T-Shirt - Brooklyn Fleece"
                   />
-                  {errors.price && (
-                    <p className="text-sm text-red-600">
-                      {String(errors.price.message)}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="promotional_price">Preço Promocional</Label>
-                  <Input
-                    id="promotional_price"
-                    type="number"
-                    step="0.01"
-                    {...register("promotional_price")}
-                    placeholder="0,00"
+                  <InputField
+                    control={control}
+                    label="Product Description"
+                    name="description"
+                    type="textarea"
+                    placeholder="Looking for a little extra warmth? Grab this classic hoodie. Smooth on the outside with unbrushed loops on the inside, our mid weight French terry is comfortable enough to wear year long."
                   />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="category_id">Categoria *</Label>
-                  <Select
-                    onValueChange={(value) => setValue("category_id", value)}
-                    defaultValue={initialData?.category_id}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories?.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.category_id && (
-                    <p className="text-sm text-red-600">
-                      {String(errors.category_id.message)}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="subcategory">Subcategoria</Label>
-                  <Select
-                    onValueChange={(value) => setValue("subcategory", value)}
-                    defaultValue={initialData?.subcategory}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma subcategoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subcategories.map((sub: string, index: number) => (
-                        <SelectItem key={index} value={sub}>
-                          {sub}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="stock">Estoque *</Label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    {...register("stock", {
-                      required: "Estoque é obrigatório",
-                    })}
-                    placeholder="0"
-                  />
-                  {errors.stock && (
-                    <p className="text-sm text-red-600">
-                      {String(errors.stock.message)}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="badge">Badge</Label>
-                  <Input
-                    id="badge"
-                    {...register("badge")}
-                    placeholder="Ex: Novo, Promoção"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Imagem */}
-            <div>
-              <ImageUpload
-                value={imageUrl}
-                onChange={setImageUrl}
-                onRemove={() => setImageUrl("")}
-                label="Imagem do Produto"
-                bucket="images"
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Campos Personalizados - Metadados */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <Label>Informações Adicionais (Metadados)</Label>
-                <p className="text-sm text-gray-600">
-                  Adicione informações extra sobre o produto como tamanho, cor,
-                  material, etc.
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => append({ key: "", value: "" })}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Adicionar Campo
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {fields.map((field, index) => (
-                <div key={field.id} className="p-4 border rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label>Nome da Informação</Label>
-                      <Input
-                        {...register(`custom_fields.${index}.key`)}
-                        placeholder="Ex: Tamanho, Cor, Material"
-                      />
-                    </div>
-                    <div>
-                      <Label>Valor</Label>
-                      <Input
-                        {...register(`custom_fields.${index}.value`)}
-                        placeholder="Ex: Grande, Azul, Algodão"
-                      />
-                    </div>
-                    <div className="flex items-end">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => remove(index)}
-                        disabled={fields.length === 1}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      Product Details
+                    </Label>
+                    <div className="border rounded-lg p-4 bg-gray-50">
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li>
+                          • Body: 80% cotton/20% polyester, Hood lining: 100%
+                          cotton
+                        </li>
+                        <li>• Colour Shown: Black/White</li>
+                        <li>• Style: FV7283-010</li>
+                      </ul>
                     </div>
                   </div>
-                </div>
-              ))}
+                </CardContent>
+              </Card>
+
+              {/* Category */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Category
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      Product Category
+                    </Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Men's Clothes" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mens-clothes">
+                          Men's Clothes
+                        </SelectItem>
+                        <SelectItem value="womens-clothes">
+                          Women's Clothes
+                        </SelectItem>
+                        <SelectItem value="kids-clothes">
+                          Kids' Clothes
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      Product Sub-Category
+                    </Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Men's Tops & T-Shirts" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mens-tops">
+                          Men's Tops & T-Shirts
+                        </SelectItem>
+                        <SelectItem value="mens-pants">Men's Pants</SelectItem>
+                        <SelectItem value="mens-accessories">
+                          Men's Accessories
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <InputField
+                    control={control}
+                    label="Category ID"
+                    name="categoryId"
+                    placeholder="Enter category ID"
+                  />
+
+                  <InputField
+                    control={control}
+                    label="Subcategory ID"
+                    name="subcategoryId"
+                    placeholder="Enter subcategory ID"
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Manage Stock */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Manage Stock
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        Stock Keeping Unit
+                      </Label>
+                      <Input placeholder="SKU-BB-66-A6" className="h-10" />
+                    </div>
+                    <InputField
+                      control={control}
+                      label="Badge ID"
+                      name="badgeId"
+                      placeholder="Enter badge ID"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InputField
+                      control={control}
+                      label="Product Stock"
+                      name="stock"
+                      type="number"
+                      placeholder="10,120"
+                    />
+                    <InputField
+                      control={control}
+                      label="Minimum Stock"
+                      name="minimumStock"
+                      type="number"
+                      placeholder="100"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Custom Fields */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Custom Fields
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {fields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="p-4 border rounded-lg space-y-4 bg-gray-50"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Field Type */}
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                            Field Type
+                          </Label>
+                          <Select
+                            value={customFieldValues[`${index}-type`] || "text"}
+                            onValueChange={(value) =>
+                              handleCustomFieldChange(index, "type", value)
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {FIELD_TYPES.map((type) => (
+                                <SelectItem key={type.value} value={type.value}>
+                                  {type.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* Field Key */}
+                        <InputField
+                          control={control}
+                          label="Field Key"
+                          name={`customFields.${index}.key`}
+                          placeholder="e.g., material, size, color"
+                        />
+
+                        {/* Field Label */}
+                        <InputField
+                          control={control}
+                          label="Field Label"
+                          name={`customFields.${index}.label`}
+                          placeholder="Display name"
+                        />
+                      </div>
+
+                      {/* Field Value - Changes based on type */}
+                      <div className="grid grid-cols-1 gap-4">
+                        {(customFieldValues[`${index}-type`] || "text") ===
+                          "text" && (
+                          <InputField
+                            control={control}
+                            label="Field Value"
+                            name={`customFields.${index}.value`}
+                            placeholder="Enter text value"
+                          />
+                        )}
+
+                        {(customFieldValues[`${index}-type`] || "text") ===
+                          "description" && (
+                          <InputField
+                            control={control}
+                            label="Description"
+                            name={`customFields.${index}.value`}
+                            type="textarea"
+                            placeholder="Enter detailed description"
+                          />
+                        )}
+
+                        {(customFieldValues[`${index}-type`] || "text") ===
+                          "select" && (
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                              Select Options
+                            </Label>
+                            <div className="space-y-2">
+                              <Input
+                                placeholder="Enter options separated by commas (e.g., Small, Medium, Large)"
+                                value={
+                                  customFieldValues[`${index}-options`] || ""
+                                }
+                                onChange={(e) =>
+                                  handleCustomFieldChange(
+                                    index,
+                                    "options",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              <p className="text-xs text-gray-500">
+                                Separate multiple options with commas
+                              </p>
+                            </div>
+
+                            {/* Selected Value */}
+                            <div className="mt-2">
+                              <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                Selected Value
+                              </Label>
+                              <Select
+                                value={
+                                  customFieldValues[`${index}-value`] || ""
+                                }
+                                onValueChange={(value) =>
+                                  handleCustomFieldChange(index, "value", value)
+                                }
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Choose from options" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {(customFieldValues[`${index}-options`] || "")
+                                    .split(",")
+                                    .filter(Boolean)
+                                    .map((option, optIndex) => (
+                                      <SelectItem
+                                        key={optIndex}
+                                        value={option.trim()}
+                                      >
+                                        {option.trim()}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Remove Button */}
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => remove(index)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Remove Field
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {fields.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <Package className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p>No custom fields added yet</p>
+                      <p className="text-sm">
+                        Add custom fields to capture additional product
+                        information
+                      </p>
+                    </div>
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addCustomField}
+                    className="w-full border-dashed border-2 hover:border-solid"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Custom Field
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right Column - Product Details */}
+            <div className="space-y-6">
+              {/* Product Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Product Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      Brand Name
+                    </Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Adidas" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="adidas">Adidas</SelectItem>
+                        <SelectItem value="nike">Nike</SelectItem>
+                        <SelectItem value="puma">Puma</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center space-x-2 pt-2">
+                    <Checkbox
+                      id="isActive"
+                      checked={watch("isActive")}
+                      onCheckedChange={(val) => setValue("isActive", !!val)}
+                    />
+                    <Label htmlFor="isActive" className="text-sm">
+                      Product Active
+                    </Label>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Product Pricing */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Product Pricing
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <InputField
+                      control={control}
+                      label="Price"
+                      name="price"
+                      type="number"
+                      placeholder="12,120.00"
+                    />
+                    <InputField
+                      control={control}
+                      label="Price"
+                      name="promotionalPrice"
+                      type="number"
+                      placeholder="10,120.00"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        Discount
+                      </Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="15%" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="10">10%</SelectItem>
+                          <SelectItem value="15">15%</SelectItem>
+                          <SelectItem value="20">20%</SelectItem>
+                          <SelectItem value="25">25%</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <InputField
+                      control={control}
+                      label="Minimum Order"
+                      name="minimumOrder"
+                      type="number"
+                      placeholder="100"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Product Image */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    Product Image
+                    <Badge variant="secondary" className="text-xs">
+                      ?
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e.target.files)}
+                        className="hidden"
+                        id="image-upload"
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className="cursor-pointer flex flex-col items-center gap-2"
+                      >
+                        <Upload className="w-8 h-8 text-gray-400" />
+                        <span className="text-sm text-blue-600 hover:text-blue-700">
+                          Click to Upload
+                        </span>
+                      </label>
+                    </div>
+
+                    {imagePreviews.length > 0 && (
+                      <div className="grid grid-cols-2 gap-2">
+                        {imagePreviews.slice(0, 2).map((preview, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={preview}
+                              alt={`Preview ${index + 1}`}
+                              className="w-full h-24 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-80 group-hover:opacity-100 transition text-xs"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => console.log("Save product")}
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Product
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => console.log("Schedule")}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Schedule
+                </Button>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-green-600 hover:bg-green-700"
+                  disabled={isCreating || isUpdating}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Product
+                </Button>
+              </div>
             </div>
           </div>
-
-          <div className="flex justify-end space-x-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() =>
-                onSuccess ? onSuccess() : navigate("/admin/products")
-              }
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={isCreating || isUpdating}>
-              {isCreating || isUpdating
-                ? "Salvando..."
-                : mode === "edit"
-                ? "Atualizar"
-                : "Criar Produto"}
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+        </Form>
+      </div>
+    </div>
   );
 };
 

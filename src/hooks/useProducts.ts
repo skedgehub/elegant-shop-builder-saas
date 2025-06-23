@@ -1,33 +1,26 @@
-
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { productService, CreateProductData } from '@/services/productService';
-import { toast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { productService, CreateProductData } from "@/services/productService";
+import { toast } from "@/hooks/use-toast";
+import { $api } from "@/lib/api";
 
 export const useProducts = (companyId?: string) => {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   const productsQuery = useQuery({
-    queryKey: ['products', companyId],
+    queryKey: ["products", companyId],
     queryFn: () => productService.getProducts(companyId),
   });
 
-  const createProductMutation = useMutation({
-    mutationFn: (data: CreateProductData) => {
-      if (!user?.company_id) throw new Error('Company ID is required');
-      return productService.createProduct(data, user.company_id);
-    },
+  const createProductMutation = $api.useMutation("post", "/api/v1/product", {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({
-        title: "Produto criado!",
-        description: "O produto foi adicionado com sucesso.",
+        title: "Upload realizado!",
+        description: "O upload foi realizado com sucesso.",
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Erro ao criar produto",
+        title: "Erro no upload",
         description: error.message,
         variant: "destructive",
       });
@@ -35,10 +28,15 @@ export const useProducts = (companyId?: string) => {
   });
 
   const updateProductMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<CreateProductData> }) =>
-      productService.updateProduct(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<CreateProductData>;
+    }) => productService.updateProduct(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       toast({
         title: "Produto atualizado!",
         description: "As alterações foram salvas.",
@@ -56,7 +54,7 @@ export const useProducts = (companyId?: string) => {
   const deleteProductMutation = useMutation({
     mutationFn: productService.deleteProduct,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       toast({
         title: "Produto excluído!",
         description: "O produto foi removido com sucesso.",
@@ -86,7 +84,7 @@ export const useProducts = (companyId?: string) => {
 
 export const useProduct = (id: string) => {
   return useQuery({
-    queryKey: ['product', id],
+    queryKey: ["product", id],
     queryFn: () => productService.getProduct(id),
     enabled: !!id,
   });
