@@ -14,7 +14,7 @@ type InputProps = ComponentProps<typeof Input>;
 type InputFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
-  label: string;
+  label?: string;
   description?: string;
   startComponent?: React.ReactNode;
   endComponent?: React.ReactNode;
@@ -39,7 +39,14 @@ export function InputField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {label && (
+            <FormLabel>
+              {label}
+              <span className="text-red-600 font-bold">
+                {inputProps?.required ? " *" : ""}
+              </span>
+            </FormLabel>
+          )}
           <FormControl>
             <div className="relative flex items-center">
               {startComponent && (
@@ -58,14 +65,12 @@ export function InputField<T extends FieldValues>({
               />
 
               {endComponent && (
-                <button
-                  type="button"
-                  onClick={onTrailingIconClick}
-                  className="absolute right-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                <div
+                  className="absolute right-3 flex items-center"
                   tabIndex={-1}
                 >
                   {endComponent}
-                </button>
+                </div>
               )}
             </div>
           </FormControl>

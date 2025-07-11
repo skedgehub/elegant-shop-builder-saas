@@ -25,6 +25,8 @@ export interface paths {
                     "application/json": {
                         name: string;
                         description?: string;
+                        /** Format: uri */
+                        image?: string;
                         subcategories?: string[];
                     };
                 };
@@ -116,6 +118,8 @@ export interface paths {
                             description: string | null;
                             isActive: boolean;
                             companyId: string | null;
+                            /** Format: uri */
+                            image: string | null;
                             subcategories: {
                                 id: string;
                                 name: string;

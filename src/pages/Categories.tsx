@@ -34,14 +34,15 @@ const Categories = () => {
     (category) =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (category.description &&
-        category.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        category.description.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
+  console.log(filteredCategories);
   const toggleExpanded = (categoryId: string) => {
     setExpandedRows((prev) =>
       prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
+        : [...prev, categoryId],
     );
   };
 
@@ -120,7 +121,17 @@ const Categories = () => {
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <FolderOpen className="h-5 w-5 text-gray-400" />
+                            {category?.image ? (
+                              <img
+                                src={category.image}
+                                alt={category.name}
+                                width={40}
+                                height={40}
+                                className="rounded-lg"
+                              />
+                            ) : (
+                              <FolderOpen className="h-5 w-5 text-gray-400" />
+                            )}
                           </div>
                           <div className="flex items-center space-x-2">
                             {category.subcategories &&
@@ -195,7 +206,7 @@ const Categories = () => {
                                 {category.subcategories.map(
                                   (
                                     sub: paths["/api/v1/categories"]["get"]["responses"]["200"]["content"]["application/json"][0]["subcategories"][0],
-                                    index: number
+                                    index: number,
                                   ) => (
                                     <div
                                       key={index}
@@ -206,7 +217,7 @@ const Categories = () => {
                                         {sub.name}
                                       </span>
                                     </div>
-                                  )
+                                  ),
                                 )}
                               </div>
                             </div>

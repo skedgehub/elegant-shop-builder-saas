@@ -6,7 +6,7 @@ interface UploadFileParams {
 }
 
 export const useFiles = () => {
-  const getUrlUpload = $api.useMutation("post", "/api/v1/file/signed-url");
+  const { mutateAsync } = $api.useMutation("post", "/api/v1/file/signed-url");
 
   const uploadFile = async ({ url, file }: UploadFileParams) => {
     const response = await fetch(url, {
@@ -20,7 +20,7 @@ export const useFiles = () => {
     return response;
   };
   return {
-    getUrlUpload,
+    getUrlUpload: mutateAsync,
     uploadFile,
   };
 };
