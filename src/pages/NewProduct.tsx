@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,8 +16,11 @@ const NewProduct = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
       </div>
     );
   }
@@ -25,21 +29,7 @@ const NewProduct = () => {
     return null;
   }
 
-  return (
-    <>
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Novo Produto
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Adicione um novo produto ao seu catálogo
-          </p>
-        </div>
-        <ProductForm />
-      </div>
-    </>
-  );
+  return <ProductForm />;
 };
 
 export default NewProduct;
