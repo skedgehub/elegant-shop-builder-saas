@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,21 +27,7 @@ const EditProduct = () => {
     return null;
   }
 
-  return (
-    <>
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Editar Produto
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Edite as informações do produto
-          </p>
-        </div>
-        <ProductForm mode="edit" initialData={{ id }} />
-      </div>
-    </>
-  );
+  return <ProductForm mode="edit" initialData={{ id }} />;
 };
 
 export default EditProduct;
