@@ -11,13 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -67,25 +60,41 @@ const Index = () => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
 
-    // Smooth scroll for navigation
-    const smoothScrollTo = (elementId: string) => {
-      const element = document.getElementById(elementId);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+    // Add structured data for better SEO
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Wibbo",
+      "url": "https://wibbo.com",
+      "sameAs": [
+        "https://wibbo.com.br"
+      ],
+      "description": "Wibbo.com - Plataforma premium para catálogos digitais que revoluciona operações comerciais",
+      "foundingDate": "2024",
+      "numberOfEmployees": "50-100",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Av. Faria Lima, 1234",
+        "addressLocality": "São Paulo",
+        "addressRegion": "SP",
+        "postalCode": "01451-001",
+        "addressCountry": "BR"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-11-3000-0000",
+        "contactType": "customer service",
+        "email": "contato@wibbo.com"
       }
     };
 
-    // Add smooth scroll event listeners
-    const links = document.querySelectorAll('a[href^="#"]');
-    links.forEach((link) => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const href = link.getAttribute("href");
-        if (href && href.startsWith("#")) {
-          smoothScrollTo(href.substring(1));
-        }
-      });
-    });
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+
+    // Update page title dynamically for better SEO
+    document.title = "Wibbo - Plataforma Premium para Catálogos Digitais | wibbo.com";
 
     // Show promotional modal after 10 seconds
     const promotionalTimer = setTimeout(() => {
@@ -94,9 +103,7 @@ const Index = () => {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      links.forEach((link) => {
-        link.removeEventListener("click", () => {});
-      });
+      document.head.removeChild(script);
       clearTimeout(promotionalTimer);
     };
   }, []);
@@ -110,35 +117,35 @@ const Index = () => {
   const features = [
     {
       icon: <Globe className="h-5 w-5" />,
-      title: "Subdomínio Personalizado",
+      title: "Subdomínio Personalizado Wibbo",
       description:
-        "Configure sua identidade digital única com subdomínio exclusivo",
+        "Configure sua identidade digital única com subdomínio exclusivo na plataforma Wibbo.com",
     },
     {
       icon: <Layers className="h-5 w-5" />,
-      title: "Campos Inteligentes",
-      description: "Personalização avançada de produtos com campos dinâmicos",
+      title: "Campos Inteligentes Wibbo",
+      description: "Personalização avançada de produtos com campos dinâmicos exclusivos da Wibbo",
     },
     {
       icon: <BarChart3 className="h-5 w-5" />,
-      title: "Painel Executivo",
-      description: "Analytics em tempo real para decisões estratégicas",
+      title: "Painel Executivo Wibbo",
+      description: "Analytics em tempo real para decisões estratégicas - tecnologia Wibbo.com",
     },
     {
       icon: <Shield className="h-5 w-5" />,
-      title: "Tecnologia Escalável",
-      description: "Infraestrutura robusta que cresce com seu negócio",
+      title: "Tecnologia Escalável Wibbo",
+      description: "Infraestrutura robusta Wibbo.com.br que cresce com seu negócio",
     },
     {
       icon: <Award className="h-5 w-5" />,
-      title: "Suporte Premium",
-      description: "Atendimento especializado e consultoria dedicada",
+      title: "Suporte Premium Wibbo",
+      description: "Atendimento especializado e consultoria dedicada da equipe Wibbo",
     },
     {
       icon: <Zap className="h-5 w-5" />,
-      title: "Performance Otimizada",
+      title: "Performance Otimizada Wibbo",
       description:
-        "Velocidade de carregamento superior para conversões máximas",
+        "Velocidade de carregamento superior para conversões máximas - exclusivo Wibbo.com",
     },
   ];
 
@@ -249,56 +256,56 @@ const Index = () => {
 
   const plans = [
     {
-      name: "Starter",
+      name: "Starter Wibbo",
       price: "R$ 497",
       period: "/mês",
-      description: "Para marcas em crescimento",
+      description: "Para marcas em crescimento com Wibbo",
       features: [
-        "Até 1.000 produtos",
-        "Subdomínio personalizado",
-        "Analytics básico",
-        "Suporte por email",
-        "5GB de armazenamento",
+        "Até 1.000 produtos na plataforma Wibbo",
+        "Subdomínio personalizado Wibbo.com",
+        "Analytics básico Wibbo",
+        "Suporte por email Wibbo",
+        "5GB de armazenamento Wibbo",
       ],
       highlight: false,
     },
     {
-      name: "Professional",
+      name: "Professional Wibbo",
       price: "R$ 997",
       period: "/mês",
-      description: "Para operações consolidadas",
+      description: "Para operações consolidadas com Wibbo.com",
       features: [
-        "Produtos ilimitados",
-        "Domínio personalizado",
-        "Analytics avançado",
-        "Suporte prioritário",
-        "50GB de armazenamento",
-        "Integração API",
-        "White-label completo",
+        "Produtos ilimitados Wibbo",
+        "Domínio personalizado Wibbo.com.br",
+        "Analytics avançado Wibbo",
+        "Suporte prioritário Wibbo",
+        "50GB de armazenamento Wibbo",
+        "Integração API Wibbo",
+        "White-label completo Wibbo",
       ],
       highlight: true,
     },
     {
-      name: "Enterprise",
+      name: "Enterprise Wibbo",
       price: "R$ 2.997",
       period: "/mês",
-      description: "Para grandes corporações",
+      description: "Para grandes corporações com Wibbo.com",
       features: [
-        "Recursos Professional +",
-        "Múltiplas lojas",
-        "Consultoria dedicada",
-        "SLA garantido",
-        "Armazenamento ilimitado",
-        "Integrações customizadas",
-        "Onboarding especializado",
+        "Recursos Professional Wibbo +",
+        "Múltiplas lojas Wibbo",
+        "Consultoria dedicada Wibbo",
+        "SLA garantido Wibbo.com",
+        "Armazenamento ilimitado Wibbo",
+        "Integrações customizadas Wibbo",
+        "Onboarding especializado Wibbo",
       ],
       highlight: false,
     },
   ];
 
   return (
-    <div className="min-h-screen bg-white  font-inter overflow-x-hidden relative">
-      {/* Enhanced Header with dropdown */}
+    <div className="min-h-screen bg-white font-inter overflow-x-hidden relative">
+      {/* Enhanced Header with SEO-optimized navigation */}
       <header className="border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
@@ -306,37 +313,37 @@ const Index = () => {
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-black font-bold text-sm">W</span>
               </div>
-              <span className="text-xl font-semibold text-black tracking-tight">
+              <h1 className="text-xl font-semibold text-black tracking-tight">
                 Wibbo
-              </span>
+              </h1>
             </div>
 
-            {/* Desktop Navigation with Dropdown */}
-            <nav className="hidden md:flex items-center space-x-8">
+            {/* Desktop Navigation with SEO-optimized links */}
+            <nav className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Menu principal Wibbo">
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center text-gray-600 hover:text-black transition-colors text-sm font-medium">
-                  Recursos
+                  Recursos Wibbo
                   <ChevronDown className="ml-1 h-3 w-3" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Visão Geral
+                      Visão Geral Wibbo
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Subdomínio Personalizado
+                      Subdomínio Personalizado Wibbo.com
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Analytics Avançado
+                      Analytics Avançado Wibbo
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Integrações
+                      Integrações Wibbo.com.br
                     </a>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -345,32 +352,34 @@ const Index = () => {
               <a
                 href="#cases"
                 className="text-gray-600 hover:text-black transition-colors text-sm font-medium"
+                title="Cases de sucesso Wibbo"
               >
-                Cases
+                Cases Wibbo
               </a>
               <a
                 href="#precos"
                 className="text-gray-600 hover:text-black transition-colors text-sm font-medium"
+                title="Preços plataforma Wibbo"
               >
-                Preços
+                Preços Wibbo
               </a>
 
               <div className="flex items-center space-x-3 ml-8">
-                <Link to="/login">
+                <Link to="/login" title="Entrar na plataforma Wibbo">
                   <Button
                     variant="ghost"
                     size="sm"
                     className="text-gray-600 hover:text-black"
                   >
-                    Entrar
+                    Entrar Wibbo
                   </Button>
                 </Link>
-                <Link to="/register">
+                <Link to="/register" title="Solicitar acesso Wibbo.com">
                   <Button
                     size="sm"
                     className="bg-black hover:bg-gray-900 text-white px-6"
                   >
-                    Solicitar Acesso
+                    Solicitar Acesso Wibbo
                   </Button>
                 </Link>
               </div>
@@ -382,45 +391,49 @@ const Index = () => {
               size="sm"
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Menu mobile Wibbo"
             >
               <Menu className="h-5 w-5" />
             </Button>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu with SEO-optimized content */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-6 pb-6 border-t border-gray-100 animate-fade-in">
               <div className="flex flex-col space-y-4 pt-6">
                 <a
                   href="#recursos"
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                  title="Recursos da plataforma Wibbo"
                 >
-                  Recursos
+                  Recursos Wibbo
                 </a>
                 <a
                   href="#cases"
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                  title="Cases de sucesso Wibbo.com"
                 >
-                  Cases
+                  Cases Wibbo
                 </a>
                 <a
                   href="#precos"
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                  title="Preços Wibbo.com.br"
                 >
-                  Preços
+                  Preços Wibbo
                 </a>
                 <div className="flex flex-col space-y-3 px-4 pt-4 border-t border-gray-100">
-                  <Link to="/login">
+                  <Link to="/login" title="Login Wibbo">
                     <Button variant="outline" size="sm" className="w-full">
-                      Entrar
+                      Entrar Wibbo
                     </Button>
                   </Link>
-                  <Link to="/register">
+                  <Link to="/register" title="Cadastro Wibbo">
                     <Button
                       size="sm"
                       className="w-full bg-black hover:bg-gray-900 text-white"
                     >
-                      Solicitar Acesso
+                      Solicitar Acesso Wibbo
                     </Button>
                   </Link>
                 </div>
@@ -430,43 +443,43 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Fixed Hero Section */}
+      {/* SEO-optimized Hero Section */}
       <section className="pt-16 pb-24 px-6 relative z-10">
         <div className="container mx-auto text-center relative z-10 max-w-5xl">
           <Badge className="mb-8 bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 transition-colors">
             <Sparkles className="h-3 w-3 mr-2" />
-            Tecnologia para marcas que lideram
+            Wibbo.com - Tecnologia para marcas que lideram
           </Badge>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
-            Transforme sua
+            Wibbo.com - Transforme sua
             <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
               operação digital
             </span>
           </h1>
 
           <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
-            Uma plataforma premium para catálogos digitais. Performance,
-            personalização e exclusividade em cada detalhe.
+            Wibbo.com - Uma plataforma premium para catálogos digitais. Performance,
+            personalização e exclusividade em cada detalhe da tecnologia Wibbo.
           </p>
 
-          {/* Enhanced Stats Cards with 3D effect */}
+          {/* Enhanced Stats Cards with SEO content */}
           <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto mb-16">
             {[
               {
                 icon: <TrendingUp className="h-5 w-5" />,
                 value: "+300%",
-                label: "Performance média",
+                label: "Performance média Wibbo",
               },
               {
                 icon: <Building2 className="h-5 w-5" />,
                 value: "+10.000",
-                label: "Lojas ativas",
+                label: "Lojas ativas Wibbo.com",
               },
               {
                 icon: <Shield className="h-5 w-5" />,
                 value: "99.9%",
-                label: "Uptime garantido",
+                label: "Uptime garantido Wibbo",
               },
             ].map((stat, index) => (
               <Card
@@ -492,36 +505,36 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register">
+            <Link to="/register" title="Solicitar acesso exclusivo Wibbo.com">
               <Button
                 size="lg"
                 className="text-base px-8 py-6 bg-black hover:bg-gray-900 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all group"
               >
-                Solicitar Acesso Exclusivo
+                Solicitar Acesso Exclusivo Wibbo
                 <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/admin">
+            <Link to="/admin" title="Demonstração Wibbo.com.br">
               <Button
                 variant="outline"
                 size="lg"
                 className="text-base px-8 py-6 border-gray-300 hover:bg-gray-50 group"
               >
                 <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                Explorar Demonstração
+                Explorar Demonstração Wibbo
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Brands Section */}
+      {/* Brands Section with SEO content */}
       <section className="py-16 px-6 bg-gray-50/30">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <p className="text-sm text-gray-600 font-medium mb-8">
-              Marcas que confiam na nossa tecnologia
-            </p>
+            <h2 className="text-sm text-gray-600 font-medium mb-8">
+              Marcas que confiam na tecnologia Wibbo.com
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-60">
               {brands.map((brand, index) => (
                 <div
@@ -540,16 +553,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section with scroll animations */}
+      {/* Features Section with SEO optimization */}
       <section id="recursos" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
           <div className="text-center mb-20 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Tecnologia que faz a
+              Wibbo.com - Tecnologia que faz a
               <span className="block font-semibold">diferença</span>
             </h2>
             <p className="text-xl text-gray-600 font-light">
-              Recursos desenvolvidos para marcas que não aceitam o comum
+              Recursos desenvolvidos para marcas que não aceitam o comum - exclusivos da plataforma Wibbo
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -581,16 +594,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Compact Testimonials with Infinite Scroll */}
+      {/* Testimonials Section with SEO content */}
       <section id="cases" className="py-24 px-6 bg-white overflow-hidden">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Resultados que
+              Wibbo.com - Resultados que
               <span className="block font-semibold">falam por si</span>
             </h2>
             <p className="text-xl text-gray-600 font-light">
-              Cases reais de marcas que escolheram a excelência
+              Cases reais de marcas que escolheram a excelência da plataforma Wibbo
             </p>
           </div>
 
@@ -643,16 +656,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing Section with SEO optimization */}
       <section id="precos" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Investimento em
+              Wibbo.com - Investimento em
               <span className="block font-semibold">excelência</span>
             </h2>
             <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto">
-              Planos desenvolvidos para diferentes estágios do seu crescimento
+              Planos Wibbo.com.br desenvolvidos para diferentes estágios do seu crescimento
             </p>
           </div>
 
@@ -669,7 +682,7 @@ const Index = () => {
                 <CardHeader className="text-center pb-4">
                   {plan.highlight && (
                     <Badge className="w-fit mx-auto mb-4 bg-primary text-black">
-                      Mais Popular
+                      Mais Popular Wibbo
                     </Badge>
                   )}
                   <CardTitle className="text-xl font-semibold text-black">
@@ -701,7 +714,7 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  <Link to="/register">
+                  <Link to="/register" title={`Solicitar acesso ${plan.name}`}>
                     <Button
                       className={`w-full ${
                         plan.highlight
@@ -709,7 +722,7 @@ const Index = () => {
                           : "bg-gray-100 hover:bg-gray-200 text-black"
                       }`}
                     >
-                      Solicitar Acesso
+                      Solicitar Acesso Wibbo
                     </Button>
                   </Link>
                 </CardContent>
@@ -719,15 +732,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Contact Section with SEO content */}
       <section id="contato" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Transforme sua marca
+              Wibbo.com - Transforme sua marca
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
-              Entre em contato e descubra como elevar sua operação digital
+              Entre em contato com a Wibbo e descubra como elevar sua operação digital
             </p>
           </div>
 
@@ -885,38 +898,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section with SEO optimization */}
       <section className="py-24 px-6 bg-black text-white">
         <div className="container mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">
-            Pronto para liderar?
+            Wibbo.com - Pronto para liderar?
           </h2>
           <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-light">
-            Junte-se às marcas que escolheram a tecnologia premium
+            Junte-se às marcas que escolheram a tecnologia premium da Wibbo.com.br
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register">
+            <Link to="/register" title="Acesso exclusivo Wibbo">
               <Button
                 size="lg"
                 className="text-base px-8 py-6 bg-primary hover:bg-primary/90 text-black shadow-xl"
               >
-                Solicitar Acesso Exclusivo
+                Solicitar Acesso Exclusivo Wibbo
               </Button>
             </Link>
-            <Link to="/admin">
+            <Link to="/admin" title="Demo privada Wibbo">
               <Button
                 size="lg"
                 variant="outline"
                 className="text-base px-8 py-6 text-black"
               >
-                Explorar Demonstração Privada
+                Explorar Demonstração Privada Wibbo
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Clean Footer */}
+      {/* SEO-optimized Footer */}
       <footer className="bg-white py-16 px-6 border-t border-gray-100">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
@@ -930,92 +943,101 @@ const Index = () => {
                 </span>
               </div>
               <p className="text-gray-600 leading-relaxed font-light">
-                Tecnologia premium para marcas que lideram
+                Wibbo.com - Tecnologia premium para marcas que lideram
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Produto</h4>
+              <h4 className="font-semibold mb-6 text-black">Produto Wibbo</h4>
               <ul className="space-y-3 text-gray-600">
                 <li>
                   <a
                     href="#recursos"
                     className="hover:text-black transition-colors font-light"
+                    title="Recursos Wibbo.com"
                   >
-                    Recursos
+                    Recursos Wibbo
                   </a>
                 </li>
                 <li>
                   <a
                     href="#cases"
                     className="hover:text-black transition-colors font-light"
+                    title="Cases Wibbo.com"
                   >
-                    Cases
+                    Cases Wibbo
                   </a>
                 </li>
                 <li>
                   <Link
                     to="/admin"
                     className="hover:text-black transition-colors font-light"
+                    title="Demo Wibbo.com.br"
                   >
-                    Demonstração
+                    Demonstração Wibbo
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Suporte</h4>
+              <h4 className="font-semibold mb-6 text-black">Suporte Wibbo</h4>
               <ul className="space-y-3 text-gray-600">
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
+                    title="Central de ajuda Wibbo"
                   >
-                    Central de Ajuda
+                    Central de Ajuda Wibbo
                   </a>
                 </li>
                 <li>
                   <a
                     href="#contato"
                     className="hover:text-black transition-colors font-light"
+                    title="Contato Wibbo.com"
                   >
-                    Contato
+                    Contato Wibbo
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
+                    title="Status Wibbo.com"
                   >
-                    Status
+                    Status Wibbo
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Empresa</h4>
+              <h4 className="font-semibold mb-6 text-black">Empresa Wibbo</h4>
               <ul className="space-y-3 text-gray-600">
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
+                    title="Sobre Wibbo.com"
                   >
-                    Sobre
+                    Sobre Wibbo
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
+                    title="Privacidade Wibbo"
                   >
-                    Privacidade
+                    Privacidade Wibbo
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
+                    title="Termos Wibbo.com"
                   >
-                    Termos
+                    Termos Wibbo
                   </a>
                 </li>
               </ul>
@@ -1023,15 +1045,15 @@ const Index = () => {
           </div>
           <div className="border-t border-gray-100 mt-16 pt-8 text-center text-gray-500">
             <p className="font-light">
-              &copy; 2024 Wibbo. Todos os direitos reservados.
+              &copy; 2024 Wibbo.com - Todos os direitos reservados. Wibbo.com.br - Plataforma líder em catálogos digitais.
             </p>
           </div>
         </div>
       </footer>
 
-      {/* Floating Contact Button */}
+      {/* Floating Contact Button with SEO */}
       <div className="fixed bottom-6 right-6 z-40">
-        <a href="#contato">
+        <a href="#contato" title="Contato Wibbo.com" aria-label="Falar com Wibbo">
           <Button
             size="lg"
             className="bg-primary hover:bg-primary/90 text-black shadow-lg hover:shadow-xl rounded-full p-4 group"
