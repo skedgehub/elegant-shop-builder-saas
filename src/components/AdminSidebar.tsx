@@ -101,9 +101,9 @@ const AdminSidebar = ({
   return (
     <div
       className={cn(
-        "relative pb-12 border-r bg-white dark:bg-gray-900 transition-all duration-300 ease-in-out flex-shrink-0",
+        "relative pb-12 border-r transition-all duration-300 ease-in-out flex-shrink-0",
         isCollapsed ? "w-16" : "w-64",
-        className
+        className,
       )}
     >
       <div className="space-y-4 py-4 h-full">
@@ -111,7 +111,7 @@ const AdminSidebar = ({
           <div
             className={cn(
               "flex items-center justify-between min-h-[40px]",
-              isCollapsed
+              isCollapsed,
             )}
           >
             {!isCollapsed && (
@@ -122,9 +122,9 @@ const AdminSidebar = ({
             <div className="flex-shrink-0">
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={onToggleCollapse}
-                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 visible"
+                className="p-0 visible"
                 title={isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"}
                 aria-label={
                   isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"
@@ -156,11 +156,12 @@ const AdminSidebar = ({
                       variant={
                         location.pathname === item.href ? "secondary" : "ghost"
                       }
+                      size={isCollapsed ? "icon" : "default"}
                       className={cn(
-                        "w-full justify-start hover:bg-primary dark:hover:bg-primary dark:hover:text-black",
+                        "w-full justify-start hover:bg-primary/25 dark:hover:bg-primary/25",
                         isCollapsed ? "px-2" : "px-4",
                         location.pathname === item.href &&
-                          "bg-primary dark:bg-primary  dark:text-black"
+                          "bg-primary dark:bg-primary  dark:text-black",
                       )}
                       asChild
                       title={isCollapsed ? item.title : undefined}
@@ -169,7 +170,7 @@ const AdminSidebar = ({
                         to={item.href}
                         className={cn(
                           "flex items-center",
-                          isCollapsed && "justify-center"
+                          isCollapsed && "justify-center",
                         )}
                       >
                         <item.icon className="h-4 w-4 flex-shrink-0" />

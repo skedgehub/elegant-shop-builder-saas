@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,7 +26,7 @@ const NewCategory = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
+    <div className="min-h-screen to-muted/30">
       <div className="container mx-auto px-4 py-8">
         <CategoryForm mode="create" />
       </div>

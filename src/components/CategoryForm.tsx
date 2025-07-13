@@ -1,4 +1,3 @@
-
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,21 +70,17 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/20">
+      <Card className="border-0">
         <CardHeader className="pb-8">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Tag className="h-6 w-6 text-primary" />
-            </div>
             <div>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              <CardTitle className="text-2xl font-bold ">
                 {mode === "edit" ? "Editar Categoria" : "Nova Categoria"}
               </CardTitle>
               <p className="text-muted-foreground mt-1">
-                {mode === "edit" 
-                  ? "Atualize as informações da sua categoria" 
-                  : "Crie uma nova categoria para organizar seus produtos"
-                }
+                {mode === "edit"
+                  ? "Atualize as informações da sua categoria"
+                  : "Crie uma nova categoria para organizar seus produtos"}
               </p>
             </div>
           </div>
@@ -97,7 +92,6 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
               {/* Informações Básicas */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <FileText className="h-5 w-5 text-primary" />
                   <h3 className="text-lg font-semibold">Informações Básicas</h3>
                 </div>
 
@@ -123,7 +117,8 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                         className="min-h-[100px] resize-none"
                       />
                       <p className="text-xs text-muted-foreground">
-                        Uma boa descrição ajuda seus clientes a encontrar produtos mais facilmente
+                        Uma boa descrição ajuda seus clientes a encontrar
+                        produtos mais facilmente
                       </p>
                     </div>
                   </div>
@@ -133,7 +128,7 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                     <Label className="text-sm font-medium text-foreground/80">
                       Imagem da Categoria
                     </Label>
-                    
+
                     <div className="space-y-4">
                       {/* Preview da imagem */}
                       <div
@@ -144,7 +139,9 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                           "flex items-center justify-center",
                           "overflow-hidden transition-all duration-200",
                           "hover:border-primary/60 hover:bg-primary/5",
-                          form.watch("image") ? "border-solid border-border" : ""
+                          form.watch("image")
+                            ? "border-solid border-border"
+                            : "",
                         )}
                         onClick={() =>
                           document.getElementById("image-upload-input")?.click()
@@ -167,7 +164,9 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                         ) : (
                           <div className="text-center text-muted-foreground group-hover:text-primary transition-colors">
                             <UploadCloud className="h-12 w-12 mx-auto mb-3" />
-                            <p className="text-sm font-medium">Clique para enviar</p>
+                            <p className="text-sm font-medium">
+                              Clique para enviar
+                            </p>
                             <p className="text-xs">PNG, JPG até 5MB</p>
                           </div>
                         )}
@@ -192,7 +191,9 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
 
                               await uploadFile({ url, file });
 
-                              const publicUrl = (url?.split("?")[0] ?? "").replace(
+                              const publicUrl = (
+                                url?.split("?")[0] ?? ""
+                              ).replace(
                                 "https://dinez-menu-dev.c460a222af2b5d565e4d623cdff930cc.r2.cloudflarestorage.com",
                                 "https://pub-b46038aa790b49da90926aff162180f6.r2.dev",
                               );
@@ -226,11 +227,11 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                             <div className="flex gap-1">
                               <Button
                                 type="button"
-                                variant="ghost"
                                 size="sm"
                                 className="h-6 w-6 p-0"
                                 onClick={() => {
-                                  const imageUrl = form.getValues("image") || "";
+                                  const imageUrl =
+                                    form.getValues("image") || "";
                                   if (imageUrl) {
                                     navigator.clipboard.writeText(imageUrl);
                                     toast({
@@ -244,7 +245,7 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                               </Button>
                               <Button
                                 type="button"
-                                variant="ghost"
+                                variant="destructive"
                                 size="sm"
                                 className="h-6 w-6 p-0"
                                 onClick={() => form.setValue("image", "")}
@@ -266,7 +267,6 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Tag className="h-5 w-5 text-primary" />
                     <h3 className="text-lg font-semibold">Subcategorias</h3>
                   </div>
                   <Button
@@ -282,7 +282,8 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  Organize melhor seus produtos criando subcategorias específicas
+                  Organize melhor seus produtos criando subcategorias
+                  específicas
                 </p>
 
                 {fields.length > 0 ? (
@@ -343,8 +344,8 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                 >
                   Cancelar
                 </Button>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={isCreating || isUpdating}
                   className="w-full sm:w-auto gap-2"
                 >

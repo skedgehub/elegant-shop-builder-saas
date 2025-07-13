@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -15,12 +14,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { X, Upload, Plus, Trash2, Save, Package, Image as ImageIcon, Palette, Tag } from "lucide-react";
+import {
+  X,
+  Upload,
+  Plus,
+  Trash2,
+  Save,
+  Package,
+  Image as ImageIcon,
+  Palette,
+  Tag,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "@/hooks/useProducts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateProductInputDto, ICreateProductInputDto } from "@/types/product";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "./ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "./ui/form";
 
 // Field types for custom fields
 const FIELD_TYPES = [
@@ -42,7 +58,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
   const { isCreating, createProduct } = useProducts();
 
   const [uploadedImages, setUploadedImages] = useState<string[]>(
-    initialData?.images || []
+    initialData?.images || [],
   );
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -133,12 +149,14 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
               </p>
             </div>
           </div>
-          
+
           {/* Progress Steps */}
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-              <span className="text-blue-600 font-medium">Informações Básicas</span>
+              <span className="text-blue-600 font-medium">
+                Informações Básicas
+              </span>
             </div>
             <div className="w-8 h-px bg-gray-300"></div>
             <div className="flex items-center gap-2">
@@ -176,7 +194,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             Nome do Produto *
                           </FormLabel>
                           <FormControl>
-                            <Input 
+                            <Input
                               placeholder="Ex: Camiseta Premium Manga Curta"
                               className="h-12 text-base"
                               {...field}
@@ -196,7 +214,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             Descrição do Produto
                           </FormLabel>
                           <FormControl>
-                            <Textarea 
+                            <Textarea
                               placeholder="Descreva seu produto de forma atrativa e detalhada..."
                               className="min-h-[120px] text-base resize-none"
                               {...field}
@@ -219,7 +237,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             </FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Input 
+                                <Input
                                   placeholder="0.00"
                                   className="h-12 text-base pl-8"
                                   {...field}
@@ -244,7 +262,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             </FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Input 
+                                <Input
                                   placeholder="0.00"
                                   className="h-12 text-base pl-8"
                                   {...field}
@@ -281,7 +299,10 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             <FormLabel className="text-sm font-medium text-gray-700">
                               Categoria Principal *
                             </FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger className="h-12">
                                   <SelectValue placeholder="Selecione uma categoria" />
@@ -289,10 +310,16 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="roupas">Roupas</SelectItem>
-                                <SelectItem value="eletronicos">Eletrônicos</SelectItem>
-                                <SelectItem value="casa">Casa e Decoração</SelectItem>
+                                <SelectItem value="eletronicos">
+                                  Eletrônicos
+                                </SelectItem>
+                                <SelectItem value="casa">
+                                  Casa e Decoração
+                                </SelectItem>
                                 <SelectItem value="livros">Livros</SelectItem>
-                                <SelectItem value="esportes">Esportes</SelectItem>
+                                <SelectItem value="esportes">
+                                  Esportes
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -308,16 +335,23 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             <FormLabel className="text-sm font-medium text-gray-700">
                               Subcategoria
                             </FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value || ""}
+                            >
                               <FormControl>
                                 <SelectTrigger className="h-12">
                                   <SelectValue placeholder="Selecione uma subcategoria" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="camisetas">Camisetas</SelectItem>
+                                <SelectItem value="camisetas">
+                                  Camisetas
+                                </SelectItem>
                                 <SelectItem value="calcas">Calças</SelectItem>
-                                <SelectItem value="acessorios">Acessórios</SelectItem>
+                                <SelectItem value="acessorios">
+                                  Acessórios
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -334,7 +368,10 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                           <FormLabel className="text-sm font-medium text-gray-700">
                             Selo de Destaque
                           </FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value || ""}
+                          >
                             <FormControl>
                               <SelectTrigger className="h-12">
                                 <SelectValue placeholder="Selecione um selo (opcional)" />
@@ -342,9 +379,15 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="novo">🆕 Novo</SelectItem>
-                              <SelectItem value="promocao">🔥 Promoção</SelectItem>
-                              <SelectItem value="destaque">⭐ Destaque</SelectItem>
-                              <SelectItem value="limitado">⏰ Edição Limitada</SelectItem>
+                              <SelectItem value="promocao">
+                                🔥 Promoção
+                              </SelectItem>
+                              <SelectItem value="destaque">
+                                ⭐ Destaque
+                              </SelectItem>
+                              <SelectItem value="limitado">
+                                ⏰ Edição Limitada
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -396,7 +439,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                                   Nome do Campo
                                 </FormLabel>
                                 <FormControl>
-                                  <Input 
+                                  <Input
                                     placeholder="Ex: Tamanho, Cor, Material"
                                     className="h-10"
                                     {...field}
@@ -416,7 +459,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                                   Valor
                                 </FormLabel>
                                 <FormControl>
-                                  <Input 
+                                  <Input
                                     placeholder="Ex: M, Azul, Algodão"
                                     className="h-10"
                                     {...field}
@@ -433,7 +476,9 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                     {fields.length === 0 && (
                       <div className="text-center py-12 text-gray-500">
                         <Palette className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                        <p className="text-lg font-medium mb-2">Nenhum campo personalizado</p>
+                        <p className="text-lg font-medium mb-2">
+                          Nenhum campo personalizado
+                        </p>
                         <p className="text-sm">
                           Adicione campos específicos para seu tipo de produto
                         </p>
@@ -485,7 +530,9 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             <span className="text-sm font-medium text-blue-600 hover:text-blue-700">
                               Clique para enviar
                             </span>
-                            <p className="text-xs text-gray-500 mt-1">PNG, JPG até 10MB</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              PNG, JPG até 10MB
+                            </p>
                           </div>
                         </label>
                       </div>
@@ -531,7 +578,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                             Quantidade em Estoque
                           </FormLabel>
                           <FormControl>
-                            <Input 
+                            <Input
                               type="number"
                               placeholder="0"
                               className="h-12 text-base"
@@ -539,7 +586,9 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                               value={field.value ?? ""}
                               onChange={(e) => {
                                 const value = e.target.value;
-                                field.onChange(value === "" ? null : Number(value));
+                                field.onChange(
+                                  value === "" ? null : Number(value),
+                                );
                               }}
                             />
                           </FormControl>
@@ -577,7 +626,7 @@ const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                 <div className="space-y-3">
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium"
+                    className="w-full h-12 font-medium bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white "
                     disabled={isCreating}
                   >
                     {isCreating ? (

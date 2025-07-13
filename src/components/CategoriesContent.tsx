@@ -1,20 +1,30 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  Plus, 
-  Search, 
-  Edit, 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Plus,
+  Search,
+  Edit,
   Trash2,
   ChevronDown,
   ChevronRight,
   Folder,
-  ImageIcon
+  ImageIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "@/hooks/useCategories";
@@ -23,13 +33,19 @@ import { useAuth } from "@/hooks/useAuth";
 const CategoriesContent = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { categories, isLoading, deleteCategory } = useCategories(user?.company_id);
+  const { categories, isLoading, deleteCategory } = useCategories(
+    user?.company_id,
+  );
   const [searchTerm, setSearchTerm] = useState("");
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(),
+  );
 
-  const filteredCategories = categories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredCategories = categories.filter(
+    (category) =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (category.description &&
+        category.description.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const toggleCategory = (categoryId: string) => {
@@ -159,7 +175,10 @@ const CategoriesContent = () => {
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">
-                              {Array.isArray(category.subcategories) ? category.subcategories.length : 0} subcategorias
+                              {Array.isArray(category.subcategories)
+                                ? category.subcategories.length
+                                : 0}{" "}
+                              subcategorias
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -169,7 +188,9 @@ const CategoriesContent = () => {
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  navigate(`/admin/categories/edit/${category.id}`);
+                                  navigate(
+                                    `/admin/categories/edit/${category.id}`,
+                                  );
                                 }}
                               >
                                 <Edit className="h-4 w-4" />
@@ -196,13 +217,22 @@ const CategoriesContent = () => {
                               <h4 className="font-medium text-gray-900 dark:text-white mb-3">
                                 Subcategorias:
                               </h4>
-                              {Array.isArray(category.subcategories) && category.subcategories.length > 0 ? (
+                              {Array.isArray(category.subcategories) &&
+                              category.subcategories.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                                  {category.subcategories.map((sub: any, index: number) => (
-                                    <Badge key={index} variant="secondary" className="justify-start">
-                                      {typeof sub === 'string' ? sub : sub.name}
-                                    </Badge>
-                                  ))}
+                                  {category.subcategories.map(
+                                    (sub: any, index: number) => (
+                                      <Badge
+                                        key={index}
+                                        variant="secondary"
+                                        className="justify-start"
+                                      >
+                                        {typeof sub === "string"
+                                          ? sub
+                                          : sub.name}
+                                      </Badge>
+                                    ),
+                                  )}
                                 </div>
                               ) : (
                                 <p className="text-sm text-gray-500 dark:text-gray-400">

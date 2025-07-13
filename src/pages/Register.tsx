@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -106,22 +105,23 @@ const Register = () => {
     {
       icon: Clock,
       title: "Configure em 5 minutos",
-      description: "Seu catálogo online pronto rapidamente"
+      description: "Seu catálogo online pronto rapidamente",
     },
     {
       icon: Shield,
       title: "Dados seguros",
-      description: "Proteção completa das suas informações"
+      description: "Proteção completa das suas informações",
     },
     {
       icon: Sparkles,
       title: "Design profissional",
-      description: "Templates modernos e responsivos"
-    }
+      description: "Templates modernos e responsivos",
+    },
   ];
 
   const form = useForm<ISignUpInputDto>({
     resolver: zodResolver(SignUpInputDto),
+    mode: "onSubmit",
     defaultValues: {
       provider: "email",
       planId: selectedPlan,
@@ -131,7 +131,7 @@ const Register = () => {
   const { register, setValue, handleSubmit, trigger, watch } = form;
   const watchedFields = watch();
 
-  const onSubmite = async (data: ISignUpInputDto) => {
+  const nextStep = async () => {
     if (step === 1) {
       const isValid = await trigger([
         "displayName",
@@ -144,7 +144,9 @@ const Register = () => {
       if (isValid) {
         setStep(2);
       }
-    } else if (step === 2) {
+    }
+
+    if (step === 2) {
       const isValid = await trigger([
         "company.fantasyName",
         "company.legalName",
@@ -157,13 +159,17 @@ const Register = () => {
       if (isValid) {
         setStep(3);
       }
-    } else if (step === 3) {
-      setStep(4);
-    } else {
-      RegisterCompany({
-        body: data,
-      });
     }
+
+    if (step === 3) {
+      setStep(4);
+    }
+  };
+
+  const onSubmite = async (data: ISignUpInputDto) => {
+    RegisterCompany({
+      body: data,
+    });
   };
 
   const getStepTitle = () => {
@@ -204,7 +210,7 @@ const Register = () => {
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
-              onClick={() => step > 1 ? setStep(step - 1) : navigate("/")}
+              onClick={() => (step > 1 ? setStep(step - 1) : navigate("/"))}
               className="hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -228,7 +234,7 @@ const Register = () => {
 
           {/* Progress bar */}
           <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-primary h-2 rounded-full transition-all duration-300"
               style={{ width: `${(step / 4) * 100}%` }}
             />
@@ -242,7 +248,7 @@ const Register = () => {
           {/* Hero section for step 1 */}
           {step === 1 && (
             <div className="text-center mb-12">
-              <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <div className="inline-flex items-center bg-primary/10 px-4 py-2 rounded-full text-sm font-medium mb-6">
                 <Sparkles className="h-4 w-4 mr-2" />
                 Junte-se a mais de 1.000 empresas
               </div>
@@ -250,18 +256,23 @@ const Register = () => {
                 Crie seu catálogo online em minutos
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                Transforme sua empresa digital com nossa plataforma completa para catálogos online
+                Transforme sua empresa digital com nossa plataforma completa
+                para catálogos online
               </p>
-              
+
               {/* Benefits */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex flex-col items-center p-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                      <benefit.icon className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                      <benefit.icon className="h-6 w-6" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{benefit.title}</h3>
-                    <p className="text-sm text-gray-600 text-center">{benefit.description}</p>
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 text-center">
+                      {benefit.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -315,13 +326,18 @@ const Register = () => {
                           type={showPassword ? "text" : "password"}
                           placeholder="Mínimo 6 caracteres"
                           endComponent={
-                            showPassword ? (
-                              <EyeOff size={18} />
-                            ) : (
-                              <Eye size={18} />
-                            )
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => setShowPassword((v) => !v)}
+                            >
+                              {showPassword ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
+                            </Button>
                           }
-                          onTrailingIconClick={() => setShowPassword((v) => !v)}
                         />
 
                         <InputField
@@ -335,7 +351,17 @@ const Register = () => {
                       </div>
 
                       <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
-                        <p>Ao continuar, você concorda com nossos <Link to="#" className="text-primary hover:underline">Termos de Uso</Link> e <Link to="#" className="text-primary hover:underline">Política de Privacidade</Link>.</p>
+                        <p>
+                          Ao continuar, você concorda com nossos{" "}
+                          <Link to="#" className="text-primary hover:underline">
+                            Termos de Uso
+                          </Link>{" "}
+                          e{" "}
+                          <Link to="#" className="text-primary hover:underline">
+                            Política de Privacidade
+                          </Link>
+                          .
+                        </p>
                       </div>
                     </div>
                   )}
@@ -398,11 +424,6 @@ const Register = () => {
 
                   {step === 3 && (
                     <div className="space-y-6">
-                      <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold mb-2">Escolha o plano ideal para sua empresa</h3>
-                        <p className="text-gray-600">Você pode mudar de plano a qualquer momento</p>
-                      </div>
-
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {plans.map((plan) => {
                           const IconComponent = plan.icon;
@@ -423,11 +444,11 @@ const Register = () => {
                               }}
                             >
                               {plan.popular && (
-                                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-black px-3 py-1">
+                                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-black px-3 py-1 z-10">
                                   {plan.savings}
                                 </Badge>
                               )}
-                              
+
                               <div className="text-center mb-4">
                                 <div
                                   className={`w-12 h-12 ${plan.color} rounded-lg flex items-center justify-center mx-auto mb-3`}
@@ -446,7 +467,7 @@ const Register = () => {
                                   </span>
                                 </div>
                               </div>
-                              
+
                               <ul className="space-y-2">
                                 {plan.features.map((feature, index) => (
                                   <li
@@ -460,7 +481,7 @@ const Register = () => {
                                   </li>
                                 ))}
                               </ul>
-                              
+
                               {selectedPlan === plan.id && (
                                 <div className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none">
                                   <div className="absolute top-3 right-3 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
@@ -477,8 +498,12 @@ const Register = () => {
                         <div className="flex items-center">
                           <Shield className="h-5 w-5 text-blue-600 mr-3" />
                           <div>
-                            <p className="font-medium text-blue-900">Garantia de 30 dias</p>
-                            <p className="text-sm text-blue-700">Não gostou? Devolvemos seu dinheiro sem perguntas</p>
+                            <p className="font-medium text-blue-900">
+                              Garantia de 30 dias
+                            </p>
+                            <p className="text-sm text-blue-700">
+                              Não gostou? Devolvemos seu dinheiro sem perguntas
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -488,13 +513,17 @@ const Register = () => {
                   {step === 4 && (
                     <div className="space-y-6">
                       <div className="bg-gray-50 p-6 rounded-lg">
-                        <h3 className="font-semibold text-lg mb-4">Resumo do pedido</h3>
+                        <h3 className="font-semibold text-lg mb-4">
+                          Resumo do pedido
+                        </h3>
                         <div className="flex justify-between items-center">
                           <span className="font-medium">
-                            Plano {plans.find((p) => p.id === selectedPlan)?.name}
+                            Plano{" "}
+                            {plans.find((p) => p.id === selectedPlan)?.name}
                           </span>
                           <span className="font-bold text-lg">
-                            {plans.find((p) => p.id === selectedPlan)?.price}/mês
+                            {plans.find((p) => p.id === selectedPlan)?.price}
+                            /mês
                           </span>
                         </div>
                       </div>
@@ -525,7 +554,11 @@ const Register = () => {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="expiryDate">Validade</Label>
-                            <Input id="expiryDate" placeholder="MM/AA" required />
+                            <Input
+                              id="expiryDate"
+                              placeholder="MM/AA"
+                              required
+                            />
                           </div>
 
                           <div className="space-y-2">
@@ -539,8 +572,12 @@ const Register = () => {
                         <div className="flex items-center">
                           <Check className="h-5 w-5 text-green-600 mr-3" />
                           <div>
-                            <p className="font-medium text-green-900">Pagamento seguro</p>
-                            <p className="text-sm text-green-700">Seus dados estão protegidos com criptografia SSL</p>
+                            <p className="font-medium text-green-900">
+                              Pagamento seguro
+                            </p>
+                            <p className="text-sm text-green-700">
+                              Seus dados estão protegidos com criptografia SSL
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -555,11 +592,12 @@ const Register = () => {
                         <span>Finalizando cadastro...</span>
                       )}
                     </div>
-                    
+
                     <Button
-                      type="submit"
-                      className="bg-primary hover:bg-primary/90 text-black font-semibold px-8 py-3 text-lg"
+                      type={step === 4 ? "submit" : "button"}
+                      className="bg-primary hover:bg-primary/90"
                       disabled={isRegisterLoading}
+                      onClick={() => nextStep()}
                     >
                       {step === 4 ? (
                         isRegisterLoading ? (
@@ -577,7 +615,7 @@ const Register = () => {
                   </div>
                 </form>
               </Form>
-              
+
               {step === 1 && (
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600">

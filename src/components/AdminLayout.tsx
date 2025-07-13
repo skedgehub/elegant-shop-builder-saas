@@ -1,4 +1,3 @@
-
 import { ReactNode, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -41,24 +40,23 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen">
       <div className="flex h-screen">
         {/* Mobile Sidebar */}
         {isMobile ? (
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetContent side="left" className="p-0 w-64">
-              <AdminSidebar
-                isCollapsed={false}
-                onToggleCollapse={() => {}}
-              />
+              <AdminSidebar isCollapsed={false} onToggleCollapse={() => {}} />
             </SheetContent>
           </Sheet>
         ) : (
           /* Desktop Sidebar */
-          <div className={cn(
-            "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 transition-all duration-300",
-            isCollapsed ? "lg:w-16" : "lg:w-64"
-          )}>
+          <div
+            className={cn(
+              "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 transition-all duration-300",
+              isCollapsed ? "lg:w-16" : "lg:w-64",
+            )}
+          >
             <AdminSidebar
               isCollapsed={isCollapsed}
               onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
@@ -67,17 +65,22 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         )}
 
         {/* Main content */}
-        <div className={cn(
-          "flex-1 flex flex-col transition-all duration-300",
-          !isMobile && (isCollapsed ? "lg:pl-16" : "lg:pl-64")
-        )}>
+        <div
+          className={cn(
+            "flex-1 flex flex-col transition-all duration-300",
+            !isMobile && (isCollapsed ? "lg:pl-16" : "lg:pl-64"),
+          )}
+        >
           {/* Header - Fixed and Responsive */}
-          <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+          <header className="shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
             <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
               <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
                 {/* Mobile Menu Button */}
                 {isMobile && (
-                  <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                  <Sheet
+                    open={isMobileMenuOpen}
+                    onOpenChange={setIsMobileMenuOpen}
+                  >
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="p-2">
                         <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -100,13 +103,21 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs sm:text-sm max-w-[120px] sm:max-w-none">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs sm:text-sm max-w-[120px] sm:max-w-none"
+                    >
                       <User className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 sm:mr-2 flex-shrink-0" />
-                      <span className="hidden sm:inline truncate">{user?.email}</span>
+                      <span className="hidden sm:inline truncate">
+                        {user?.email}
+                      </span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuLabel className="text-sm">Minha Conta</DropdownMenuLabel>
+                    <DropdownMenuLabel className="text-sm">
+                      Minha Conta
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => navigate("/admin/profile")}
@@ -116,7 +127,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                       Perfil
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="text-sm">
+                    <DropdownMenuItem
+                      onClick={handleSignOut}
+                      className="text-sm"
+                    >
                       <LogOut className="h-4 w-4 mr-2" />
                       Sair
                     </DropdownMenuItem>
@@ -127,7 +141,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </header>
 
           {/* Page content - Scrollable and Responsive */}
-          <main className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6">{children}</main>
+          <main className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6 bg-gray-50 dark:bg-background">
+            {children}
+          </main>
         </div>
       </div>
     </div>

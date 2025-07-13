@@ -36,11 +36,11 @@ const AdminDashboard = () => {
     const totalProducts = products.length;
     const totalOrders = orders.length;
     const pendingOrders = orders.filter(
-      (order) => order.status === "pending"
+      (order) => order.status === "pending",
     ).length;
     const totalRevenue = orders.reduce(
       (sum, order) => sum + order.total_amount,
-      0
+      0,
     );
 
     // Calcular conversão: pedidos / (visualizações ou produtos * 10)
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
     const categoryStats = categories
       .map((category) => {
         const categoryProducts = products.filter(
-          (p) => p.category_id === category.id
+          (p) => p.category_id === category.id,
         );
         return {
           name: category.name,
@@ -142,13 +142,12 @@ const AdminDashboard = () => {
           <div className="flex space-x-3 mt-4 sm:mt-0">
             <Button
               variant="outline"
-              size="sm"
               onClick={() => navigate("/catalog/minhaloja")}
             >
               <Globe className="h-4 w-4 mr-2" />
               Ver Catálogo
             </Button>
-            <Button size="sm" onClick={() => navigate("/admin/products/new")}>
+            <Button onClick={() => navigate("/admin/products/new")}>
               <Plus className="h-4 w-4 mr-2" />
               Novo Produto
             </Button>
@@ -173,15 +172,15 @@ const AdminDashboard = () => {
                         stat.changeType === "positive"
                           ? "text-green-600"
                           : stat.changeType === "negative"
-                          ? "text-red-600"
-                          : "text-gray-600"
+                            ? "text-red-600"
+                            : "text-gray-600"
                       }`}
                     >
                       {stat.change}
                     </p>
                   </div>
-                  <div className="h-12 w-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
-                    <stat.icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+                  <div className="min-h-12 min-w-12 bg-primary rounded-lg flex items-center justify-center">
+                    <stat.icon className="h-6 w-6 text-black" />
                   </div>
                 </div>
               </CardContent>
@@ -283,10 +282,10 @@ const AdminDashboard = () => {
                         Nenhuma categoria com produtos
                       </p>
                       <Button
-                        size="sm"
-                        className="mt-2"
+                        className="mt-4"
                         onClick={() => navigate("/admin/categories/new")}
                       >
+                        <Plus />
                         Criar Categoria
                       </Button>
                     </div>

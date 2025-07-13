@@ -297,7 +297,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-inter overflow-x-hidden relative">
+    <div className="min-h-screen bg-white  font-inter overflow-x-hidden relative">
       {/* Enhanced Header with dropdown */}
       <header className="border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-6">
