@@ -62,10 +62,16 @@ const Index = () => {
   });
   const [scrollY, setScrollY] = useState(0);
   const [showPromotionalModal, setShowPromotionalModal] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
 
     // Smooth scroll for navigation
     const smoothScrollTo = (elementId: string) => {
@@ -94,6 +100,7 @@ const Index = () => {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
       links.forEach((link) => {
         link.removeEventListener("click", () => {});
       });
@@ -297,16 +304,55 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white  font-inter overflow-x-hidden relative">
-      {/* Enhanced Header with dropdown */}
-      <header className="border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-black text-white font-inter overflow-x-hidden relative">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        {/* Gradient Mesh */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
+        
+        {/* Floating Orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-96 h-96 bg-green-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-40 left-1/4 w-80 h-80 bg-primary/15 rounded-full blur-3xl animate-pulse delay-2000"></div>
+        
+        {/* Animated Grid */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="h-full w-full bg-[linear-gradient(rgba(31,250,67,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(31,250,67,0.1)_1px,transparent_1px)] bg-[size:50px_50px] animate-pulse"></div>
+        </div>
+        
+        {/* Mouse Follower Light */}
+        <div 
+          className="absolute pointer-events-none transition-all duration-300 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
+          style={{
+            left: mousePosition.x - 192,
+            top: mousePosition.y - 192,
+          }}
+        ></div>
+        
+        {/* Particle System */}
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-primary/30 rounded-full animate-pulse"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 3}s`,
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* Enhanced Header with Glass Effect */}
+      <header className="border-b border-gray-800/50 bg-black/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+              <div className="h-8 w-8 bg-gradient-to-r from-primary to-green-400 rounded-lg flex items-center justify-center shadow-lg shadow-primary/25">
                 <span className="text-black font-bold text-sm">W</span>
               </div>
-              <span className="text-xl font-semibold text-black tracking-tight">
+              <span className="text-xl font-semibold text-white tracking-tight">
                 Wibbo
               </span>
             </div>
@@ -314,28 +360,28 @@ const Index = () => {
             {/* Desktop Navigation with Dropdown */}
             <nav className="hidden md:flex items-center space-x-8">
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center text-gray-600 hover:text-black transition-colors text-sm font-medium">
+                <DropdownMenuTrigger className="flex items-center text-gray-400 hover:text-primary transition-colors text-sm font-medium">
                   Recursos
                   <ChevronDown className="ml-1 h-3 w-3" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
+                <DropdownMenuContent className="bg-gray-900/95 backdrop-blur-xl border border-gray-800 shadow-lg">
                   <DropdownMenuItem>
-                    <a href="#recursos" className="w-full">
+                    <a href="#recursos" className="w-full text-gray-300 hover:text-primary">
                       Visão Geral
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <a href="#recursos" className="w-full">
+                    <a href="#recursos" className="w-full text-gray-300 hover:text-primary">
                       Subdomínio Personalizado
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <a href="#recursos" className="w-full">
+                    <a href="#recursos" className="w-full text-gray-300 hover:text-primary">
                       Analytics Avançado
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <a href="#recursos" className="w-full">
+                    <a href="#recursos" className="w-full text-gray-300 hover:text-primary">
                       Integrações
                     </a>
                   </DropdownMenuItem>
@@ -344,13 +390,13 @@ const Index = () => {
 
               <a
                 href="#cases"
-                className="text-gray-600 hover:text-black transition-colors text-sm font-medium"
+                className="text-gray-400 hover:text-primary transition-colors text-sm font-medium"
               >
                 Cases
               </a>
               <a
                 href="#precos"
-                className="text-gray-600 hover:text-black transition-colors text-sm font-medium"
+                className="text-gray-400 hover:text-primary transition-colors text-sm font-medium"
               >
                 Preços
               </a>
@@ -360,7 +406,7 @@ const Index = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-gray-600 hover:text-black"
+                    className="text-gray-400 hover:text-primary border-gray-800 hover:border-primary/50"
                   >
                     Entrar
                   </Button>
@@ -368,7 +414,7 @@ const Index = () => {
                 <Link to="/register">
                   <Button
                     size="sm"
-                    className="bg-black hover:bg-gray-900 text-white px-6"
+                    className="bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black px-6 shadow-lg shadow-primary/25"
                   >
                     Solicitar Acesso
                   </Button>
@@ -380,7 +426,7 @@ const Index = () => {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden text-gray-400 hover:text-primary"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <Menu className="h-5 w-5" />
@@ -389,36 +435,36 @@ const Index = () => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden mt-6 pb-6 border-t border-gray-100 animate-fade-in">
+            <div className="md:hidden mt-6 pb-6 border-t border-gray-800/50 animate-fade-in">
               <div className="flex flex-col space-y-4 pt-6">
                 <a
                   href="#recursos"
-                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                  className="text-gray-400 hover:text-primary transition-colors px-4 py-2"
                 >
                   Recursos
                 </a>
                 <a
                   href="#cases"
-                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                  className="text-gray-400 hover:text-primary transition-colors px-4 py-2"
                 >
                   Cases
                 </a>
                 <a
                   href="#precos"
-                  className="text-gray-600 hover:text-black transition-colors px-4 py-2"
+                  className="text-gray-400 hover:text-primary transition-colors px-4 py-2"
                 >
                   Preços
                 </a>
-                <div className="flex flex-col space-y-3 px-4 pt-4 border-t border-gray-100">
+                <div className="flex flex-col space-y-3 px-4 pt-4 border-t border-gray-800/50">
                   <Link to="/login">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full border-gray-800 text-gray-300 hover:border-primary/50 hover:text-primary">
                       Entrar
                     </Button>
                   </Link>
                   <Link to="/register">
                     <Button
                       size="sm"
-                      className="w-full bg-black hover:bg-gray-900 text-white"
+                      className="w-full bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black"
                     >
                       Solicitar Acesso
                     </Button>
@@ -430,27 +476,45 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Fixed Hero Section */}
-      <section className="pt-16 pb-24 px-6 relative z-10">
+      {/* Enhanced Hero Section with Neon Effect */}
+      <section className="pt-20 pb-32 px-6 relative z-10">
         <div className="container mx-auto text-center relative z-10 max-w-5xl">
-          <Badge className="mb-8 bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 transition-colors">
+          <Badge className="mb-8 bg-gray-900/50 text-primary border-primary/30 hover:bg-gray-800/50 transition-colors backdrop-blur-sm">
             <Sparkles className="h-3 w-3 mr-2" />
             Tecnologia para marcas que lideram
           </Badge>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-8 leading-tight tracking-tight px-2">
             Transforme sua
-            <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
-              operação digital
+            <span className="block font-semibold relative group cursor-pointer">
+              {/* Neon Effect Text */}
+              <span className="relative inline-block">
+                <span className="absolute inset-0 bg-gradient-to-r from-primary via-green-400 to-primary bg-clip-text text-transparent animate-pulse blur-sm">
+                  operação digital
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-primary via-green-300 to-green-400 bg-clip-text text-transparent animate-pulse">
+                  operação digital
+                </span>
+                <span className="relative bg-gradient-to-r from-primary via-green-400 to-primary bg-clip-text text-transparent">
+                  operação digital
+                </span>
+              </span>
+              
+              {/* Neon Glow Effects */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-green-400/20 to-primary/20 blur-xl opacity-70 animate-pulse group-hover:opacity-90 transition-opacity"></div>
+              <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 via-green-400/30 to-primary/30 blur-lg opacity-50 animate-pulse delay-500 group-hover:opacity-80 transition-opacity"></div>
+              
+              {/* Animated Border */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary via-green-400 to-primary opacity-20 blur-sm rounded-lg animate-pulse delay-1000"></div>
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
+          <p className="text-lg md:text-xl lg:text-2xl text-gray-300 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
             Uma plataforma premium para catálogos digitais. Performance,
             personalização e exclusividade em cada detalhe.
           </p>
 
-          {/* Enhanced Stats Cards with 3D effect */}
+          {/* Enhanced Stats Cards with Hover Effects */}
           <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto mb-16">
             {[
               {
@@ -471,7 +535,7 @@ const Index = () => {
             ].map((stat, index) => (
               <Card
                 key={index}
-                className="bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group transform-gpu"
+                className="bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-lg hover:shadow-primary/10 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 group transform-gpu cursor-pointer"
                 style={{
                   transform: `translateY(${scrollY * 0.02 * (index + 1)}px)`,
                 }}
@@ -480,10 +544,10 @@ const Index = () => {
                   <div className="flex justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
                     {stat.icon}
                   </div>
-                  <div className="text-3xl font-semibold text-black mb-2">
+                  <div className="text-3xl font-semibold text-white mb-2 group-hover:text-primary transition-colors">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-gray-600 font-medium">
+                  <div className="text-sm text-gray-400 font-medium">
                     {stat.label}
                   </div>
                 </CardContent>
@@ -495,7 +559,7 @@ const Index = () => {
             <Link to="/register">
               <Button
                 size="lg"
-                className="text-base px-8 py-6 bg-black hover:bg-gray-900 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all group"
+                className="text-base px-8 py-6 bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black shadow-lg shadow-primary/25 hover:shadow-primary/40 transform hover:-translate-y-0.5 transition-all group"
               >
                 Solicitar Acesso Exclusivo
                 <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -505,7 +569,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="text-base px-8 py-6 border-gray-300 hover:bg-gray-50 group"
+                className="text-base px-8 py-6 border-gray-800 hover:border-primary/50 text-gray-300 hover:text-primary group backdrop-blur-sm"
               >
                 <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
                 Explorar Demonstração
@@ -515,18 +579,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Brands Section */}
-      <section className="py-16 px-6 bg-gray-50/30">
+      {/* Enhanced Brands Section */}
+      <section className="py-16 px-6 bg-gray-900/20 backdrop-blur-sm border-y border-gray-800/30">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <p className="text-sm text-gray-600 font-medium mb-8">
+            <p className="text-sm text-gray-400 font-medium mb-8">
               Marcas que confiam na nossa tecnologia
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-60">
               {brands.map((brand, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-center hover:opacity-100 transition-opacity duration-300"
+                  className="flex items-center justify-center hover:opacity-100 transition-all duration-300 transform hover:scale-110"
                 >
                   <img
                     src={brand.logo}
@@ -540,15 +604,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section with scroll animations */}
-      <section id="recursos" className="py-24 px-6 bg-gray-50/50">
+      {/* Enhanced Features Section */}
+      <section id="recursos" className="py-24 px-6 bg-gray-900/10 backdrop-blur-sm relative">
         <div className="container mx-auto">
           <div className="text-center mb-20 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-tight">
               Tecnologia que faz a
-              <span className="block font-semibold">diferença</span>
+              <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">diferença</span>
             </h2>
-            <p className="text-xl text-gray-600 font-light">
+            <p className="text-xl text-gray-300 font-light">
               Recursos desenvolvidos para marcas que não aceitam o comum
             </p>
           </div>
@@ -556,22 +620,22 @@ const Index = () => {
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className="border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-1 group transform-gpu"
+                className="border border-gray-800/50 bg-gray-900/30 backdrop-blur-sm shadow-lg hover:shadow-primary/10 hover:border-primary/30 transition-all duration-500 hover:-translate-y-1 group transform-gpu cursor-pointer"
                 style={{
                   animation: `fade-in 0.6s ease-out ${index * 0.1}s both`,
                   transform: `translateY(${scrollY * 0.01 * (index + 1)}px)`,
                 }}
               >
                 <CardHeader className="pb-4">
-                  <div className="h-12 w-12 bg-gray-50 rounded-xl mb-6 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center text-gray-700 group-hover:text-primary">
+                  <div className="h-12 w-12 bg-gray-800/50 rounded-xl mb-6 group-hover:bg-primary/20 transition-colors duration-300 flex items-center justify-center text-gray-400 group-hover:text-primary">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-lg text-black font-semibold group-hover:text-gray-900 transition-colors">
+                  <CardTitle className="text-lg text-white font-semibold group-hover:text-primary transition-colors">
                     {feature.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 leading-relaxed font-light">
+                  <p className="text-gray-400 leading-relaxed font-light">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -581,15 +645,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Compact Testimonials with Infinite Scroll */}
-      <section id="cases" className="py-24 px-6 bg-white overflow-hidden">
+      {/* Enhanced Testimonials with Infinite Scroll */}
+      <section id="cases" className="py-24 px-6 bg-black/50 backdrop-blur-sm overflow-hidden relative">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-tight">
               Resultados que
-              <span className="block font-semibold">falam por si</span>
+              <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">falam por si</span>
             </h2>
-            <p className="text-xl text-gray-600 font-light">
+            <p className="text-xl text-gray-300 font-light">
               Cases reais de marcas que escolheram a excelência
             </p>
           </div>
@@ -606,7 +670,7 @@ const Index = () => {
               {allTestimonials.map((testimonial, index) => (
                 <Card
                   key={index}
-                  className="min-w-[320px] max-w-[320px] border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 flex-shrink-0"
+                  className="min-w-[320px] max-w-[320px] border border-gray-800/50 bg-gray-900/30 backdrop-blur-sm shadow-lg hover:shadow-primary/10 hover:border-primary/30 transition-all duration-300 flex-shrink-0 cursor-pointer"
                 >
                   <CardContent className="pt-6 pb-6">
                     <div className="flex justify-center mb-4">
@@ -617,7 +681,7 @@ const Index = () => {
                         />
                       ))}
                     </div>
-                    <p className="text-gray-700 mb-6 italic text-sm leading-relaxed font-light line-clamp-3">
+                    <p className="text-gray-300 mb-6 italic text-sm leading-relaxed font-light line-clamp-3">
                       "{testimonial.content}"
                     </p>
                     <div className="flex items-center">
@@ -627,10 +691,10 @@ const Index = () => {
                         className="h-10 w-10 rounded-full mr-3 object-cover"
                       />
                       <div>
-                        <p className="font-semibold text-black text-sm">
+                        <p className="font-semibold text-white text-sm">
                           {testimonial.name}
                         </p>
-                        <p className="text-gray-600 text-xs font-medium">
+                        <p className="text-gray-400 text-xs font-medium">
                           {testimonial.company}
                         </p>
                       </div>
@@ -643,15 +707,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="precos" className="py-24 px-6 bg-gray-50/50">
+      {/* Enhanced Pricing Section */}
+      <section id="precos" className="py-24 px-6 bg-gray-900/10 backdrop-blur-sm">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-tight">
               Investimento em
-              <span className="block font-semibold">excelência</span>
+              <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">excelência</span>
             </h2>
-            <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 font-light max-w-2xl mx-auto">
               Planos desenvolvidos para diferentes estágios do seu crescimento
             </p>
           </div>
@@ -660,29 +724,29 @@ const Index = () => {
             {plans.map((plan, index) => (
               <Card
                 key={index}
-                className={`border transition-all duration-300 hover:-translate-y-1 ${
+                className={`border transition-all duration-300 hover:-translate-y-1 cursor-pointer ${
                   plan.highlight
-                    ? "border-primary shadow-lg scale-105 bg-white"
-                    : "border-gray-200 bg-white shadow-sm hover:shadow-lg"
+                    ? "border-primary/50 shadow-lg shadow-primary/20 scale-105 bg-gray-900/50 backdrop-blur-sm"
+                    : "border-gray-800/50 bg-gray-900/30 backdrop-blur-sm hover:shadow-lg hover:border-primary/30 hover:shadow-primary/10"
                 }`}
               >
                 <CardHeader className="text-center pb-4">
                   {plan.highlight && (
-                    <Badge className="w-fit mx-auto mb-4 bg-primary text-black">
+                    <Badge className="w-fit mx-auto mb-4 bg-gradient-to-r from-primary to-green-400 text-black">
                       Mais Popular
                     </Badge>
                   )}
-                  <CardTitle className="text-xl font-semibold text-black">
+                  <CardTitle className="text-xl font-semibold text-white">
                     {plan.name}
                   </CardTitle>
-                  <CardDescription className="text-gray-600 font-light">
+                  <CardDescription className="text-gray-400 font-light">
                     {plan.description}
                   </CardDescription>
                   <div className="mt-6">
-                    <span className="text-4xl font-light text-black">
+                    <span className="text-4xl font-light text-white">
                       {plan.price}
                     </span>
-                    <span className="text-gray-600 font-light">
+                    <span className="text-gray-400 font-light">
                       {plan.period}
                     </span>
                   </div>
@@ -695,7 +759,7 @@ const Index = () => {
                         className="flex items-center text-sm"
                       >
                         <Check className="h-4 w-4 text-primary mr-3 flex-shrink-0" />
-                        <span className="text-gray-700 font-light">
+                        <span className="text-gray-300 font-light">
                           {feature}
                         </span>
                       </li>
@@ -703,10 +767,10 @@ const Index = () => {
                   </ul>
                   <Link to="/register">
                     <Button
-                      className={`w-full ${
+                      className={`w-full transition-all ${
                         plan.highlight
-                          ? "bg-black hover:bg-gray-900 text-white"
-                          : "bg-gray-100 hover:bg-gray-200 text-black"
+                          ? "bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black shadow-lg shadow-primary/25"
+                          : "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 hover:border-primary/50"
                       }`}
                     >
                       Solicitar Acesso
@@ -720,25 +784,25 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section id="contato" className="py-24 px-6 bg-gray-50/50">
+      <section id="contato" className="py-24 px-6 bg-gray-900/20 backdrop-blur-sm">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-tight">
               Transforme sua marca
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto font-light">
               Entre em contato e descubra como elevar sua operação digital
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16 max-w-5xl mx-auto">
             {/* Contact Form */}
-            <Card className="border border-gray-100 bg-white shadow-sm">
+            <Card className="border border-gray-800/50 bg-gray-900/30 backdrop-blur-sm shadow-lg">
               <CardHeader>
-                <CardTitle className="text-black font-semibold">
+                <CardTitle className="text-white font-semibold">
                   Solicitar Consulta
                 </CardTitle>
-                <CardDescription className="font-light">
+                <CardDescription className="font-light text-gray-400">
                   Preencha os dados e nossa equipe entrará em contato
                 </CardDescription>
               </CardHeader>
@@ -746,7 +810,7 @@ const Index = () => {
                 <form onSubmit={handleContactSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm font-medium">
+                      <Label htmlFor="name" className="text-sm font-medium text-gray-300">
                         Nome
                       </Label>
                       <Input
@@ -760,11 +824,11 @@ const Index = () => {
                           }))
                         }
                         required
-                        className="border-gray-200 focus:border-primary"
+                        className="border-gray-700 bg-gray-800/50 focus:border-primary text-white placeholder:text-gray-500"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium">
+                      <Label htmlFor="email" className="text-sm font-medium text-gray-300">
                         Email
                       </Label>
                       <Input
@@ -779,13 +843,13 @@ const Index = () => {
                           }))
                         }
                         required
-                        className="border-gray-200 focus:border-primary"
+                        className="border-gray-700 bg-gray-800/50 focus:border-primary text-white placeholder:text-gray-500"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-sm font-medium">
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-300">
                       Telefone
                     </Label>
                     <Input
@@ -798,12 +862,12 @@ const Index = () => {
                           phone: e.target.value,
                         }))
                       }
-                      className="border-gray-200 focus:border-primary"
+                      className="border-gray-700 bg-gray-800/50 focus:border-primary text-white placeholder:text-gray-500"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm font-medium">
+                    <Label htmlFor="message" className="text-sm font-medium text-gray-300">
                       Mensagem
                     </Label>
                     <Textarea
@@ -818,13 +882,13 @@ const Index = () => {
                         }))
                       }
                       required
-                      className="border-gray-200 focus:border-primary"
+                      className="border-gray-700 bg-gray-800/50 focus:border-primary text-white placeholder:text-gray-500"
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full bg-black hover:bg-gray-900 text-white py-6"
+                    className="w-full bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black py-6 shadow-lg shadow-primary/25"
                   >
                     Enviar Solicitação
                   </Button>
@@ -835,17 +899,17 @@ const Index = () => {
             {/* Contact Info */}
             <div className="space-y-8">
               <div>
-                <h3 className="text-2xl font-semibold text-black mb-8">
+                <h3 className="text-2xl font-semibold text-white mb-8">
                   Outras formas de contato
                 </h3>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
-                    <div className="bg-gray-50 rounded-lg p-3 flex-shrink-0">
-                      <Phone className="h-5 w-5 text-gray-700" />
+                    <div className="bg-gray-800/50 rounded-lg p-3 flex-shrink-0">
+                      <Phone className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black">Telefone</h4>
-                      <p className="text-gray-600">(11) 3000-0000</p>
+                      <h4 className="font-semibold text-white">Telefone</h4>
+                      <p className="text-gray-400">(11) 3000-0000</p>
                       <p className="text-sm text-gray-500">
                         Segunda a sexta, 9h às 18h
                       </p>
@@ -853,12 +917,12 @@ const Index = () => {
                   </div>
 
                   <div className="flex items-start space-x-4">
-                    <div className="bg-gray-50 rounded-lg p-3 flex-shrink-0">
-                      <Mail className="h-5 w-5 text-gray-700" />
+                    <div className="bg-gray-800/50 rounded-lg p-3 flex-shrink-0">
+                      <Mail className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black">Email</h4>
-                      <p className="text-gray-600">contato@wibbo.com</p>
+                      <h4 className="font-semibold text-white">Email</h4>
+                      <p className="text-gray-400">contato@wibbo.com</p>
                       <p className="text-sm text-gray-500">
                         Resposta em até 24h
                       </p>
@@ -866,12 +930,12 @@ const Index = () => {
                   </div>
 
                   <div className="flex items-start space-x-4">
-                    <div className="bg-gray-50 rounded-lg p-3 flex-shrink-0">
-                      <MapPin className="h-5 w-5 text-gray-700" />
+                    <div className="bg-gray-800/50 rounded-lg p-3 flex-shrink-0">
+                      <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black">Endereço</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-semibold text-white">Endereço</h4>
+                      <p className="text-gray-400">
                         Av. Faria Lima, 1234
                         <br />
                         São Paulo, SP - 01451-001
@@ -885,20 +949,21 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-6 bg-black text-white">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">
+      {/* Enhanced CTA Section */}
+      <section className="py-24 px-6 bg-gradient-to-r from-black via-gray-900 to-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(31,250,67,0.1),transparent_70%)]"></div>
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight text-white">
             Pronto para liderar?
           </h2>
-          <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-light">
+          <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-light text-gray-300">
             Junte-se às marcas que escolheram a tecnologia premium
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/register">
               <Button
                 size="lg"
-                className="text-base px-8 py-6 bg-primary hover:bg-primary/90 text-black shadow-xl"
+                className="text-base px-8 py-6 bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black shadow-xl shadow-primary/25"
               >
                 Solicitar Acesso Exclusivo
               </Button>
@@ -907,7 +972,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base px-8 py-6 text-black"
+                className="text-base px-8 py-6 text-gray-300 border-gray-700 hover:border-primary/50 hover:text-primary"
               >
                 Explorar Demonstração Privada
               </Button>
@@ -916,30 +981,30 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Clean Footer */}
-      <footer className="bg-white py-16 px-6 border-t border-gray-100">
+      {/* Enhanced Footer */}
+      <footer className="bg-gray-900/50 backdrop-blur-sm py-16 px-6 border-t border-gray-800/50">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-6">
-                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+                <div className="h-8 w-8 bg-gradient-to-r from-primary to-green-400 rounded-lg flex items-center justify-center shadow-lg shadow-primary/25">
                   <span className="text-black font-bold text-sm">W</span>
                 </div>
-                <span className="text-xl font-semibold text-black tracking-tight">
+                <span className="text-xl font-semibold text-white tracking-tight">
                   Wibbo
                 </span>
               </div>
-              <p className="text-gray-600 leading-relaxed font-light">
+              <p className="text-gray-400 leading-relaxed font-light">
                 Tecnologia premium para marcas que lideram
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Produto</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-semibold mb-6 text-white">Produto</h4>
+              <ul className="space-y-3 text-gray-400">
                 <li>
                   <a
                     href="#recursos"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Recursos
                   </a>
@@ -947,7 +1012,7 @@ const Index = () => {
                 <li>
                   <a
                     href="#cases"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Cases
                   </a>
@@ -955,7 +1020,7 @@ const Index = () => {
                 <li>
                   <Link
                     to="/admin"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Demonstração
                   </Link>
@@ -963,12 +1028,12 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Suporte</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-semibold mb-6 text-white">Suporte</h4>
+              <ul className="space-y-3 text-gray-400">
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Central de Ajuda
                   </a>
@@ -976,7 +1041,7 @@ const Index = () => {
                 <li>
                   <a
                     href="#contato"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Contato
                   </a>
@@ -984,7 +1049,7 @@ const Index = () => {
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Status
                   </a>
@@ -992,12 +1057,12 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Empresa</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-semibold mb-6 text-white">Empresa</h4>
+              <ul className="space-y-3 text-gray-400">
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Sobre
                   </a>
@@ -1005,7 +1070,7 @@ const Index = () => {
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Privacidade
                   </a>
@@ -1013,7 +1078,7 @@ const Index = () => {
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
+                    className="hover:text-primary transition-colors font-light"
                   >
                     Termos
                   </a>
@@ -1021,7 +1086,7 @@ const Index = () => {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-100 mt-16 pt-8 text-center text-gray-500">
+          <div className="border-t border-gray-800/50 mt-16 pt-8 text-center text-gray-500">
             <p className="font-light">
               &copy; 2024 Wibbo. Todos os direitos reservados.
             </p>
@@ -1029,12 +1094,12 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* Floating Contact Button */}
+      {/* Enhanced Floating Contact Button */}
       <div className="fixed bottom-6 right-6 z-40">
         <a href="#contato">
           <Button
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-black shadow-lg hover:shadow-xl rounded-full p-4 group"
+            className="bg-gradient-to-r from-primary to-green-400 hover:from-primary/90 hover:to-green-400/90 text-black shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 rounded-full p-4 group"
           >
             <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
           </Button>
