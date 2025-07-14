@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -40,10 +41,14 @@ import {
   Award,
   Layers,
   ChevronDown,
+  CreditCard,
+  ShoppingCart,
+  Banknote,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PromotionalModal from "@/components/PromotionalModal";
+import ResourceCard from "@/components/ResourceCard";
 
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,7 +74,7 @@ const Index = () => {
       "sameAs": [
         "https://wibbo.com.br"
       ],
-      "description": "Wibbo.com - Plataforma premium para catálogos digitais que revoluciona operações comerciais",
+      "description": "Plataforma premium para catálogos digitais que revoluciona operações comerciais",
       "foundingDate": "2024",
       "numberOfEmployees": "50-100",
       "address": {
@@ -114,39 +119,76 @@ const Index = () => {
     setContactForm({ name: "", email: "", phone: "", message: "" });
   };
 
-  const features = [
+  const resources = [
     {
-      icon: <Globe className="h-5 w-5" />,
-      title: "Subdomínio Personalizado",
-      description:
-        "Configure sua identidade digital única com subdomínio exclusivo",
+      icon: <Globe className="h-6 w-6" />,
+      title: "Catálogo Digital Completo",
+      description: "Crie seu catálogo profissional com subdomínio personalizado e design premium que converte visitantes em clientes.",
+      features: [
+        "Subdomínio exclusivo seu-negocio.wibbo.com",
+        "Design responsivo e otimizado",
+        "Carregamento ultra-rápido",
+        "SEO otimizado automaticamente"
+      ],
+      badge: "Mais Popular"
     },
     {
-      icon: <Layers className="h-5 w-5" />,
-      title: "Campos Inteligentes",
-      description: "Personalização avançada de produtos com campos dinâmicos",
+      icon: <CreditCard className="h-6 w-6" />,
+      title: "Sistema de Pagamentos Integrado",
+      description: "Receba pagamentos direto no seu catálogo com checkout seguro e múltiplas formas de pagamento.",
+      features: [
+        "PIX, cartão e boleto",
+        "Checkout em 1 clique",
+        "Pagamentos seguros",
+        "Relatórios de vendas"
+      ],
+      highlight: true,
+      badge: "Novo"
     },
     {
-      icon: <BarChart3 className="h-5 w-5" />,
-      title: "Painel Executivo",
-      description: "Analytics em tempo real para decisões estratégicas",
+      icon: <BarChart3 className="h-6 w-6" />,
+      title: "Analytics Avançado",
+      description: "Dashboards completos para acompanhar vendas, visitantes e performance do seu catálogo em tempo real.",
+      features: [
+        "Vendas em tempo real",
+        "Produtos mais visualizados",
+        "Origem dos visitantes",
+        "Relatórios customizáveis"
+      ]
     },
     {
-      icon: <Shield className="h-5 w-5" />,
-      title: "Tecnologia Escalável",
-      description: "Infraestrutura robusta que cresce com seu negócio",
+      icon: <Smartphone className="h-6 w-6" />,
+      title: "Experiência Mobile Premium",
+      description: "Seus clientes terão a melhor experiência de compra tanto no desktop quanto no celular.",
+      features: [
+        "Design 100% responsivo",
+        "Navegação intuitiva",
+        "Carregamento otimizado",
+        "App-like experience"
+      ]
     },
     {
-      icon: <Award className="h-5 w-5" />,
-      title: "Suporte Premium",
-      description: "Atendimento especializado e consultoria dedicada",
+      icon: <Shield className="h-6 w-6" />,
+      title: "Segurança Empresarial",
+      description: "Infraestrutura robusta com certificados SSL, backup automático e proteção contra ataques.",
+      features: [
+        "SSL gratuito",
+        "Backup diário automático",
+        "Proteção DDoS",
+        "Uptime 99.9%"
+      ]
     },
     {
-      icon: <Zap className="h-5 w-5" />,
-      title: "Performance Otimizada",
-      description:
-        "Velocidade de carregamento superior para conversões máximas",
-    },
+      icon: <Award className="h-6 w-6" />,
+      title: "Suporte Especializado",
+      description: "Time de especialistas dedicado ao seu sucesso, com onboarding personalizado e suporte prioritário.",
+      features: [
+        "Onboarding personalizado",
+        "Suporte via WhatsApp",
+        "Consultoria de vendas",
+        "Treinamento completo"
+      ]
+    }
   ];
 
   const testimonials = [
@@ -154,7 +196,7 @@ const Index = () => {
       name: "Eduardo Monteiro",
       company: "Fundador, TechCorp",
       content:
-        "Nossa operação digital se transformou completamente. Crescemos 4x em vendas nos primeiros dois meses.",
+        "Implementamos a plataforma e em 2 meses nossas vendas online cresceram 400%. O sistema de pagamentos integrado foi um divisor de águas.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
@@ -163,7 +205,7 @@ const Index = () => {
       name: "Marina Silva",
       company: "CEO, ModaStyle",
       content:
-        "A plataforma elevou nossa presença digital a um novo patamar. Performance e elegância que nossos clientes merecem.",
+        "Nossos clientes adoraram o novo catálogo. As vendas aumentaram 250% e agora recebemos elogios sobre a experiência de compra.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=80&h=80&fit=crop&crop=face",
@@ -172,7 +214,7 @@ const Index = () => {
       name: "Ricardo Santos",
       company: "Diretor, SportsPro",
       content:
-        "Tecnologia de ponta que nos diferencia da concorrência. ROI excepcional desde o primeiro dia de implementação.",
+        "ROI excepcional! Em 30 dias já tínhamos recuperado o investimento. A plataforma se pagou sozinha.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face",
@@ -181,7 +223,7 @@ const Index = () => {
       name: "Ana Costa",
       company: "Fundadora, FoodDelivery",
       content:
-        "Não é apenas uma ferramenta, é uma vantagem competitiva. Resultados que falam por si.",
+        "Passamos a vender online sem complicação. O sistema de pagamentos funciona perfeitamente e nossos clientes aprovaram.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face",
@@ -190,7 +232,7 @@ const Index = () => {
       name: "Carlos Mendes",
       company: "CTO, InnovaTech",
       content:
-        "Implementação fluida e resultados imediatos. Nossa conversão aumentou 250% no primeiro trimestre.",
+        "Implementação rápida e resultados imediatos. Nossa conversão aumentou 300% no primeiro trimestre.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=80&h=80&fit=crop&crop=face",
@@ -199,7 +241,7 @@ const Index = () => {
       name: "Sofia Rodrigues",
       company: "Head Digital, LuxBrand",
       content:
-        "Excelência em cada detalhe. A plataforma reflete perfeitamente a sofisticação da nossa marca.",
+        "A qualidade da plataforma reflete perfeitamente o padrão premium da nossa marca. Nossos clientes percebem a diferença.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=80&h=80&fit=crop&crop=face",
@@ -208,7 +250,7 @@ const Index = () => {
       name: "Fernando Lima",
       company: "CEO, RetailPro",
       content:
-        "Transformação digital completa. Nossos clientes agora vivem uma experiência premium em cada interação.",
+        "Transformação digital completa. Nossos clientes agora têm uma experiência de compra superior e isso reflete nas vendas.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=80&h=80&fit=crop&crop=face",
@@ -217,7 +259,7 @@ const Index = () => {
       name: "Beatriz Santos",
       company: "Diretora, EleganceStore",
       content:
-        "A solução perfeita para marcas que buscam excelência. Performance e design em harmonia absoluta.",
+        "A solução perfeita para quem busca excelência. Performance, design e funcionalidade em perfeita harmonia.",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face",
@@ -259,11 +301,11 @@ const Index = () => {
       name: "Starter",
       price: "R$ 497",
       period: "/mês",
-      description: "Para marcas em crescimento",
+      description: "Ideal para começar a vender online",
       features: [
         "Até 1.000 produtos",
-        "Subdomínio personalizado",
-        "Analytics básico",
+        "Catálogo personalizado",
+        "Pagamentos integrados",
         "Suporte por email",
         "5GB de armazenamento",
       ],
@@ -273,7 +315,7 @@ const Index = () => {
       name: "Professional",
       price: "R$ 997",
       period: "/mês",
-      description: "Para operações consolidadas",
+      description: "Para empresas em crescimento",
       features: [
         "Produtos ilimitados",
         "Domínio personalizado",
@@ -281,7 +323,7 @@ const Index = () => {
         "Suporte prioritário",
         "50GB de armazenamento",
         "Integração API",
-        "White-label completo",
+        "Sistema completo de vendas",
       ],
       highlight: true,
     },
@@ -289,7 +331,7 @@ const Index = () => {
       name: "Enterprise",
       price: "R$ 2.997",
       period: "/mês",
-      description: "Para grandes corporações",
+      description: "Para grandes operações",
       features: [
         "Recursos Professional +",
         "Múltiplas lojas",
@@ -305,7 +347,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter overflow-x-hidden relative">
-      {/* Enhanced Header with SEO-optimized navigation */}
+      {/* Enhanced Header */}
       <header className="border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
@@ -318,8 +360,8 @@ const Index = () => {
               </h1>
             </div>
 
-            {/* Desktop Navigation with SEO-optimized links */}
-            <nav className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Menu principal">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8" role="navigation">
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center text-gray-600 hover:text-black transition-colors text-sm font-medium">
                   Recursos
@@ -328,12 +370,12 @@ const Index = () => {
                 <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Visão Geral
+                      Catálogo Digital
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Subdomínio Personalizado
+                      Sistema de Pagamentos
                     </a>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
@@ -343,7 +385,7 @@ const Index = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a href="#recursos" className="w-full">
-                      Integrações
+                      Suporte Especializado
                     </a>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -352,20 +394,18 @@ const Index = () => {
               <a
                 href="#cases"
                 className="text-gray-600 hover:text-black transition-colors text-sm font-medium"
-                title="Cases de sucesso"
               >
-                Cases
+                Cases de Sucesso
               </a>
               <a
                 href="#precos"
                 className="text-gray-600 hover:text-black transition-colors text-sm font-medium"
-                title="Preços da plataforma"
               >
                 Preços
               </a>
 
               <div className="flex items-center space-x-3 ml-8">
-                <Link to="/login" title="Entrar na plataforma">
+                <Link to="/login">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -374,12 +414,12 @@ const Index = () => {
                     Entrar
                   </Button>
                 </Link>
-                <Link to="/register" title="Solicitar acesso Wibbo">
+                <Link to="/register">
                   <Button
                     size="sm"
                     className="bg-black hover:bg-gray-900 text-white px-6"
                   >
-                    Solicitar Acesso
+                    Começar Agora
                   </Button>
                 </Link>
               </div>
@@ -391,49 +431,45 @@ const Index = () => {
               size="sm"
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu mobile Wibbo"
             >
               <Menu className="h-5 w-5" />
             </Button>
           </div>
 
-          {/* Mobile Menu with SEO-optimized content */}
+          {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-6 pb-6 border-t border-gray-100 animate-fade-in">
               <div className="flex flex-col space-y-4 pt-6">
                 <a
                   href="#recursos"
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
-                  title="Recursos da plataforma"
                 >
                   Recursos
                 </a>
                 <a
                   href="#cases"
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
-                  title="Cases de sucesso"
                 >
-                  Cases
+                  Cases de Sucesso
                 </a>
                 <a
                   href="#precos"
                   className="text-gray-600 hover:text-black transition-colors px-4 py-2"
-                  title="Preços da plataforma"
                 >
                   Preços
                 </a>
                 <div className="flex flex-col space-y-3 px-4 pt-4 border-t border-gray-100">
-                  <Link to="/login" title="Login na plataforma">
+                  <Link to="/login">
                     <Button variant="outline" size="sm" className="w-full">
                       Entrar
                     </Button>
                   </Link>
-                  <Link to="/register" title="Solicitar acesso Wibbo">
+                  <Link to="/register">
                     <Button
                       size="sm"
                       className="w-full bg-black hover:bg-gray-900 text-white"
                     >
-                      Solicitar Acesso
+                      Começar Agora
                     </Button>
                   </Link>
                 </div>
@@ -443,44 +479,43 @@ const Index = () => {
         </div>
       </header>
 
-      {/* SEO-optimized Hero Section */}
+      {/* Hero Section */}
       <section className="pt-16 pb-24 px-6 relative z-10">
         <div className="container mx-auto text-center relative z-10 max-w-5xl">
           <Badge className="mb-8 bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 transition-colors">
             <Sparkles className="h-3 w-3 mr-2" />
-            Wibbo.com - Tecnologia para marcas que lideram
+            Plataforma líder em catálogos digitais no Brasil
           </Badge>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
-            Transforme sua
+            Venda mais com seu
             <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
-              operação digital
+              catálogo digital
             </span>
-            com catálogos premium
+            profissional
           </h1>
 
           <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
-            A plataforma líder em catálogos digitais do Brasil. Performance,
-            personalização e exclusividade para empresas que buscam excelência.
+            Crie seu catálogo online completo com sistema de pagamentos integrado e comece a vender em minutos. Mais de 10.000 empresas já transformaram suas vendas.
           </p>
 
-          {/* Enhanced Stats Cards with SEO content */}
+          {/* Enhanced Stats Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto mb-16">
             {[
               {
                 icon: <TrendingUp className="h-5 w-5" />,
-                value: "+300%",
-                label: "Performance média",
+                value: "+350%",
+                label: "Aumento médio em vendas",
               },
               {
                 icon: <Building2 className="h-5 w-5" />,
                 value: "+10.000",
-                label: "Lojas ativas",
+                label: "Empresas transformadas",
               },
               {
-                icon: <Shield className="h-5 w-5" />,
-                value: "99.9%",
-                label: "Uptime garantido",
+                icon: <CreditCard className="h-5 w-5" />,
+                value: "R$ 50M+",
+                label: "Processado em vendas",
               },
             ].map((stat, index) => (
               <Card
@@ -506,35 +541,35 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" title="Solicitar acesso exclusivo Wibbo.com">
+            <Link to="/register">
               <Button
                 size="lg"
                 className="text-base px-8 py-6 bg-black hover:bg-gray-900 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all group"
               >
-                Solicitar Acesso Exclusivo Wibbo
+                Começar a Vender Agora
                 <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/admin" title="Demonstração Wibbo.com.br">
+            <Link to="/admin">
               <Button
                 variant="outline"
                 size="lg"
                 className="text-base px-8 py-6 border-gray-300 hover:bg-gray-50 group"
               >
                 <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                Explorar Demonstração Wibbo
+                Ver Demonstração
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Brands Section with SEO content */}
+      {/* Brands Section */}
       <section className="py-16 px-6 bg-gray-50/30">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-sm text-gray-600 font-medium mb-8">
-              Marcas que confiam na tecnologia Wibbo.com
+              Empresas que já transformaram suas vendas
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-60">
               {brands.map((brand, index) => (
@@ -554,57 +589,44 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section with SEO optimization */}
+      {/* Resources Section */}
       <section id="recursos" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
           <div className="text-center mb-20 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Tecnologia que faz a
-              <span className="block font-semibold">diferença</span>
+              Tudo que você precisa para
+              <span className="block font-semibold">vender online</span>
             </h2>
             <p className="text-xl text-gray-600 font-light">
-              Recursos desenvolvidos para marcas que não aceitam o comum - exclusivos da plataforma Wibbo
+              Ferramentas completas para transformar sua operação em uma máquina de vendas
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <Card
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {resources.map((resource, index) => (
+              <ResourceCard
                 key={index}
-                className="border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-1 group transform-gpu"
-                style={{
-                  animation: `fade-in 0.6s ease-out ${index * 0.1}s both`,
-                  transform: `translateY(${scrollY * 0.01 * (index + 1)}px)`,
-                }}
-              >
-                <CardHeader className="pb-4">
-                  <div className="h-12 w-12 bg-gray-50 rounded-xl mb-6 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center text-gray-700 group-hover:text-primary">
-                    {feature.icon}
-                  </div>
-                  <CardTitle className="text-lg text-black font-semibold group-hover:text-gray-900 transition-colors">
-                    {feature.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 leading-relaxed font-light">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+                icon={resource.icon}
+                title={resource.title}
+                description={resource.description}
+                features={resource.features}
+                highlight={resource.highlight}
+                badge={resource.badge}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section with SEO content */}
+      {/* Testimonials Section */}
       <section id="cases" className="py-24 px-6 bg-white overflow-hidden">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Resultados que
-              <span className="block font-semibold">falam por si</span>
+              Resultados reais de quem
+              <span className="block font-semibold">já transformou</span>
             </h2>
             <p className="text-xl text-gray-600 font-light">
-              Cases reais de marcas que escolheram a excelência da plataforma Wibbo
+              Empresas que multiplicaram suas vendas com nossa plataforma
             </p>
           </div>
 
@@ -657,16 +679,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing Section with SEO optimization */}
+      {/* Pricing Section */}
       <section id="precos" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Investimento em
-              <span className="block font-semibold">excelência</span>
+              Planos que cabem no seu
+              <span className="block font-semibold">orçamento</span>
             </h2>
             <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto">
-              Planos Wibbo.com.br desenvolvidos para diferentes estágios do seu crescimento
+              Escolha o plano ideal para o seu negócio e comece a vender hoje mesmo
             </p>
           </div>
 
@@ -683,7 +705,7 @@ const Index = () => {
                 <CardHeader className="text-center pb-4">
                   {plan.highlight && (
                     <Badge className="w-fit mx-auto mb-4 bg-primary text-black">
-                      Mais Popular Wibbo
+                      Mais Escolhido
                     </Badge>
                   )}
                   <CardTitle className="text-xl font-semibold text-black">
@@ -715,7 +737,7 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  <Link to="/register" title={`Solicitar acesso ${plan.name}`}>
+                  <Link to="/register">
                     <Button
                       className={`w-full ${
                         plan.highlight
@@ -723,7 +745,7 @@ const Index = () => {
                           : "bg-gray-100 hover:bg-gray-200 text-black"
                       }`}
                     >
-                      Solicitar Acesso Wibbo
+                      Escolher Plano
                     </Button>
                   </Link>
                 </CardContent>
@@ -733,15 +755,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section with SEO content */}
+      {/* Contact Section */}
       <section id="contato" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Transforme sua marca
+              Pronto para aumentar suas vendas?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
-              Entre em contato com a Wibbo e descubra como elevar sua operação digital
+              Fale com nossos especialistas e descubra como multiplicar seus resultados
             </p>
           </div>
 
@@ -750,10 +772,10 @@ const Index = () => {
             <Card className="border border-gray-100 bg-white shadow-sm">
               <CardHeader>
                 <CardTitle className="text-black font-semibold">
-                  Solicitar Consulta
+                  Solicitar Demonstração Gratuita
                 </CardTitle>
                 <CardDescription className="font-light">
-                  Preencha os dados e nossa equipe entrará em contato
+                  Preencha os dados e nossa equipe entrará em contato em até 2 horas
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -800,7 +822,7 @@ const Index = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-sm font-medium">
-                      Telefone
+                      WhatsApp
                     </Label>
                     <Input
                       id="phone"
@@ -818,11 +840,11 @@ const Index = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="message" className="text-sm font-medium">
-                      Mensagem
+                      Conte sobre seu negócio
                     </Label>
                     <Textarea
                       id="message"
-                      placeholder="Conte-nos sobre seu projeto"
+                      placeholder="Que tipo de produtos você vende? Quantos produtos tem?"
                       rows={4}
                       value={contactForm.message}
                       onChange={(e) =>
@@ -840,7 +862,7 @@ const Index = () => {
                     type="submit"
                     className="w-full bg-black hover:bg-gray-900 text-white py-6"
                   >
-                    Enviar Solicitação
+                    Solicitar Demonstração Gratuita
                   </Button>
                 </form>
               </CardContent>
@@ -850,7 +872,7 @@ const Index = () => {
             <div className="space-y-8">
               <div>
                 <h3 className="text-2xl font-semibold text-black mb-8">
-                  Outras formas de contato
+                  Fale conosco agora
                 </h3>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
@@ -874,7 +896,7 @@ const Index = () => {
                       <h4 className="font-semibold text-black">Email</h4>
                       <p className="text-gray-600">contato@wibbo.com</p>
                       <p className="text-sm text-gray-500">
-                        Resposta em até 24h
+                        Resposta em até 2 horas
                       </p>
                     </div>
                   </div>
@@ -899,38 +921,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section with SEO optimization */}
+      {/* CTA Section */}
       <section className="py-24 px-6 bg-black text-white">
         <div className="container mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">
-            Wibbo.com - Pronto para liderar?
+            Comece hoje mesmo
           </h2>
           <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-light">
-            Junte-se às marcas que escolheram a tecnologia premium da Wibbo.com.br
+            Junte-se a mais de 10.000 empresas que já transformaram suas vendas
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" title="Acesso exclusivo Wibbo">
+            <Link to="/register">
               <Button
                 size="lg"
                 className="text-base px-8 py-6 bg-primary hover:bg-primary/90 text-black shadow-xl"
               >
-                Solicitar Acesso Exclusivo Wibbo
+                Criar Meu Catálogo Grátis
               </Button>
             </Link>
-            <Link to="/admin" title="Demo privada Wibbo">
+            <Link to="/admin">
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base px-8 py-6 text-black"
+                className="text-base px-8 py-6 text-white border-white hover:bg-white hover:text-black"
               >
-                Explorar Demonstração Privada Wibbo
+                Ver Demonstração
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* SEO-optimized Footer */}
+      {/* Footer */}
       <footer className="bg-white py-16 px-6 border-t border-gray-100">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
@@ -944,101 +966,92 @@ const Index = () => {
                 </span>
               </div>
               <p className="text-gray-600 leading-relaxed font-light">
-                Wibbo.com - Tecnologia premium para marcas que lideram
+                Plataforma líder em catálogos digitais para empresas que querem vender mais online
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Produto Wibbo</h4>
+              <h4 className="font-semibold mb-6 text-black">Produto</h4>
               <ul className="space-y-3 text-gray-600">
                 <li>
                   <a
                     href="#recursos"
                     className="hover:text-black transition-colors font-light"
-                    title="Recursos Wibbo.com"
                   >
-                    Recursos Wibbo
+                    Recursos
                   </a>
                 </li>
                 <li>
                   <a
                     href="#cases"
                     className="hover:text-black transition-colors font-light"
-                    title="Cases Wibbo.com"
                   >
-                    Cases Wibbo
+                    Cases de Sucesso
                   </a>
                 </li>
                 <li>
                   <Link
                     to="/admin"
                     className="hover:text-black transition-colors font-light"
-                    title="Demo Wibbo.com.br"
                   >
-                    Demonstração Wibbo
+                    Demonstração
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Suporte Wibbo</h4>
+              <h4 className="font-semibold mb-6 text-black">Suporte</h4>
               <ul className="space-y-3 text-gray-600">
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
-                    title="Central de ajuda Wibbo"
                   >
-                    Central de Ajuda Wibbo
+                    Central de Ajuda
                   </a>
                 </li>
                 <li>
                   <a
                     href="#contato"
                     className="hover:text-black transition-colors font-light"
-                    title="Contato Wibbo.com"
                   >
-                    Contato Wibbo
+                    Contato
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
-                    title="Status Wibbo.com"
                   >
-                    Status Wibbo
+                    Status do Sistema
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Empresa Wibbo</h4>
+              <h4 className="font-semibold mb-6 text-black">Empresa</h4>
               <ul className="space-y-3 text-gray-600">
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
-                    title="Sobre Wibbo.com"
                   >
-                    Sobre Wibbo
+                    Sobre Nós
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
-                    title="Privacidade Wibbo"
                   >
-                    Privacidade Wibbo
+                    Privacidade
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
                     className="hover:text-black transition-colors font-light"
-                    title="Termos Wibbo.com"
                   >
-                    Termos Wibbo
+                    Termos de Uso
                   </a>
                 </li>
               </ul>
@@ -1046,15 +1059,15 @@ const Index = () => {
           </div>
           <div className="border-t border-gray-100 mt-16 pt-8 text-center text-gray-500">
             <p className="font-light">
-              &copy; 2024 Wibbo.com - Todos os direitos reservados. Wibbo.com.br - Plataforma líder em catálogos digitais.
+              &copy; 2024 Wibbo - Todos os direitos reservados. Transformando negócios em máquinas de vendas.
             </p>
           </div>
         </div>
       </footer>
 
-      {/* Floating Contact Button with SEO */}
+      {/* Floating Contact Button */}
       <div className="fixed bottom-6 right-6 z-40">
-        <a href="#contato" title="Contato Wibbo.com" aria-label="Falar com Wibbo">
+        <a href="#contato" aria-label="Falar conosco">
           <Button
             size="lg"
             className="bg-primary hover:bg-primary/90 text-black shadow-lg hover:shadow-xl rounded-full p-4 group"
