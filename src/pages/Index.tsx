@@ -452,15 +452,16 @@ const Index = () => {
           </Badge>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
-            Wibbo.com - Transforme sua
+            Transforme sua
             <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
               operação digital
             </span>
+            com catálogos premium
           </h1>
 
           <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
-            Wibbo.com - Uma plataforma premium para catálogos digitais. Performance,
-            personalização e exclusividade em cada detalhe da tecnologia Wibbo.
+            A plataforma líder em catálogos digitais do Brasil. Performance,
+            personalização e exclusividade para empresas que buscam excelência.
           </p>
 
           {/* Enhanced Stats Cards with SEO content */}
