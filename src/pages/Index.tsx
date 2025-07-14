@@ -44,6 +44,10 @@ import {
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PromotionalModal from "@/components/PromotionalModal";
+import { FeatureCard } from "@/components/FeatureCard";
+import { TestimonialCard } from "@/components/TestimonialCard";
+import { StatsCard } from "@/components/StatsCard";
+import { PricingCard } from "@/components/PricingCard";
 
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,7 +73,7 @@ const Index = () => {
       "sameAs": [
         "https://wibbo.com.br"
       ],
-      "description": "Wibbo.com - Plataforma premium para catálogos digitais que revoluciona operações comerciais",
+      "description": "Plataforma premium para catálogos digitais que revoluciona operações comerciais",
       "foundingDate": "2024",
       "numberOfEmployees": "50-100",
       "address": {
@@ -116,33 +120,33 @@ const Index = () => {
 
   const features = [
     {
-      icon: <Globe className="h-5 w-5" />,
+      icon: <Globe className="h-6 w-6" />,
       title: "Subdomínio Personalizado",
       description:
         "Configure sua identidade digital única com subdomínio exclusivo",
     },
     {
-      icon: <Layers className="h-5 w-5" />,
+      icon: <Layers className="h-6 w-6" />,
       title: "Campos Inteligentes",
       description: "Personalização avançada de produtos com campos dinâmicos",
     },
     {
-      icon: <BarChart3 className="h-5 w-5" />,
+      icon: <BarChart3 className="h-6 w-6" />,
       title: "Painel Executivo",
       description: "Analytics em tempo real para decisões estratégicas",
     },
     {
-      icon: <Shield className="h-5 w-5" />,
+      icon: <Shield className="h-6 w-6" />,
       title: "Tecnologia Escalável",
       description: "Infraestrutura robusta que cresce com seu negócio",
     },
     {
-      icon: <Award className="h-5 w-5" />,
+      icon: <Award className="h-6 w-6" />,
       title: "Suporte Premium",
       description: "Atendimento especializado e consultoria dedicada",
     },
     {
-      icon: <Zap className="h-5 w-5" />,
+      icon: <Zap className="h-6 w-6" />,
       title: "Performance Otimizada",
       description:
         "Velocidade de carregamento superior para conversões máximas",
@@ -304,7 +308,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-inter overflow-x-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white font-inter overflow-x-hidden relative">
       {/* Enhanced Header with SEO-optimized navigation */}
       <header className="border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-6">
@@ -374,7 +378,7 @@ const Index = () => {
                     Entrar
                   </Button>
                 </Link>
-                <Link to="/register" title="Solicitar acesso Wibbo">
+                <Link to="/register" title="Solicitar acesso">
                   <Button
                     size="sm"
                     className="bg-black hover:bg-gray-900 text-white px-6"
@@ -391,7 +395,7 @@ const Index = () => {
               size="sm"
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu mobile Wibbo"
+              aria-label="Menu mobile"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -428,7 +432,7 @@ const Index = () => {
                       Entrar
                     </Button>
                   </Link>
-                  <Link to="/register" title="Solicitar acesso Wibbo">
+                  <Link to="/register" title="Solicitar acesso">
                     <Button
                       size="sm"
                       className="w-full bg-black hover:bg-gray-900 text-white"
@@ -444,14 +448,14 @@ const Index = () => {
       </header>
 
       {/* SEO-optimized Hero Section */}
-      <section className="pt-16 pb-24 px-6 relative z-10">
-        <div className="container mx-auto text-center relative z-10 max-w-5xl">
-          <Badge className="mb-8 bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 transition-colors">
+      <section className="pt-20 pb-32 px-6 relative z-10 bg-gradient-to-br from-gray-50 via-white to-primary/5">
+        <div className="container mx-auto text-center relative z-10 max-w-6xl">
+          <Badge className="mb-10 bg-white/80 text-gray-700 border-gray-200 hover:bg-white transition-colors shadow-md">
             <Sparkles className="h-3 w-3 mr-2" />
-            Wibbo.com - Tecnologia para marcas que lideram
+            Tecnologia para marcas que lideram
           </Badge>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-black mb-10 leading-tight tracking-tight px-2">
             Transforme sua
             <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
               operação digital
@@ -459,70 +463,54 @@ const Index = () => {
             com catálogos premium
           </h1>
 
-          <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
+          <p className="text-xl md:text-2xl lg:text-3xl text-gray-600 mb-20 max-w-4xl mx-auto leading-relaxed font-light px-4">
             A plataforma líder em catálogos digitais do Brasil. Performance,
             personalização e exclusividade para empresas que buscam excelência.
           </p>
 
           {/* Enhanced Stats Cards with SEO content */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto mb-16">
-            {[
-              {
-                icon: <TrendingUp className="h-5 w-5" />,
-                value: "+300%",
-                label: "Performance média",
-              },
-              {
-                icon: <Building2 className="h-5 w-5" />,
-                value: "+10.000",
-                label: "Lojas ativas",
-              },
-              {
-                icon: <Shield className="h-5 w-5" />,
-                value: "99.9%",
-                label: "Uptime garantido",
-              },
-            ].map((stat, index) => (
-              <Card
-                key={index}
-                className="bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group transform-gpu"
-                style={{
-                  transform: `translateY(${scrollY * 0.02 * (index + 1)}px)`,
-                }}
-              >
-                <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
-                    {stat.icon}
-                  </div>
-                  <div className="text-3xl font-semibold text-black mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600 font-medium">
-                    {stat.label}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-3 gap-10 max-w-4xl mx-auto mb-20">
+            <StatsCard
+              icon={<TrendingUp className="h-6 w-6" />}
+              value="+300%"
+              label="Performance média"
+              index={0}
+              scrollY={scrollY}
+            />
+            <StatsCard
+              icon={<Building2 className="h-6 w-6" />}
+              value="+10.000"
+              label="Lojas ativas"
+              index={1}
+              scrollY={scrollY}
+            />
+            <StatsCard
+              icon={<Shield className="h-6 w-6" />}
+              value="99.9%"
+              label="Uptime garantido"
+              index={2}
+              scrollY={scrollY}
+            />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" title="Solicitar acesso exclusivo Wibbo.com">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link to="/register" title="Solicitar acesso exclusivo">
               <Button
                 size="lg"
-                className="text-base px-8 py-6 bg-black hover:bg-gray-900 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all group"
+                className="text-lg px-10 py-8 bg-black hover:bg-gray-900 text-white shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all group"
               >
-                Solicitar Acesso Exclusivo Wibbo
-                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                Solicitar Acesso Exclusivo
+                <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/admin" title="Demonstração Wibbo.com.br">
+            <Link to="/admin" title="Demonstração">
               <Button
                 variant="outline"
                 size="lg"
-                className="text-base px-8 py-6 border-gray-300 hover:bg-gray-50 group"
+                className="text-lg px-10 py-8 text-black border-gray-300 hover:bg-gray-50 group"
               >
-                <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                Explorar Demonstração Wibbo
+                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                Explorar Demonstração
               </Button>
             </Link>
           </div>
@@ -530,13 +518,13 @@ const Index = () => {
       </section>
 
       {/* Brands Section with SEO content */}
-      <section className="py-16 px-6 bg-gray-50/30">
+      <section className="py-20 px-6 bg-white/50">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-sm text-gray-600 font-medium mb-8">
-              Marcas que confiam na tecnologia Wibbo.com
+          <div className="text-center mb-16">
+            <h2 className="text-sm text-gray-600 font-medium mb-12">
+              Marcas que confiam na nossa tecnologia
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-60">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-12 items-center opacity-60">
               {brands.map((brand, index) => (
                 <div
                   key={index}
@@ -545,7 +533,7 @@ const Index = () => {
                   <img
                     src={brand.logo}
                     alt={brand.name}
-                    className="h-8 w-auto filter grayscale hover:grayscale-0 transition-all duration-300"
+                    className="h-10 w-auto filter grayscale hover:grayscale-0 transition-all duration-300"
                   />
                 </div>
               ))}
@@ -555,102 +543,60 @@ const Index = () => {
       </section>
 
       {/* Features Section with SEO optimization */}
-      <section id="recursos" className="py-24 px-6 bg-gray-50/50">
+      <section id="recursos" className="py-32 px-6 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto">
-          <div className="text-center mb-20 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Tecnologia que faz a
+          <div className="text-center mb-24 max-w-4xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-light text-black mb-8 tracking-tight">
+              Tecnologia que faz a
               <span className="block font-semibold">diferença</span>
             </h2>
-            <p className="text-xl text-gray-600 font-light">
-              Recursos desenvolvidos para marcas que não aceitam o comum - exclusivos da plataforma Wibbo
+            <p className="text-2xl text-gray-600 font-light">
+              Recursos desenvolvidos para marcas que não aceitam o comum - exclusivos da nossa plataforma
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
             {features.map((feature, index) => (
-              <Card
+              <FeatureCard
                 key={index}
-                className="border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-1 group transform-gpu"
-                style={{
-                  animation: `fade-in 0.6s ease-out ${index * 0.1}s both`,
-                  transform: `translateY(${scrollY * 0.01 * (index + 1)}px)`,
-                }}
-              >
-                <CardHeader className="pb-4">
-                  <div className="h-12 w-12 bg-gray-50 rounded-xl mb-6 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center text-gray-700 group-hover:text-primary">
-                    {feature.icon}
-                  </div>
-                  <CardTitle className="text-lg text-black font-semibold group-hover:text-gray-900 transition-colors">
-                    {feature.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 leading-relaxed font-light">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                index={index}
+                scrollY={scrollY}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials Section with SEO content */}
-      <section id="cases" className="py-24 px-6 bg-white overflow-hidden">
+      <section id="cases" className="py-32 px-6 bg-white overflow-hidden">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Resultados que
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-light text-black mb-8 tracking-tight">
+              Resultados que
               <span className="block font-semibold">falam por si</span>
             </h2>
-            <p className="text-xl text-gray-600 font-light">
-              Cases reais de marcas que escolheram a excelência da plataforma Wibbo
+            <p className="text-2xl text-gray-600 font-light">
+              Cases reais de marcas que escolheram a nossa excelência
             </p>
           </div>
 
           {/* Infinite Scroll Container */}
           <div className="relative overflow-hidden">
             <div
-              className="flex animate-scroll space-x-6"
+              className="flex animate-scroll space-x-8"
               style={{
-                animation: "scroll 40s linear infinite",
+                animation: "scroll 50s linear infinite",
                 width: "fit-content",
               }}
             >
               {allTestimonials.map((testimonial, index) => (
-                <Card
+                <TestimonialCard
                   key={index}
-                  className="min-w-[320px] max-w-[320px] border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 flex-shrink-0"
-                >
-                  <CardContent className="pt-6 pb-6">
-                    <div className="flex justify-center mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-3 w-3 text-primary fill-current"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-gray-700 mb-6 italic text-sm leading-relaxed font-light line-clamp-3">
-                      "{testimonial.content}"
-                    </p>
-                    <div className="flex items-center">
-                      <img
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
-                        className="h-10 w-10 rounded-full mr-3 object-cover"
-                      />
-                      <div>
-                        <p className="font-semibold text-black text-sm">
-                          {testimonial.name}
-                        </p>
-                        <p className="text-gray-600 text-xs font-medium">
-                          {testimonial.company}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                  testimonial={testimonial}
+                  index={index}
+                />
               ))}
             </div>
           </div>
@@ -658,109 +604,58 @@ const Index = () => {
       </section>
 
       {/* Pricing Section with SEO optimization */}
-      <section id="precos" className="py-24 px-6 bg-gray-50/50">
+      <section id="precos" className="py-32 px-6 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Investimento em
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-light text-black mb-8 tracking-tight">
+              Investimento em
               <span className="block font-semibold">excelência</span>
             </h2>
-            <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto">
-              Planos Wibbo.com.br desenvolvidos para diferentes estágios do seu crescimento
+            <p className="text-2xl text-gray-600 font-light max-w-3xl mx-auto">
+              Planos desenvolvidos para diferentes estágios do seu crescimento
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
             {plans.map((plan, index) => (
-              <Card
+              <PricingCard
                 key={index}
-                className={`border transition-all duration-300 hover:-translate-y-1 ${
-                  plan.highlight
-                    ? "border-primary shadow-lg scale-105 bg-white"
-                    : "border-gray-200 bg-white shadow-sm hover:shadow-lg"
-                }`}
-              >
-                <CardHeader className="text-center pb-4">
-                  {plan.highlight && (
-                    <Badge className="w-fit mx-auto mb-4 bg-primary text-black">
-                      Mais Popular Wibbo
-                    </Badge>
-                  )}
-                  <CardTitle className="text-xl font-semibold text-black">
-                    {plan.name}
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 font-light">
-                    {plan.description}
-                  </CardDescription>
-                  <div className="mt-6">
-                    <span className="text-4xl font-light text-black">
-                      {plan.price}
-                    </span>
-                    <span className="text-gray-600 font-light">
-                      {plan.period}
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3 mb-8">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li
-                        key={featureIndex}
-                        className="flex items-center text-sm"
-                      >
-                        <Check className="h-4 w-4 text-primary mr-3 flex-shrink-0" />
-                        <span className="text-gray-700 font-light">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/register" title={`Solicitar acesso ${plan.name}`}>
-                    <Button
-                      className={`w-full ${
-                        plan.highlight
-                          ? "bg-black hover:bg-gray-900 text-white"
-                          : "bg-gray-100 hover:bg-gray-200 text-black"
-                      }`}
-                    >
-                      Solicitar Acesso Wibbo
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+                plan={plan}
+                index={index}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* Contact Section with SEO content */}
-      <section id="contato" className="py-24 px-6 bg-gray-50/50">
+      <section id="contato" className="py-32 px-6 bg-white">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
-              Wibbo.com - Transforme sua marca
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-light text-black mb-8 tracking-tight">
+              Transforme sua marca
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
-              Entre em contato com a Wibbo e descubra como elevar sua operação digital
+            <p className="text-2xl text-gray-600 max-w-3xl mx-auto font-light">
+              Entre em contato e descubra como elevar sua operação digital
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-20 max-w-6xl mx-auto">
             {/* Contact Form */}
-            <Card className="border border-gray-100 bg-white shadow-sm">
+            <Card className="border border-gray-100 bg-white shadow-xl">
               <CardHeader>
-                <CardTitle className="text-black font-semibold">
+                <CardTitle className="text-black font-semibold text-2xl">
                   Solicitar Consulta
                 </CardTitle>
-                <CardDescription className="font-light">
+                <CardDescription className="font-light text-lg">
                   Preencha os dados e nossa equipe entrará em contato
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleContactSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm font-medium">
+                <form onSubmit={handleContactSubmit} className="space-y-8">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <Label htmlFor="name" className="text-base font-medium">
                         Nome
                       </Label>
                       <Input
@@ -774,11 +669,11 @@ const Index = () => {
                           }))
                         }
                         required
-                        className="border-gray-200 focus:border-primary"
+                        className="border-gray-200 focus:border-primary py-6 text-base"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium">
+                    <div className="space-y-3">
+                      <Label htmlFor="email" className="text-base font-medium">
                         Email
                       </Label>
                       <Input
@@ -793,13 +688,13 @@ const Index = () => {
                           }))
                         }
                         required
-                        className="border-gray-200 focus:border-primary"
+                        className="border-gray-200 focus:border-primary py-6 text-base"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-sm font-medium">
+                  <div className="space-y-3">
+                    <Label htmlFor="phone" className="text-base font-medium">
                       Telefone
                     </Label>
                     <Input
@@ -812,18 +707,18 @@ const Index = () => {
                           phone: e.target.value,
                         }))
                       }
-                      className="border-gray-200 focus:border-primary"
+                      className="border-gray-200 focus:border-primary py-6 text-base"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm font-medium">
+                  <div className="space-y-3">
+                    <Label htmlFor="message" className="text-base font-medium">
                       Mensagem
                     </Label>
                     <Textarea
                       id="message"
                       placeholder="Conte-nos sobre seu projeto"
-                      rows={4}
+                      rows={5}
                       value={contactForm.message}
                       onChange={(e) =>
                         setContactForm((prev) => ({
@@ -832,13 +727,13 @@ const Index = () => {
                         }))
                       }
                       required
-                      className="border-gray-200 focus:border-primary"
+                      className="border-gray-200 focus:border-primary text-base"
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full bg-black hover:bg-gray-900 text-white py-6"
+                    className="w-full bg-black hover:bg-gray-900 text-white py-8 text-lg"
                   >
                     Enviar Solicitação
                   </Button>
@@ -847,45 +742,45 @@ const Index = () => {
             </Card>
 
             {/* Contact Info */}
-            <div className="space-y-8">
+            <div className="space-y-12">
               <div>
-                <h3 className="text-2xl font-semibold text-black mb-8">
+                <h3 className="text-3xl font-semibold text-black mb-12">
                   Outras formas de contato
                 </h3>
-                <div className="space-y-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-gray-50 rounded-lg p-3 flex-shrink-0">
-                      <Phone className="h-5 w-5 text-gray-700" />
+                <div className="space-y-8">
+                  <div className="flex items-start space-x-6">
+                    <div className="bg-gray-50 rounded-xl p-4 flex-shrink-0">
+                      <Phone className="h-6 w-6 text-gray-700" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black">Telefone</h4>
-                      <p className="text-gray-600">(11) 3000-0000</p>
-                      <p className="text-sm text-gray-500">
+                      <h4 className="font-semibold text-black text-lg">Telefone</h4>
+                      <p className="text-gray-600 text-lg">(11) 3000-0000</p>
+                      <p className="text-base text-gray-500">
                         Segunda a sexta, 9h às 18h
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-gray-50 rounded-lg p-3 flex-shrink-0">
-                      <Mail className="h-5 w-5 text-gray-700" />
+                  <div className="flex items-start space-x-6">
+                    <div className="bg-gray-50 rounded-xl p-4 flex-shrink-0">
+                      <Mail className="h-6 w-6 text-gray-700" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black">Email</h4>
-                      <p className="text-gray-600">contato@wibbo.com</p>
-                      <p className="text-sm text-gray-500">
+                      <h4 className="font-semibold text-black text-lg">Email</h4>
+                      <p className="text-gray-600 text-lg">contato@wibbo.com</p>
+                      <p className="text-base text-gray-500">
                         Resposta em até 24h
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-gray-50 rounded-lg p-3 flex-shrink-0">
-                      <MapPin className="h-5 w-5 text-gray-700" />
+                  <div className="flex items-start space-x-6">
+                    <div className="bg-gray-50 rounded-xl p-4 flex-shrink-0">
+                      <MapPin className="h-6 w-6 text-gray-700" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black">Endereço</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-semibold text-black text-lg">Endereço</h4>
+                      <p className="text-gray-600 text-lg">
                         Av. Faria Lima, 1234
                         <br />
                         São Paulo, SP - 01451-001
@@ -900,30 +795,30 @@ const Index = () => {
       </section>
 
       {/* CTA Section with SEO optimization */}
-      <section className="py-24 px-6 bg-black text-white">
+      <section className="py-32 px-6 bg-gradient-to-br from-black to-gray-900 text-white">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">
-            Wibbo.com - Pronto para liderar?
+          <h2 className="text-5xl md:text-6xl font-light mb-8 tracking-tight">
+            Pronto para liderar?
           </h2>
-          <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-light">
-            Junte-se às marcas que escolheram a tecnologia premium da Wibbo.com.br
+          <p className="text-2xl mb-16 opacity-90 max-w-3xl mx-auto font-light">
+            Junte-se às marcas que escolheram a nossa tecnologia premium
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" title="Acesso exclusivo Wibbo">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link to="/register" title="Acesso exclusivo">
               <Button
                 size="lg"
-                className="text-base px-8 py-6 bg-primary hover:bg-primary/90 text-black shadow-xl"
+                className="text-lg px-10 py-8 bg-primary hover:bg-primary/90 text-black shadow-2xl"
               >
-                Solicitar Acesso Exclusivo Wibbo
+                Solicitar Acesso Exclusivo
               </Button>
             </Link>
-            <Link to="/admin" title="Demo privada Wibbo">
+            <Link to="/admin" title="Demo privada">
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base px-8 py-6 text-black"
+                className="text-lg px-10 py-8 text-white border-white hover:bg-white hover:text-black"
               >
-                Explorar Demonstração Privada Wibbo
+                Explorar Demonstração Privada
               </Button>
             </Link>
           </div>
@@ -931,11 +826,11 @@ const Index = () => {
       </section>
 
       {/* SEO-optimized Footer */}
-      <footer className="bg-white py-16 px-6 border-t border-gray-100">
+      <footer className="bg-white py-20 px-6 border-t border-gray-100">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <div className="flex items-center space-x-3 mb-6">
+              <div className="flex items-center space-x-3 mb-8">
                 <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
                   <span className="text-black font-bold text-sm">W</span>
                 </div>
@@ -943,123 +838,123 @@ const Index = () => {
                   Wibbo
                 </span>
               </div>
-              <p className="text-gray-600 leading-relaxed font-light">
-                Wibbo.com - Tecnologia premium para marcas que lideram
+              <p className="text-gray-600 leading-relaxed font-light text-lg">
+                Tecnologia premium para marcas que lideram
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Produto Wibbo</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-semibold mb-8 text-black text-lg">Produto</h4>
+              <ul className="space-y-4 text-gray-600">
                 <li>
                   <a
                     href="#recursos"
-                    className="hover:text-black transition-colors font-light"
-                    title="Recursos Wibbo.com"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Recursos"
                   >
-                    Recursos Wibbo
+                    Recursos
                   </a>
                 </li>
                 <li>
                   <a
                     href="#cases"
-                    className="hover:text-black transition-colors font-light"
-                    title="Cases Wibbo.com"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Cases"
                   >
-                    Cases Wibbo
+                    Cases
                   </a>
                 </li>
                 <li>
                   <Link
                     to="/admin"
-                    className="hover:text-black transition-colors font-light"
-                    title="Demo Wibbo.com.br"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Demo"
                   >
-                    Demonstração Wibbo
+                    Demonstração
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Suporte Wibbo</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-semibold mb-8 text-black text-lg">Suporte</h4>
+              <ul className="space-y-4 text-gray-600">
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
-                    title="Central de ajuda Wibbo"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Central de ajuda"
                   >
-                    Central de Ajuda Wibbo
+                    Central de Ajuda
                   </a>
                 </li>
                 <li>
                   <a
                     href="#contato"
-                    className="hover:text-black transition-colors font-light"
-                    title="Contato Wibbo.com"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Contato"
                   >
-                    Contato Wibbo
+                    Contato
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
-                    title="Status Wibbo.com"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Status"
                   >
-                    Status Wibbo
+                    Status
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-black">Empresa Wibbo</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-semibold mb-8 text-black text-lg">Empresa</h4>
+              <ul className="space-y-4 text-gray-600">
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
-                    title="Sobre Wibbo.com"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Sobre nós"
                   >
-                    Sobre Wibbo
+                    Sobre nós
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
-                    title="Privacidade Wibbo"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Privacidade"
                   >
-                    Privacidade Wibbo
+                    Privacidade
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    className="hover:text-black transition-colors font-light"
-                    title="Termos Wibbo.com"
+                    className="hover:text-black transition-colors font-light text-base"
+                    title="Termos"
                   >
-                    Termos Wibbo
+                    Termos
                   </a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-100 mt-16 pt-8 text-center text-gray-500">
-            <p className="font-light">
-              &copy; 2024 Wibbo.com - Todos os direitos reservados. Wibbo.com.br - Plataforma líder em catálogos digitais.
+          <div className="border-t border-gray-100 mt-20 pt-12 text-center text-gray-500">
+            <p className="font-light text-base">
+              &copy; 2024 Wibbo - Todos os direitos reservados. Plataforma líder em catálogos digitais.
             </p>
           </div>
         </div>
       </footer>
 
       {/* Floating Contact Button with SEO */}
-      <div className="fixed bottom-6 right-6 z-40">
-        <a href="#contato" title="Contato Wibbo.com" aria-label="Falar com Wibbo">
+      <div className="fixed bottom-8 right-8 z-40">
+        <a href="#contato" title="Contato" aria-label="Falar conosco">
           <Button
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-black shadow-lg hover:shadow-xl rounded-full p-4 group"
+            className="bg-primary hover:bg-primary/90 text-black shadow-2xl hover:shadow-3xl rounded-full p-6 group"
           >
-            <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
+            <MessageCircle className="h-7 w-7 group-hover:scale-110 transition-transform" />
           </Button>
         </a>
       </div>
