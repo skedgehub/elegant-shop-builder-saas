@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -104,15 +103,24 @@ const Index = () => {
     // Update page title dynamically for better SEO
     document.title = "Wibbo - Plataforma Premium para Catálogos Digitais | wibbo.com";
 
-    // Show promotional modal after 10 seconds
-    const promotionalTimer = setTimeout(() => {
-      setShowPromotionalModal(true);
-    }, 10000);
+    // Show promotional modal only once per session
+    const hasShownModal = sessionStorage.getItem('promotionalModalShown');
+    if (!hasShownModal) {
+      const promotionalTimer = setTimeout(() => {
+        setShowPromotionalModal(true);
+        sessionStorage.setItem('promotionalModalShown', 'true');
+      }, 10000);
+      
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        document.head.removeChild(script);
+        clearTimeout(promotionalTimer);
+      };
+    }
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.head.removeChild(script);
-      clearTimeout(promotionalTimer);
     };
   }, []);
 
@@ -520,10 +528,7 @@ const Index = () => {
             ].map((stat, index) => (
               <Card
                 key={index}
-                className="bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group transform-gpu"
-                style={{
-                  transform: `translateY(${scrollY * 0.02 * (index + 1)}px)`,
-                }}
+                className="bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group"
               >
                 <CardContent className="p-8 text-center">
                   <div className="flex justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
@@ -605,12 +610,9 @@ const Index = () => {
             {resources.map((resource, index) => (
               <Card
                 key={index}
-                className={`relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 group transform-gpu ${
+                className={`relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 group ${
                   resource.highlight ? 'border-2 border-primary shadow-lg scale-105' : 'border border-gray-200 shadow-sm'
                 }`}
-                style={{
-                  transform: `translateY(${scrollY * 0.02 * (index + 1)}px)`,
-                }}
               >
                 {resource.badge && (
                   <Badge className="absolute top-4 right-4 bg-primary text-black font-medium z-10">
