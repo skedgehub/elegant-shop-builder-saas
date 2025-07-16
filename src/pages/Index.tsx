@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -48,8 +49,6 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PromotionalModal from "@/components/PromotionalModal";
 import ResourceCard from "@/components/ResourceCard";
-import InfiniteTestimonialCarousel from "@/components/InfiniteTestimonialCarousel";
-import PaymentSystemSection from "@/components/PaymentSystemSection";
 
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -122,140 +121,153 @@ const Index = () => {
 
   const resources = [
     {
-      icon: <Globe className="h-8 w-8" />,
-      title: "Catálogo Digital Premium",
-      description: "Catálogo profissional com subdomínio personalizado e design que converte visitantes em clientes pagantes.",
+      icon: <Globe className="h-6 w-6" />,
+      title: "Catálogo Digital Completo",
+      description: "Crie seu catálogo profissional com subdomínio personalizado e design premium que converte visitantes em clientes.",
       features: [
         "Subdomínio exclusivo seu-negocio.wibbo.com",
-        "Design responsivo otimizado para conversão",
-        "Carregamento ultra-rápido (<3s)",
-        "SEO otimizado para Google"
+        "Design responsivo e otimizado",
+        "Carregamento ultra-rápido",
+        "SEO otimizado automaticamente"
       ],
-      badge: "Mais Popular",
-      gradient: "from-blue-500 to-purple-600"
+      badge: "Mais Popular"
     },
     {
-      icon: <CreditCard className="h-8 w-8" />,
-      title: "Pagamentos Integrados",
-      description: "Sistema completo de pagamentos com PIX, cartão e boleto. Receba diretamente no seu catálogo.",
+      icon: <CreditCard className="h-6 w-6" />,
+      title: "Sistema de Pagamentos Integrado",
+      description: "Receba pagamentos direto no seu catálogo com checkout seguro e múltiplas formas de pagamento.",
       features: [
-        "PIX, cartão e boleto integrados",
-        "Checkout em apenas 1 clique",
-        "Processamento instantâneo",
-        "Taxas competitivas"
+        "PIX, cartão e boleto",
+        "Checkout em 1 clique",
+        "Pagamentos seguros",
+        "Relatórios de vendas"
       ],
       highlight: true,
-      badge: "Destaque",
-      gradient: "from-green-500 to-emerald-600"
+      badge: "Novo"
     },
     {
-      icon: <BarChart3 className="h-8 w-8" />,
+      icon: <BarChart3 className="h-6 w-6" />,
       title: "Analytics Avançado",
-      description: "Dashboards completos com métricas de vendas, conversão e performance em tempo real.",
+      description: "Dashboards completos para acompanhar vendas, visitantes e performance do seu catálogo em tempo real.",
       features: [
-        "Vendas e conversões em tempo real",
-        "Produtos mais vendidos",
-        "Análise de origem dos clientes",
-        "Relatórios personalizáveis"
-      ],
-      gradient: "from-orange-500 to-red-500"
+        "Vendas em tempo real",
+        "Produtos mais visualizados",
+        "Origem dos visitantes",
+        "Relatórios customizáveis"
+      ]
     },
     {
-      icon: <Smartphone className="h-8 w-8" />,
-      title: "Mobile Excellence",
-      description: "Experiência mobile-first otimizada para maximizar conversões em dispositivos móveis.",
+      icon: <Smartphone className="h-6 w-6" />,
+      title: "Experiência Mobile Premium",
+      description: "Seus clientes terão a melhor experiência de compra tanto no desktop quanto no celular.",
       features: [
         "Design 100% responsivo",
-        "Navegação intuitiva mobile",
-        "Carregamento otimizado 3G/4G",
-        "PWA (Progressive Web App)"
-      ],
-      gradient: "from-pink-500 to-rose-600"
+        "Navegação intuitiva",
+        "Carregamento otimizado",
+        "App-like experience"
+      ]
     },
     {
-      icon: <Shield className="h-8 w-8" />,
-      title: "Segurança Enterprise",
-      description: "Infraestrutura robusta com certificados SSL, backup automático e proteção avançada.",
+      icon: <Shield className="h-6 w-6" />,
+      title: "Segurança Empresarial",
+      description: "Infraestrutura robusta com certificados SSL, backup automático e proteção contra ataques.",
       features: [
-        "SSL gratuito incluído",
-        "Backup automático diário",
-        "Proteção anti-DDoS",
-        "Uptime garantido 99.9%"
-      ],
-      gradient: "from-indigo-500 to-purple-600"
+        "SSL gratuito",
+        "Backup diário automático",
+        "Proteção DDoS",
+        "Uptime 99.9%"
+      ]
     },
     {
-      icon: <Award className="h-8 w-8" />,
+      icon: <Award className="h-6 w-6" />,
       title: "Suporte Especializado",
-      description: "Time de especialistas dedicado ao seu sucesso com onboarding e suporte prioritário.",
+      description: "Time de especialistas dedicado ao seu sucesso, com onboarding personalizado e suporte prioritário.",
       features: [
         "Onboarding personalizado",
         "Suporte via WhatsApp",
-        "Consultoria de vendas incluída",
-        "Treinamento completo gratuito"
-      ],
-      gradient: "from-yellow-500 to-orange-600"
+        "Consultoria de vendas",
+        "Treinamento completo"
+      ]
     }
   ];
 
   const testimonials = [
     {
       name: "Eduardo Monteiro",
-      company: "CEO, TechCorp",
-      content: "Em 2 meses nossas vendas online cresceram 400%. O sistema de pagamentos integrado foi revolucionário para nosso negócio.",
+      company: "Fundador, TechCorp",
+      content:
+        "Implementamos a plataforma e em 2 meses nossas vendas online cresceram 400%. O sistema de pagamentos integrado foi um divisor de águas.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Marina Silva",
-      company: "Fundadora, ModaStyle",
-      content: "Nossos clientes adoraram o novo catálogo. As vendas aumentaram 250% e recebemos elogios constantes sobre a experiência.",
+      company: "CEO, ModaStyle",
+      content:
+        "Nossos clientes adoraram o novo catálogo. As vendas aumentaram 250% e agora recebemos elogios sobre a experiência de compra.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Ricardo Santos",
       company: "Diretor, SportsPro",
-      content: "ROI excepcional! Em 30 dias já tínhamos recuperado o investimento. A plataforma se pagou sozinha rapidamente.",
+      content:
+        "ROI excepcional! Em 30 dias já tínhamos recuperado o investimento. A plataforma se pagou sozinha.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Ana Costa",
-      company: "CEO, FoodDelivery",
-      content: "Implementação sem complicações. O sistema de pagamentos funciona perfeitamente e nossos clientes aprovaram totalmente.",
+      company: "Fundadora, FoodDelivery",
+      content:
+        "Passamos a vender online sem complicação. O sistema de pagamentos funciona perfeitamente e nossos clientes aprovaram.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Carlos Mendes",
       company: "CTO, InnovaTech",
-      content: "Setup rápido e resultados imediatos. Nossa conversão aumentou 300% no primeiro trimestre de uso.",
+      content:
+        "Implementação rápida e resultados imediatos. Nossa conversão aumentou 300% no primeiro trimestre.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Sofia Rodrigues",
       company: "Head Digital, LuxBrand",
-      content: "A qualidade da plataforma reflete perfeitamente nosso padrão premium. Nossos clientes percebem a diferença.",
+      content:
+        "A qualidade da plataforma reflete perfeitamente o padrão premium da nossa marca. Nossos clientes percebem a diferença.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Fernando Lima",
-      company: "Presidente, RetailPro",
-      content: "Transformação digital completa. Experiência superior que reflete diretamente no aumento das vendas.",
+      company: "CEO, RetailPro",
+      content:
+        "Transformação digital completa. Nossos clientes agora têm uma experiência de compra superior e isso reflete nas vendas.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=80&h=80&fit=crop&crop=face",
     },
     {
       name: "Beatriz Santos",
       company: "Diretora, EleganceStore",
-      content: "Solução perfeita para excelência. Performance, design e funcionalidade em perfeita harmonia.",
+      content:
+        "A solução perfeita para quem busca excelência. Performance, design e funcionalidade em perfeita harmonia.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face",
     },
   ];
+
+  // Duplicate testimonials for infinite scroll
+  const allTestimonials = [...testimonials, ...testimonials];
 
   const brands = [
     {
@@ -289,11 +301,11 @@ const Index = () => {
       name: "Starter",
       price: "R$ 497",
       period: "/mês",
-      description: "Perfeito para começar a vender online",
+      description: "Ideal para começar a vender online",
       features: [
         "Até 1.000 produtos",
         "Catálogo personalizado",
-        "Sistema de pagamentos",
+        "Pagamentos integrados",
         "Suporte por email",
         "5GB de armazenamento",
       ],
@@ -303,14 +315,14 @@ const Index = () => {
       name: "Professional",
       price: "R$ 997",
       period: "/mês",
-      description: "Ideal para empresas em expansão",
+      description: "Para empresas em crescimento",
       features: [
         "Produtos ilimitados",
         "Domínio personalizado",
         "Analytics avançado",
         "Suporte prioritário",
         "50GB de armazenamento",
-        "Integrações API",
+        "Integração API",
         "Sistema completo de vendas",
       ],
       highlight: true,
@@ -321,7 +333,7 @@ const Index = () => {
       period: "/mês",
       description: "Para grandes operações",
       features: [
-        "Todos os recursos Professional",
+        "Recursos Professional +",
         "Múltiplas lojas",
         "Consultoria dedicada",
         "SLA garantido",
@@ -476,15 +488,15 @@ const Index = () => {
           </Badge>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
-            Transforme visitantes em
+            Venda mais com seu
             <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
-              clientes pagantes
+              catálogo digital
             </span>
-            automaticamente
+            profissional
           </h1>
 
           <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
-            Catálogo digital completo com sistema de pagamentos integrado. Mais de 10.000 empresas já multiplicaram suas vendas em até 400%.
+            Crie seu catálogo online completo com sistema de pagamentos integrado e comece a vender em minutos. Mais de 10.000 empresas já transformaram suas vendas.
           </p>
 
           {/* Enhanced Stats Cards */}
@@ -492,7 +504,7 @@ const Index = () => {
             {[
               {
                 icon: <TrendingUp className="h-5 w-5" />,
-                value: "+400%",
+                value: "+350%",
                 label: "Aumento médio em vendas",
               },
               {
@@ -545,7 +557,7 @@ const Index = () => {
                 className="text-base px-8 py-6 border-gray-300 hover:bg-gray-50 group"
               >
                 <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                Ver Demo ao Vivo
+                Ver Demonstração
               </Button>
             </Link>
           </div>
@@ -577,22 +589,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Enhanced Resources Section */}
-      <section id="recursos" className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50/30">
+      {/* Resources Section */}
+      <section id="recursos" className="py-24 px-6 bg-gray-50/50">
         <div className="container mx-auto">
-          <div className="text-center mb-20 max-w-4xl mx-auto">
-            <Badge className="mb-6 bg-blue-100 text-blue-800 border-blue-200">
-              <Layers className="h-4 w-4 mr-2" />
-              Recursos Completos
-            </Badge>
-            <h2 className="text-4xl md:text-6xl font-light text-black mb-8 tracking-tight">
+          <div className="text-center mb-20 max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
               Tudo que você precisa para
-              <span className="block font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                vender online
-              </span>
+              <span className="block font-semibold">vender online</span>
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 font-light leading-relaxed">
-              Ferramentas premium que transformam sua operação em uma máquina de vendas automatizada
+            <p className="text-xl text-gray-600 font-light">
+              Ferramentas completas para transformar sua operação em uma máquina de vendas
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -605,36 +611,71 @@ const Index = () => {
                 features={resource.features}
                 highlight={resource.highlight}
                 badge={resource.badge}
-                gradient={resource.gradient}
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Payment System Section */}
-      <PaymentSystemSection />
-
-      {/* Testimonials Section with Infinite Carousel */}
+      {/* Testimonials Section */}
       <section id="cases" className="py-24 px-6 bg-white overflow-hidden">
         <div className="container mx-auto">
-          <div className="text-center mb-16 max-w-4xl mx-auto">
-            <Badge className="mb-6 bg-green-100 text-green-800 border-green-200">
-              <Star className="h-4 w-4 mr-2" />
-              Casos de Sucesso
-            </Badge>
-            <h2 className="text-4xl md:text-6xl font-light text-black mb-8 tracking-tight">
-              Resultados reais de quem já
-              <span className="block font-semibold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                multiplicou suas vendas
-              </span>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
+              Resultados reais de quem
+              <span className="block font-semibold">já transformou</span>
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 font-light leading-relaxed">
-              Empresas que transformaram suas operações e alcançaram crescimento exponencial
+            <p className="text-xl text-gray-600 font-light">
+              Empresas que multiplicaram suas vendas com nossa plataforma
             </p>
           </div>
 
-          <InfiniteTestimonialCarousel testimonials={testimonials} />
+          {/* Infinite Scroll Container */}
+          <div className="relative overflow-hidden">
+            <div
+              className="flex animate-scroll space-x-6"
+              style={{
+                animation: "scroll 40s linear infinite",
+                width: "fit-content",
+              }}
+            >
+              {allTestimonials.map((testimonial, index) => (
+                <Card
+                  key={index}
+                  className="min-w-[320px] max-w-[320px] border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 flex-shrink-0"
+                >
+                  <CardContent className="pt-6 pb-6">
+                    <div className="flex justify-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="h-3 w-3 text-primary fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 italic text-sm leading-relaxed font-light line-clamp-3">
+                      "{testimonial.content}"
+                    </p>
+                    <div className="flex items-center">
+                      <img
+                        src={testimonial.avatar}
+                        alt={testimonial.name}
+                        className="h-10 w-10 rounded-full mr-3 object-cover"
+                      />
+                      <div>
+                        <p className="font-semibold text-black text-sm">
+                          {testimonial.name}
+                        </p>
+                        <p className="text-gray-600 text-xs font-medium">
+                          {testimonial.company}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

@@ -1,7 +1,8 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { CheckCircle, ArrowRight } from "lucide-react";
 
 interface ResourceCardProps {
   icon: React.ReactNode;
@@ -10,69 +11,53 @@ interface ResourceCardProps {
   features: string[];
   highlight?: boolean;
   badge?: string;
-  gradient?: string;
 }
 
-const ResourceCard = ({
-  icon,
-  title,
-  description,
-  features,
-  highlight = false,
-  badge,
-  gradient = "from-blue-500 to-purple-600"
-}: ResourceCardProps) => {
+const ResourceCard = ({ icon, title, description, features, highlight, badge }: ResourceCardProps) => {
   return (
-    <Card
-      className={`relative overflow-hidden border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 group ${
-        highlight
-          ? "border-primary shadow-lg ring-2 ring-primary/20"
-          : "border-gray-100 shadow-sm hover:shadow-lg"
+    <Card 
+      className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 group ${
+        highlight ? 'border-2 border-primary shadow-lg' : 'border border-gray-200'
       }`}
     >
-      {/* Background gradient on hover */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-      
-      {/* Badge */}
       {badge && (
-        <div className="absolute top-4 right-4 z-10">
-          <Badge className={`${
-            highlight 
-              ? "bg-primary text-black" 
-              : "bg-blue-100 text-blue-800 border-blue-200"
-          }`}>
-            {badge}
-          </Badge>
-        </div>
+        <Badge className="absolute top-4 right-4 bg-primary text-black font-medium">
+          {badge}
+        </Badge>
       )}
-
+      
       <CardHeader className="pb-4">
         <div className="flex items-center space-x-4 mb-4">
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white group-hover:scale-110 transition-transform duration-300`}>
+          <div className={`p-3 rounded-xl transition-all duration-300 ${
+            highlight ? 'bg-primary/10 text-primary' : 'bg-gray-50 text-gray-700 group-hover:bg-primary/10 group-hover:text-primary'
+          }`}>
             {icon}
           </div>
+          <div>
+            <CardTitle className="text-lg font-semibold text-black group-hover:text-primary transition-colors">
+              {title}
+            </CardTitle>
+          </div>
         </div>
-        
-        <CardTitle className="text-xl font-semibold text-black leading-tight">
-          {title}
-        </CardTitle>
-        
-        <p className="text-gray-600 font-light leading-relaxed">
+        <CardDescription className="text-gray-600 leading-relaxed">
           {description}
-        </p>
+        </CardDescription>
       </CardHeader>
-
-      <CardContent className="pt-0">
-        <ul className="space-y-3">
-          {features.map((feature, index) => (
-            <li key={index} className="flex items-start space-x-3">
-              <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-              <span className="text-sm text-gray-700 font-light leading-relaxed">
-                {feature}
-              </span>
-            </li>
-          ))}
-        </ul>
+      
+      <CardContent className="space-y-3">
+        {features.map((feature, index) => (
+          <div key={index} className="flex items-center space-x-3">
+            <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+            <span className="text-sm text-gray-700">{feature}</span>
+          </div>
+        ))}
+        
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-center text-primary text-sm font-medium group-hover:translate-x-1 transition-transform">
+            Saiba mais
+            <ArrowRight className="h-4 w-4 ml-1" />
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
