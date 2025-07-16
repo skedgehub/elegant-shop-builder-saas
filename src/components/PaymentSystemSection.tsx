@@ -5,47 +5,47 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   CreditCard, 
-  Banknote, 
-  PiggyBank, 
-  ArrowLeftRight, 
   Smartphone, 
   Shield,
   TrendingUp,
   CheckCircle,
   ChevronRight,
-  Zap
+  Zap,
+  QrCode,
+  Banknote,
+  Receipt
 } from "lucide-react";
 
 const PaymentSystemSection = () => {
-  const bankingFeatures = [
+  const paymentFeatures = [
     {
       icon: <CreditCard className="h-6 w-6" />,
-      title: "Conta Digital Completa",
-      description: "Conta empresarial integrada ao seu catálogo para receber e gerenciar todas as vendas em um só lugar.",
-      benefits: ["Conta gratuita", "Sem taxa de manutenção", "Cartão empresarial"]
+      title: "Checkout Integrado",
+      description: "Receba pagamentos diretamente no seu catálogo com checkout seguro e otimizado para conversão.",
+      benefits: ["PIX instantâneo", "Cartão em 1 clique", "Boleto automático"]
     },
     {
-      icon: <Banknote className="h-6 w-6" />,
-      title: "Recebimento Instantâneo",
-      description: "Receba pagamentos via PIX na hora, cartão em D+1 e tenha controle total do seu fluxo de caixa.",
-      benefits: ["PIX instantâneo", "TED/DOC grátis", "Saque sem taxas"]
+      icon: <QrCode className="h-6 w-6" />,
+      title: "PIX Nativo",
+      description: "QR Code automático para cada produto, facilitando pagamentos instantâneos via PIX.",
+      benefits: ["QR Code automático", "Recebimento instantâneo", "Sem taxas extras"]
     },
     {
-      icon: <PiggyBank className="h-6 w-6" />,
-      title: "Rendimento Automático",
-      description: "Seu dinheiro rende 100% do CDI automaticamente, sem aplicação manual ou taxas escondidas.",
-      benefits: ["100% CDI", "Liquidez diária", "Sem taxa de administração"]
+      icon: <Receipt className="h-6 w-6" />,
+      title: "Taxas Competitivas",
+      description: "As menores taxas do mercado com repasse automático para sua conta bancária.",
+      benefits: ["1,99% no cartão", "PIX gratuito", "Saque D+1"]
     },
     {
-      icon: <ArrowLeftRight className="h-6 w-6" />,
-      title: "Transferências Ilimitadas",
-      description: "Faça quantas transferências precisar sem limite de valor ou quantidade, tudo integrado ao sistema.",
-      benefits: ["TED/PIX grátis", "Sem limite", "API integrada"]
+      icon: <Shield className="h-6 w-6" />,
+      title: "Segurança Total",
+      description: "Certificação PCI DSS e criptografia de ponta a ponta para proteger seus clientes.",
+      benefits: ["PCI DSS certificado", "SSL 256 bits", "Antifraude ativo"]
     }
   ];
 
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-black via-gray-900 to-black text-white relative overflow-hidden">
+    <section className="py-24 px-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary rounded-full blur-3xl"></div>
@@ -57,25 +57,25 @@ const PaymentSystemSection = () => {
         <div className="text-center mb-20 max-w-4xl mx-auto">
           <Badge className="mb-6 bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-colors">
             <Zap className="h-3 w-3 mr-2" />
-            Sistema Bancário Integrado
+            Pagamentos Integrados
           </Badge>
           
           <h2 className="text-4xl md:text-6xl font-light mb-8 tracking-tight">
-            Mais que um catálogo.
+            Receba pagamentos
             <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-              Um banco completo.
+              direto no catálogo.
             </span>
           </h2>
           
           <p className="text-xl md:text-2xl text-gray-300 font-light leading-relaxed">
-            Conta digital empresarial, recebimento automático e rendimento do seu dinheiro. 
-            Tudo integrado ao seu catálogo sem burocracias.
+            Sistema de pagamentos nativo com PIX, cartão e boleto. 
+            Sem redirecionamentos, sem complicação.
           </p>
         </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 gap-8 mb-16">
-          {bankingFeatures.map((feature, index) => (
+          {paymentFeatures.map((feature, index) => (
             <Card key={index} className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 group">
               <CardContent className="p-8">
                 <div className="flex items-start space-x-4 mb-6">
@@ -110,9 +110,9 @@ const PaymentSystemSection = () => {
         {/* Stats Row */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {[
-            { value: "R$ 100M+", label: "Processados mensalmente", icon: <TrendingUp className="h-5 w-5" /> },
-            { value: "0%", label: "Taxa de abertura de conta", icon: <CreditCard className="h-5 w-5" /> },
-            { value: "100%", label: "Do CDI rendendo automático", icon: <PiggyBank className="h-5 w-5" /> }
+            { value: "99,9%", label: "Uptime garantido", icon: <Shield className="h-5 w-5" /> },
+            { value: "1,99%", label: "Taxa cartão de crédito", icon: <CreditCard className="h-5 w-5" /> },
+            { value: "0%", label: "Taxa PIX e boleto", icon: <Banknote className="h-5 w-5" /> }
           ].map((stat, index) => (
             <div key={index} className="text-center">
               <div className="flex justify-center mb-3 text-primary">
@@ -135,11 +135,11 @@ const PaymentSystemSection = () => {
             className="text-base px-8 py-6 bg-primary hover:bg-primary/90 text-black shadow-xl group"
           >
             <Smartphone className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-            Abrir Conta Digital Grátis
+            Ativar Pagamentos Agora
             <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Button>
           <p className="text-sm text-gray-400 mt-4 font-light">
-            Conta aprovada em minutos • Sem burocracia • Cartão incluso
+            Configuração em minutos • Sem mensalidade • Suporte especializado
           </p>
         </div>
       </div>

@@ -267,9 +267,6 @@ const Index = () => {
     },
   ];
 
-  // Duplicate testimonials for infinite scroll
-  const allTestimonials = [...testimonials, ...testimonials];
-
   const brands = [
     {
       name: "TechCorp",
@@ -604,15 +601,57 @@ const Index = () => {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {resources.map((resource, index) => (
-              <ResourceCard
+              <Card
                 key={index}
-                icon={resource.icon}
-                title={resource.title}
-                description={resource.description}
-                features={resource.features}
-                highlight={resource.highlight}
-                badge={resource.badge}
-              />
+                className={`relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 group transform-gpu ${
+                  resource.highlight ? 'border-2 border-primary shadow-lg scale-105' : 'border border-gray-200 shadow-sm'
+                }`}
+                style={{
+                  transform: `translateY(${scrollY * 0.02 * (index + 1)}px)`,
+                }}
+              >
+                {resource.badge && (
+                  <Badge className="absolute top-4 right-4 bg-primary text-black font-medium z-10">
+                    {resource.badge}
+                  </Badge>
+                )}
+                
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className={`p-3 rounded-xl transition-all duration-300 ${
+                      resource.highlight 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'bg-gray-50 text-gray-700 group-hover:bg-primary/10 group-hover:text-primary'
+                    }`}>
+                      {resource.icon}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-semibold text-black group-hover:text-primary transition-colors">
+                        {resource.title}
+                      </CardTitle>
+                    </div>
+                  </div>
+                  <CardDescription className="text-gray-600 leading-relaxed font-light">
+                    {resource.description}
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="space-y-3">
+                  {resource.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-center space-x-3">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                      <span className="text-sm text-gray-700 font-light">{feature}</span>
+                    </div>
+                  ))}
+                  
+                  <div className="pt-4 border-t border-gray-100">
+                    <div className="flex items-center text-primary text-sm font-medium group-hover:translate-x-1 transition-transform cursor-pointer">
+                      Saiba mais
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>

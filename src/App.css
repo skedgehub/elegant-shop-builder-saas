@@ -67,5 +67,11 @@ html {
 }
 
 .animate-scroll {
-  animation: scroll 40s linear infinite;
+  animation: scroll 60s linear infinite;
+  will-change: transform;
+}
+
+/* Pause animation on hover */
+.animate-scroll:hover {
+  animation-play-state: paused;
 }

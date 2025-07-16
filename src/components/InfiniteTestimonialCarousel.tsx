@@ -16,21 +16,20 @@ interface InfiniteTestimonialCarouselProps {
 }
 
 const InfiniteTestimonialCarousel = ({ testimonials }: InfiniteTestimonialCarouselProps) => {
-  // Duplicate testimonials for infinite scroll
-  const allTestimonials = [...testimonials, ...testimonials];
+  // Duplicate testimonials multiple times for smooth infinite scroll
+  const duplicatedTestimonials = [...testimonials, ...testimonials, ...testimonials];
 
   return (
     <div className="relative overflow-hidden">
       <div
-        className="flex animate-scroll space-x-6"
+        className="flex space-x-6 animate-scroll"
         style={{
-          animation: "scroll 40s linear infinite",
-          width: "fit-content",
+          width: `${duplicatedTestimonials.length * 340}px`,
         }}
       >
-        {allTestimonials.map((testimonial, index) => (
+        {duplicatedTestimonials.map((testimonial, index) => (
           <Card
-            key={index}
+            key={`${testimonial.name}-${index}`}
             className="min-w-[320px] max-w-[320px] border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 flex-shrink-0"
           >
             <CardContent className="pt-6 pb-6">
