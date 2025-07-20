@@ -28,6 +28,7 @@ import { useFiles } from "@/hooks/useFiles";
 import { InputField } from "./InputField";
 import { Form } from "./ui/form";
 import { toast } from "@/hooks/use-toast";
+import { InputTextField } from "./InputTextField";
 
 interface CategoryFormProps {
   initialData?: ICreateCategoryInputBodyDto;
@@ -69,7 +70,7 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-container mx-auto">
       <Card className="border-0">
         <CardHeader className="pb-8">
           <div className="flex items-center gap-3">
@@ -107,34 +108,68 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                       className="text-lg"
                     />
 
+                    <InputTextField
+                      control={form.control}
+                      label="Descrição"
+                      placeholder="Descreva brevemente esta categoria e que tipos de produtos ela inclui..."
+                      name="description"
+                      className="text-lg"
+                      description="Uma boa descrição ajuda seus clientes a encontrar
+                      produtos mais facilmente"
+                    />
+
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-foreground/80">
-                        Descrição
-                      </Label>
-                      <Textarea
-                        {...register("description")}
-                        placeholder="Descreva brevemente esta categoria e que tipos de produtos ela inclui..."
-                        className="min-h-[100px] resize-none"
+                      <InputField
+                        control={form.control}
+                        name="image"
+                        label="Imagem"
+                        description="Ou cole uma URL de imagem"
+                        placeholder="https://exemplo.com/imagem.jpg"
+                        className="text-xs"
+                        endComponent={
+                          <div className="flex gap-1">
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => {
+                                const imageUrl = form.getValues("image") || "";
+                                if (imageUrl) {
+                                  navigator.clipboard.writeText(imageUrl);
+                                  toast({
+                                    title: "URL copiada",
+                                    variant: "default",
+                                  });
+                                }
+                              }}
+                            >
+                              <ClipboardCopy className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => form.setValue("image", "")}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        }
                       />
-                      <p className="text-xs text-muted-foreground">
-                        Uma boa descrição ajuda seus clientes a encontrar
-                        produtos mais facilmente
-                      </p>
                     </div>
                   </div>
 
                   {/* Upload de Imagem */}
-                  <div className="space-y-4">
-                    <Label className="text-sm font-medium text-foreground/80">
-                      Imagem da Categoria
-                    </Label>
+                  <div className="space-y-2">
+                    <Label>Imagem da Categoria</Label>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 flex flex-row items-start justify-start">
                       {/* Preview da imagem */}
                       <div
                         className={cn(
                           "relative group cursor-pointer",
-                          "w-full aspect-square max-w-xs mx-auto",
+                          "w-full aspect-square max-w-xs",
                           "rounded-xl border-2 border-dashed border-primary/30",
                           "flex items-center justify-center",
                           "overflow-hidden transition-all duration-200",
@@ -212,50 +247,6 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                           }}
                         />
                       </div>
-
-                      {/* Campo URL alternativo */}
-                      <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">
-                          Ou cole uma URL de imagem
-                        </Label>
-                        <InputField
-                          control={form.control}
-                          name="image"
-                          placeholder="https://exemplo.com/imagem.jpg"
-                          className="text-xs"
-                          endComponent={
-                            <div className="flex gap-1">
-                              <Button
-                                type="button"
-                                size="sm"
-                                className="h-6 w-6 p-0"
-                                onClick={() => {
-                                  const imageUrl =
-                                    form.getValues("image") || "";
-                                  if (imageUrl) {
-                                    navigator.clipboard.writeText(imageUrl);
-                                    toast({
-                                      title: "URL copiada",
-                                      variant: "default",
-                                    });
-                                  }
-                                }}
-                              >
-                                <ClipboardCopy className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="destructive"
-                                size="sm"
-                                className="h-6 w-6 p-0"
-                                onClick={() => form.setValue("image", "")}
-                              >
-                                <X className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          }
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -301,12 +292,12 @@ const CategoryForm = ({ onSuccess, mode = "create" }: CategoryFormProps) => {
                         />
                         <Button
                           type="button"
-                          variant="ghost"
+                          variant="destructive"
                           size="sm"
-                          className="absolute top-2 right-2 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute rounded-full top-2 right-2 h-8 w-8 p-0"
                           onClick={() => remove(index)}
                         >
-                          <Trash2 className="h-4 w-4 text-destructive" />
+                          <Trash2 />
                         </Button>
                       </div>
                     ))}

@@ -1,10 +1,13 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   LayoutDashboard,
   Package,
@@ -141,21 +144,23 @@ const AdminSidebar = ({
   onToggleCollapse,
 }: AdminSidebarProps) => {
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {},
+  );
 
   const toggleExpanded = (itemTitle: string) => {
-    setExpandedItems(prev => ({
+    setExpandedItems((prev) => ({
       ...prev,
-      [itemTitle]: !prev[itemTitle]
+      [itemTitle]: !prev[itemTitle],
     }));
   };
 
   const isActiveRoute = (href: string) => location.pathname === href;
-  
+
   const isParentActive = (item: SidebarItem) => {
     if (item.href && isActiveRoute(item.href)) return true;
     if (item.subitems) {
-      return item.subitems.some(subitem => isActiveRoute(subitem.href));
+      return item.subitems.some((subitem) => isActiveRoute(subitem.href));
     }
     return false;
   };
@@ -188,7 +193,7 @@ const AdminSidebar = ({
                 onClick={onToggleCollapse}
                 className={cn(
                   "h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                  isCollapsed && "mx-auto"
+                  isCollapsed && "mx-auto",
                 )}
                 title={isCollapsed ? "Expandir sidebar" : "Minimizar sidebar"}
                 aria-label={
@@ -216,10 +221,15 @@ const AdminSidebar = ({
                 )}
                 <div className="space-y-1">
                   {section.items.map((item) => {
-                    const hasSubitems = item.subitems && item.subitems.length > 0;
+                    const hasSubitems =
+                      item.subitems && item.subitems.length > 0;
                     const isExpanded = expandedItems[item.title];
                     const isActive = isParentActive(item);
-                    const hasActiveSubitem = hasSubitems && item.subitems!.some(subitem => isActiveRoute(subitem.href));
+                    const hasActiveSubitem =
+                      hasSubitems &&
+                      item.subitems!.some((subitem) =>
+                        isActiveRoute(subitem.href),
+                      );
 
                     return (
                       <div key={item.title}>
@@ -234,27 +244,35 @@ const AdminSidebar = ({
                                 size={isCollapsed ? "icon" : "default"}
                                 className={cn(
                                   "w-full text-sidebar-foreground transition-colors",
-                                  isCollapsed 
-                                    ? "h-10 w-10 p-0 mx-auto flex items-center justify-center" 
+                                  isCollapsed
+                                    ? "h-10 w-10 p-0 mx-auto flex items-center justify-center"
                                     : "justify-start px-3 h-9",
-                                  // Estados de hover e active mais suaves
                                   "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-                                  hasActiveSubitem && "bg-sidebar-accent/30 text-sidebar-accent-foreground font-medium",
+                                  hasActiveSubitem &&
+                                    "bg-sidebar-accent/30 text-sidebar-accent-foreground font-medium",
                                 )}
                                 title={isCollapsed ? item.title : undefined}
                               >
-                                <div className={cn(
-                                  "flex items-center",
-                                  isCollapsed ? "justify-center" : "justify-start w-full",
-                                )}>
+                                <div
+                                  className={cn(
+                                    "flex items-center",
+                                    isCollapsed
+                                      ? "justify-center"
+                                      : "justify-start w-full",
+                                  )}
+                                >
                                   <item.icon className="h-4 w-4 flex-shrink-0" />
                                   {!isCollapsed && (
                                     <>
-                                      <span className="ml-3 truncate text-sm">{item.title}</span>
-                                      <ChevronDown className={cn(
-                                        "ml-auto h-3 w-3 transition-transform duration-200",
-                                        isExpanded && "rotate-180"
-                                      )} />
+                                      <span className="ml-3 truncate text-sm">
+                                        {item.title}
+                                      </span>
+                                      <ChevronDown
+                                        className={cn(
+                                          "ml-auto h-3 w-3 transition-transform duration-200",
+                                          isExpanded && "rotate-180",
+                                        )}
+                                      />
                                     </>
                                   )}
                                 </div>
@@ -300,8 +318,8 @@ const AdminSidebar = ({
                             size={isCollapsed ? "icon" : "default"}
                             className={cn(
                               "w-full text-sidebar-foreground transition-colors",
-                              isCollapsed 
-                                ? "h-10 w-10 p-0 mx-auto flex items-center justify-center" 
+                              isCollapsed
+                                ? "h-10 w-10 p-0 mx-auto flex items-center justify-center"
                                 : "justify-start px-3 h-9",
                               "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
                               isActive &&
@@ -314,12 +332,16 @@ const AdminSidebar = ({
                               to={item.href!}
                               className={cn(
                                 "flex items-center",
-                                isCollapsed ? "justify-center" : "justify-start",
+                                isCollapsed
+                                  ? "justify-center"
+                                  : "justify-start",
                               )}
                             >
                               <item.icon className="h-4 w-4 flex-shrink-0" />
                               {!isCollapsed && (
-                                <span className="ml-3 truncate text-sm">{item.title}</span>
+                                <span className="ml-3 truncate text-sm">
+                                  {item.title}
+                                </span>
                               )}
                             </Link>
                           </Button>
@@ -328,9 +350,10 @@ const AdminSidebar = ({
                     );
                   })}
                 </div>
-                {!isCollapsed && section !== sidebarItems[sidebarItems.length - 1] && (
-                  <Separator className="my-4 bg-sidebar-border" />
-                )}
+                {!isCollapsed &&
+                  section !== sidebarItems[sidebarItems.length - 1] && (
+                    <Separator className="my-4 bg-sidebar-border" />
+                  )}
               </div>
             ))}
           </div>
