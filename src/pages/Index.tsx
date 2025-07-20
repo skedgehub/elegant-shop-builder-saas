@@ -487,78 +487,109 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section - VTEX Inspired */}
-      <section className="pt-20 pb-32 px-6 relative bg-gradient-to-br from-gray-50 to-white">
-        <div className="container mx-auto text-center relative z-10 max-w-6xl">
-          <Badge className="mb-8 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 transition-colors">
+      {/* Hero Section */}
+      <section className="pt-16 pb-24 px-6 relative z-10">
+        <div className="container mx-auto text-center relative z-10 max-w-5xl">
+          <Badge className="mb-8 bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 transition-colors">
             <Sparkles className="h-3 w-3 mr-2" />
-            A Plataforma de Catálogos Digitais Composable e Completa
+            Plataforma líder em catálogos digitais no Brasil
           </Badge>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-normal text-gray-900 mb-6 leading-tight tracking-tight">
-            Escolha eficiência para suas
-            <br />
-            <span className="font-semibold text-black">vendas digitais</span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-8 leading-tight tracking-tight px-2">
+            Venda mais com seu
+            <span className="block font-semibold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent p-2">
+              catálogo digital
+            </span>
+            profissional
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Modernize seu stack e potencialize resultados operacionais
+          <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-light px-4">
+            Crie seu catálogo online completo com sistema de pagamentos integrado e comece a vender em minutos. Mais de 10.000 empresas já transformaram suas vendas.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Link to="/register">
-              <Button size="lg" className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 text-lg font-medium rounded-full">
-                Peça uma Demo
-              </Button>
-            </Link>
-            <Button variant="outline" size="lg" className="text-gray-700 border-gray-300 hover:bg-gray-50 px-8 py-3 text-lg rounded-full">
-              <Play className="h-5 w-5 mr-2" />
-              Ver como funciona
-            </Button>
+          {/* Enhanced Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto mb-16">
+            {[
+              {
+                icon: <TrendingUp className="h-5 w-5" />,
+                value: "+350%",
+                label: "Aumento médio em vendas",
+              },
+              {
+                icon: <Building2 className="h-5 w-5" />,
+                value: "+10.000",
+                label: "Empresas transformadas",
+              },
+              {
+                icon: <CreditCard className="h-5 w-5" />,
+                value: "R$ 50M+",
+                label: "Processado em vendas",
+              },
+            ].map((stat, index) => (
+              <Card
+                key={index}
+                className="bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group"
+              >
+                <CardContent className="p-8 text-center">
+                  <div className="flex justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
+                    {stat.icon}
+                  </div>
+                  <div className="text-3xl font-semibold text-black mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-gray-600 font-medium">
+                    {stat.label}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          {/* Hero Image/Dashboard Preview */}
-          <div className="relative max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 md:p-8">
-              <div className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl p-6 md:p-12">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white rounded-lg p-6 shadow-sm">
-                    <div className="h-3 w-3 bg-green-500 rounded-full mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded w-2/3"></div>
-                  </div>
-                  <div className="bg-white rounded-lg p-6 shadow-sm">
-                    <div className="h-3 w-3 bg-blue-500 rounded-full mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded w-3/4"></div>
-                  </div>
-                  <div className="bg-white rounded-lg p-6 shadow-sm">
-                    <div className="h-3 w-3 bg-purple-500 rounded-full mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded w-1/2"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/register">
+              <Button
+                size="lg"
+                className="text-base px-8 py-6 bg-black hover:bg-gray-900 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all group"
+              >
+                Começar a Vender Agora
+                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/admin">
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-base px-8 py-6 border-gray-300 hover:bg-gray-50 group"
+              >
+                <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+                Ver Demonstração
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Brands Section */}
-      <section className="py-16 bg-white border-b border-gray-100">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-gray-500 text-sm mb-12 max-w-md mx-auto">
-            Marcas líderes adotaram a abordagem headless e composable da Wibbo
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
-            {brands.map((brand, index) => (
-              <div key={index} className="flex items-center justify-center h-12 w-24 md:h-16 md:w-32">
-                <div className="bg-gray-200 rounded h-8 w-20 md:h-10 md:w-24"></div>
-              </div>
-            ))}
+      <section className="py-16 px-6 bg-gray-50/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-sm text-gray-600 font-medium mb-8">
+              Empresas que já transformaram suas vendas
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-60">
+              {brands.map((brand, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-center hover:opacity-100 transition-opacity duration-300"
+                >
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    className="h-8 w-auto filter grayscale hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
