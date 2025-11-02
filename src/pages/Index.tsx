@@ -70,22 +70,22 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 bg-background">
-        <div className="container mx-auto px-6 py-4">
+      <header className="border-b sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
+        <div className="container mx-auto px-6 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-foreground rounded flex items-center justify-center">
-                <span className="text-background font-bold text-sm">W</span>
+              <div className="h-6 w-6 bg-foreground rounded flex items-center justify-center">
+                <span className="text-background font-bold text-xs">W</span>
               </div>
-              <span className="text-xl font-semibold">Wibbo</span>
+              <span className="font-semibold">Wibbo</span>
             </Link>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <Link to="/login">
                 <Button variant="ghost" size="sm">Entrar</Button>
               </Link>
               <Link to="/register">
-                <Button size="sm">Começar Grátis</Button>
+                <Button size="sm">Começar</Button>
               </Link>
             </div>
           </div>
@@ -93,21 +93,20 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="py-24 px-6">
+      <section className="py-32 px-6">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
             Sistema completo de
             <br />
             catálogo e vendas online
           </h1>
 
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Catálogo digital profissional + pedidos online + pagamentos integrados.
-            Tudo em uma única plataforma.
+          <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            Catálogo digital profissional, pedidos online e pagamentos integrados. Tudo em uma única plataforma.
           </p>
 
           <Link to="/register">
-            <Button size="lg" className="h-12 px-8">
+            <Button size="lg" className="h-11 px-8">
               Começar Grátis
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -117,19 +116,19 @@ const Index = () => {
 
       {/* Products Grid */}
       <section className="py-20 px-6 bg-muted/20">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-3 gap-6">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
             {products.map((product, index) => {
               const Icon = product.icon;
               return (
                 <div 
                   key={index} 
-                  className="bg-background border p-8 hover:shadow-sm transition-shadow"
+                  className="bg-background p-10"
                 >
-                  <div className="mb-4">
-                    <Icon className="h-8 w-8" />
+                  <div className="mb-6">
+                    <Icon className="h-7 w-7 text-muted-foreground" strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{product.title}</h3>
+                  <h3 className="text-base font-semibold mb-3">{product.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {product.description}
                   </p>
@@ -141,20 +140,20 @@ const Index = () => {
       </section>
 
       {/* Demo Video Section */}
-      <section className="py-20 px-6">
+      <section className="py-24 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Veja como funciona</h2>
-            <p className="text-lg text-muted-foreground">Demonstração do sistema em ação</p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">Veja como funciona</h2>
+            <p className="text-muted-foreground">Demonstração do sistema em ação</p>
           </div>
 
-          <div className="relative aspect-video border overflow-hidden bg-muted/30">
+          <div className="relative aspect-video border bg-muted/10">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-background border mb-3 cursor-pointer hover:bg-muted transition-colors">
-                  <ArrowRight className="h-6 w-6" />
+                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full border bg-background mb-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                  <ArrowRight className="h-5 w-5" />
                 </div>
-                <p className="text-sm text-muted-foreground">Assistir demonstração</p>
+                <p className="text-xs text-muted-foreground">Assistir demonstração</p>
               </div>
             </div>
           </div>
@@ -162,132 +161,133 @@ const Index = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 px-6 bg-muted/20">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">
-              Planos transparentes
+      <section className="py-24 px-6 bg-muted/20">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
+              Planos
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-muted-foreground">
               Escolha o plano ideal para o seu negócio
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-px bg-border max-w-4xl mx-auto">
             {/* Starter Plan */}
-            <div className="bg-background border p-8">
-              <div className="mb-6">
-                <h3 className="text-xl font-bold mb-1">Starter</h3>
-                <p className="text-sm text-muted-foreground">Para começar a vender online</p>
+            <div className="bg-background p-10">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-8 w-8 rounded-full border flex items-center justify-center">
+                  <Package className="h-4 w-4" strokeWidth={1.5} />
+                </div>
+                <h3 className="text-lg font-semibold">Starter</h3>
               </div>
               
-              <div className="mb-8">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">R$ 97</span>
-                  <span className="text-muted-foreground">/mês</span>
-                </div>
+              <div className="mb-2">
+                <span className="text-4xl font-bold">R$ 97</span>
+                <span className="text-muted-foreground text-sm ml-1">/mês</span>
               </div>
+              
+              <p className="text-sm text-muted-foreground mb-8">Para começar a vender online</p>
 
-              <ul className="space-y-3 mb-8 text-sm">
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <Link to="/register" className="block mb-8">
+                <Button variant="outline" size="default" className="w-full">
+                  Começar
+                </Button>
+              </Link>
+
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Até 100 produtos</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Catálogo digital profissional</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Sistema de pedidos online</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Pagamentos via PIX</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Suporte por email</span>
                 </li>
               </ul>
-
-              <Link to="/register" className="block">
-                <Button variant="outline" size="lg" className="w-full">
-                  Começar Agora
-                </Button>
-              </Link>
             </div>
 
             {/* Pro Plan */}
-            <div className="bg-background border-2 border-foreground p-8 relative">
-              <Badge className="absolute -top-3 left-8 bg-foreground text-background">
-                Mais Popular
-              </Badge>
-              
-              <div className="mb-6">
-                <h3 className="text-xl font-bold mb-1">Pro</h3>
-                <p className="text-sm text-muted-foreground">Para escalar suas vendas</p>
-              </div>
-              
-              <div className="mb-8">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">R$ 197</span>
-                  <span className="text-muted-foreground">/mês</span>
+            <div className="bg-background p-10">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-8 w-8 rounded-full bg-foreground text-background flex items-center justify-center">
+                  <ShoppingCart className="h-4 w-4" strokeWidth={1.5} />
                 </div>
+                <h3 className="text-lg font-semibold">Pro</h3>
+                <Badge variant="secondary" className="ml-auto text-xs">Popular</Badge>
               </div>
+              
+              <div className="mb-2">
+                <span className="text-4xl font-bold">R$ 197</span>
+                <span className="text-muted-foreground text-sm ml-1">/mês</span>
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-8">Para escalar suas vendas</p>
 
-              <ul className="space-y-3 mb-8 text-sm">
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <Link to="/register" className="block mb-8">
+                <Button size="default" className="w-full">
+                  Começar
+                </Button>
+              </Link>
+
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Produtos ilimitados</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Tudo do plano Starter</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  <span>Pagamentos via cartão de crédito</span>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <span>Pagamentos via cartão</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Boleto bancário</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Relatórios avançados</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Customização de marca</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                   <span>Suporte prioritário</span>
                 </li>
               </ul>
-
-              <Link to="/register" className="block">
-                <Button size="lg" className="w-full">
-                  Começar Agora
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6">
+      <section className="py-24 px-6">
         <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">
             Pronto para começar?
           </h2>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-muted-foreground mb-8">
             Crie seu catálogo e comece a vender em minutos
           </p>
           <Link to="/register">
-            <Button size="lg" className="h-12 px-8">
+            <Button size="lg" className="h-11 px-8">
               Criar Conta Grátis
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -297,43 +297,43 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t py-12 px-6">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="h-7 w-7 bg-foreground rounded flex items-center justify-center">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center space-x-2 mb-3">
+                <div className="h-6 w-6 bg-foreground rounded flex items-center justify-center">
                   <span className="text-background font-bold text-xs">W</span>
                 </div>
-                <span className="font-semibold">Wibbo</span>
+                <span className="font-semibold text-sm">Wibbo</span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Sistema completo para vendas online
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-3 text-sm">Produto</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="font-semibold mb-3 text-xs">Produto</h4>
+              <ul className="space-y-2 text-xs text-muted-foreground">
                 <li><a href="#" className="hover:text-foreground transition-colors">Recursos</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Preços</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-3 text-sm">Empresa</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="font-semibold mb-3 text-xs">Empresa</h4>
+              <ul className="space-y-2 text-xs text-muted-foreground">
                 <li><a href="#" className="hover:text-foreground transition-colors">Sobre</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Contato</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-3 text-sm">Suporte</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h4 className="font-semibold mb-3 text-xs">Suporte</h4>
+              <ul className="space-y-2 text-xs text-muted-foreground">
                 <li><a href="#" className="hover:text-foreground transition-colors">Ajuda</a></li>
                 <li><Link to="/login" className="hover:text-foreground transition-colors">Acessar</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2024 Wibbo. Todos os direitos reservados.</p>
+          <div className="border-t pt-8">
+            <p className="text-xs text-muted-foreground text-center">© 2024 Wibbo. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
