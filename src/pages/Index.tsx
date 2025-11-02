@@ -212,6 +212,122 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Planos simples e transparentes
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Escolha o plano ideal para o seu negócio
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Starter Plan */}
+            <Card className="border-2 p-8 hover:shadow-lg transition-shadow">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold mb-2">Starter</h3>
+                <p className="text-muted-foreground">Para começar a vender online</p>
+              </div>
+              
+              <div className="mb-8">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-bold">R$ 97</span>
+                  <span className="text-muted-foreground">/mês</span>
+                </div>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Até 100 produtos</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Catálogo digital profissional</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Sistema de pedidos online</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Pagamentos via PIX</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Suporte por email</span>
+                </li>
+              </ul>
+
+              <Link to="/register" className="block">
+                <Button variant="outline" size="lg" className="w-full">
+                  Começar Agora
+                </Button>
+              </Link>
+            </Card>
+
+            {/* Pro Plan */}
+            <Card className="border-2 border-primary p-8 hover:shadow-lg transition-shadow relative">
+              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
+                Mais Popular
+              </Badge>
+              
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold mb-2">Pro</h3>
+                <p className="text-muted-foreground">Para escalar suas vendas</p>
+              </div>
+              
+              <div className="mb-8">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-bold">R$ 197</span>
+                  <span className="text-muted-foreground">/mês</span>
+                </div>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="font-medium">Produtos ilimitados</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Tudo do plano Starter</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="font-medium">Pagamentos via cartão de crédito</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="font-medium">Boleto bancário</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Relatórios avançados</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Customização de marca</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="font-medium">Suporte prioritário</span>
+                </li>
+              </ul>
+
+              <Link to="/register" className="block">
+                <Button size="lg" className="w-full">
+                  Começar Agora
+                </Button>
+              </Link>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-4xl text-center">
